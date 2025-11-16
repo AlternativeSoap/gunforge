@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Sticky bomb launcher -->
+  <rect x="8" y="28" width="10" height="8" fill="#5d4037" stroke="#212121" stroke-width="1"/>
+  <rect x="16" y="26" width="22" height="12" fill="#757575" stroke="#212121" stroke-width="1"/>
+  <circle cx="48" cy="32" r="8" fill="#ff6f00" stroke="#212121" stroke-width="1"/>
+  <circle cx="48" cy="32" r="4" fill="#ffc107"/>
+  <rect x="24" y="38" width="6" height="8" rx="2" fill="#3e2723" stroke="#212121" stroke-width="1"/>
+</svg>

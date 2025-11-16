@@ -1,0 +1,17 @@
+<svg width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fast enemy - top-down walking -->
+  <g transform="translate(14, 14)">
+    <!-- Shadow (stretched for motion) -->
+    <ellipse cx="1" cy="6" rx="9" ry="3" fill="#000" opacity="0.2"/>
+    <!-- Body (tilted for motion) -->
+    <ellipse cx="0" cy="0" rx="9" ry="11" fill="#ffa726" stroke="#ef6c00" stroke-width="2"/>
+    <!-- Head/face -->
+    <circle cx="0" cy="-4" r="5" fill="#ffb74d" stroke="#ef6c00" stroke-width="1.5"/>
+    <!-- Eyes -->
+    <circle cx="-1.5" cy="-5" r="1" fill="#000"/>
+    <circle cx="1.5" cy="-5" r="1" fill="#000"/>
+    <!-- Speed lines (more prominent) -->
+    <line x1="-13" y1="-1" x2="-7" y2="-1" stroke="#ffa726" stroke-width="2" opacity="0.6"/>
+    <line x1="-12" y1="2" x2="-8" y2="2" stroke="#ffa726" stroke-width="1.5" opacity="0.4"/>
+  </g>
+</svg>

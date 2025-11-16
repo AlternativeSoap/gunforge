@@ -1,0 +1,25 @@
+<svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Charger - top-down idle (bull-like) -->
+  <g transform="translate(22, 22)">
+    <!-- Shadow -->
+    <ellipse cx="0" cy="9" rx="14" ry="5" fill="#000" opacity="0.3"/>
+    
+    <!-- Body (bulky) -->
+    <circle cx="0" cy="0" r="16" fill="#d84315" stroke="#bf360c" stroke-width="2"/>
+    <circle cx="0" cy="0" r="13" fill="#e64a19"/>
+    
+    <!-- Horns/Spikes -->
+    <path d="M -12,-10 L -16,-14 L -14,-10 Z" fill="#616161" stroke="#424242" stroke-width="1"/>
+    <path d="M 12,-10 L 16,-14 L 14,-10 Z" fill="#616161" stroke="#424242" stroke-width="1"/>
+    
+    <!-- Forward indicator (charging direction) -->
+    <path d="M 0,-16 L -4,-10 L 4,-10 Z" fill="#fff" opacity="0.6"/>
+    
+    <!-- Eye glows -->
+    <circle cx="-4" cy="-6" r="2" fill="#ff0" opacity="0.8"/>
+    <circle cx="4" cy="-6" r="2" fill="#ff0" opacity="0.8"/>
+    
+    <!-- Armor plates -->
+    <ellipse cx="0" cy="0" rx="10" ry="8" fill="#bf360c" opacity="0.4"/>
+  </g>
+</svg>

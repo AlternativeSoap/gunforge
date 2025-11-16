@@ -1,0 +1,29 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Healer - top-down idle (support) -->
+  <g transform="translate(20, 20)">
+    <!-- Shadow -->
+    <ellipse cx="0" cy="8" rx="11" ry="4" fill="#000" opacity="0.3"/>
+    
+    <!-- Body (robed) -->
+    <circle cx="0" cy="0" r="13" fill="#81c784" stroke="#4caf50" stroke-width="2"/>
+    <circle cx="0" cy="0" r="10" fill="#a5d6a7"/>
+    
+    <!-- Healing cross -->
+    <rect x="-1" y="-6" width="2" height="12" fill="#fff" opacity="0.9"/>
+    <rect x="-6" y="-1" width="12" height="2" fill="#fff" opacity="0.9"/>
+    
+    <!-- Healing aura -->
+    <circle cx="0" cy="0" r="15" fill="#4caf50" opacity="0.2"/>
+    <circle cx="0" cy="0" r="14" fill="#81c784" opacity="0.1"/>
+    
+    <!-- Direction indicator (staff top) -->
+    <circle cx="0" cy="-12" r="3" fill="#fff" opacity="0.7"/>
+    <circle cx="0" cy="-12" r="2" fill="#4caf50" opacity="0.8"/>
+    
+    <!-- Energy nodes -->
+    <circle cx="-8" cy="-8" r="1.5" fill="#4caf50" opacity="0.6"/>
+    <circle cx="8" cy="-8" r="1.5" fill="#4caf50" opacity="0.6"/>
+    <circle cx="-8" cy="8" r="1.5" fill="#4caf50" opacity="0.6"/>
+    <circle cx="8" cy="8" r="1.5" fill="#4caf50" opacity="0.6"/>
+  </g>
+</svg>

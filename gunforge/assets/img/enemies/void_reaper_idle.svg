@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Shadow -->
+  <ellipse cx="48" cy="90" rx="35" ry="6" fill="rgba(0,0,0,0.5)"/>
+  
+  <!-- Void aura -->
+  <circle cx="48" cy="50" r="45" fill="#4a148c" opacity="0.2"/>
+  <circle cx="48" cy="50" r="40" fill="#6a1b9a" opacity="0.3"/>
+  
+  <!-- Main body (dark ethereal) -->
+  <ellipse cx="48" cy="52" rx="32" ry="36" fill="#7b1fa2"/>
+  <ellipse cx="48" cy="52" rx="28" ry="32" fill="#9c27b0" opacity="0.8"/>
+  
+  <!-- Void rifts -->
+  <ellipse cx="48" cy="45" rx="20" ry="25" fill="#1a0033" opacity="0.6"/>
+  <ellipse cx="48" cy="48" rx="16" ry="20" fill="#0d001a" opacity="0.8"/>
+  
+  <!-- Eyes (void portals) -->
+  <ellipse cx="38" cy="42" rx="6" ry="8" fill="#000000"/>
+  <ellipse cx="58" cy="42" rx="6" ry="8" fill="#000000"/>
+  <circle cx="38" cy="42" r="3" fill="#ba68c8"/>
+  <circle cx="58" cy="42" r="3" fill="#ba68c8"/>
+  <circle cx="38" cy="41" r="1.5" fill="#ffffff"/>
+  <circle cx="58" cy="41" r="1.5" fill="#ffffff"/>
+  
+  <!-- Floating crown -->
+  <path d="M 30 25 L 35 30 L 40 27 L 45 32 L 48 28 L 51 32 L 56 27 L 61 30 L 66 25" 
+        stroke="#ba68c8" stroke-width="3" fill="none"/>
+  <circle cx="30" cy="25" r="3" fill="#ce93d8"/>
+  <circle cx="48" cy="28" r="4" fill="#ce93d8"/>
+  <circle cx="66" cy="25" r="3" fill="#ce93d8"/>
+  
+  <!-- Void tendrils -->
+  <path d="M 20 50 Q 15 60 18 70" stroke="#6a1b9a" stroke-width="4" fill="none" opacity="0.7"/>
+  <path d="M 76 50 Q 81 60 78 70" stroke="#6a1b9a" stroke-width="4" fill="none" opacity="0.7"/>
+  <path d="M 35 75 Q 30 82 33 88" stroke="#6a1b9a" stroke-width="3" fill="none" opacity="0.6"/>
+  <path d="M 61 75 Q 66 82 63 88" stroke="#6a1b9a" stroke-width="3" fill="none" opacity="0.6"/>
+  
+  <!-- Energy particles -->
+  <circle cx="25" cy="40" r="2" fill="#ce93d8" opacity="0.9"/>
+  <circle cx="71" cy="45" r="2" fill="#ce93d8" opacity="0.9"/>
+  <circle cx="42" cy="70" r="1.5" fill="#ba68c8" opacity="0.8"/>
+  <circle cx="54" cy="68" r="1.5" fill="#ba68c8" opacity="0.8"/>
+  
+  <!-- Void spiral effect -->
+  <path d="M 48 52 Q 52 48 56 52 Q 52 56 48 52" fill="none" stroke="#1a0033" stroke-width="2" opacity="0.5"/>
+</svg>

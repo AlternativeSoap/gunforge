@@ -1,0 +1,15 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- EMP device body -->
+  <rect x="18" y="26" width="28" height="12" fill="#00acc1" stroke="#006064" stroke-width="1"/>
+  <!-- Electromagnetic coil -->
+  <circle cx="32" cy="32" r="8" fill="#26c6da" stroke="#00acc1" stroke-width="1"/>
+  <circle cx="32" cy="32" r="6" fill="none" stroke="#80deea" stroke-width="2"/>
+  <circle cx="32" cy="32" r="4" fill="none" stroke="#b2ebf2" stroke-width="2"/>
+  <!-- Emitter -->
+  <rect x="12" y="28" width="8" height="8" fill="#006064" stroke="#004d56" stroke-width="1"/>
+  <!-- Grip -->
+  <path d="M 44,32 L 42,40 L 46,42 L 50,38 L 48,32 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- EMP waves -->
+  <circle cx="10" cy="32" r="4" fill="none" stroke="#80deea" stroke-width="1" opacity="0.6"/>
+  <circle cx="10" cy="32" r="6" fill="none" stroke="#b2ebf2" stroke-width="1" opacity="0.4"/>
+</svg>

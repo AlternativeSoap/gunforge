@@ -1,0 +1,15 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Large barrel -->
+  <rect x="10" y="26" width="24" height="12" fill="#4a4a4a" stroke="#2a2a2a" stroke-width="2"/>
+  <!-- Muzzle brake -->
+  <rect x="8" y="28" width="4" height="8" fill="#333"/>
+  <rect x="10" y="26" width="2" height="12" fill="#222"/>
+  <!-- Body -->
+  <rect x="32" y="24" width="14" height="16" fill="#555" stroke="#333" stroke-width="1"/>
+  <!-- Massive grip -->
+  <path d="M 42,40 L 40,48 L 44,52 L 48,48 L 46,40 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Cylinder detail -->
+  <circle cx="38" cy="32" r="6" fill="#666" stroke="#444" stroke-width="1"/>
+  <!-- Trigger -->
+  <rect x="38" y="40" width="4" height="6" fill="#8b7355"/>
+</svg>

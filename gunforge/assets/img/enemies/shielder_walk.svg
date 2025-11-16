@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- Shadow (elongated for walking) -->
+  <ellipse cx="24" cy="44" rx="15" ry="3" fill="rgba(0,0,0,0.4)"/>
+  
+  <!-- Body (armored knight, slightly leaning forward) -->
+  <ellipse cx="25" cy="25" rx="10" ry="12" fill="#546e7a"/>
+  <ellipse cx="25" cy="25" rx="8" ry="10" fill="#607d8b"/>
+  
+  <!-- Chest plate -->
+  <rect x="21" y="21" width="8" height="8" rx="1" fill="#455a64"/>
+  <circle cx="23" cy="25" r="1" fill="#263238"/>
+  <circle cx="27" cy="25" r="1" fill="#263238"/>
+  
+  <!-- Head/Helmet (tilted slightly) -->
+  <ellipse cx="25" cy="15" rx="7" ry="8" fill="#455a64"/>
+  <ellipse cx="25" cy="15" rx="5" ry="6" fill="#546e7a"/>
+  
+  <!-- Visor -->
+  <rect x="21" y="15" width="8" height="3" rx="0.5" fill="#263238"/>
+  <rect x="21" y="15" width="8" height="3" rx="0.5" fill="#78909c" opacity="0.4"/>
+  
+  <!-- Shield (raised slightly during walk) -->
+  <ellipse cx="13" cy="24" rx="6" ry="10" fill="#78909c"/>
+  <ellipse cx="13" cy="24" rx="4" ry="8" fill="#90a4ae"/>
+  <circle cx="13" cy="24" r="2.5" fill="#546e7a"/>
+  <circle cx="13" cy="24" r="1" fill="#b0bec5"/>
+  
+  <!-- Shield edge highlight -->
+  <path d="M 10 18 Q 9 24 10 30" stroke="#b0bec5" stroke-width="1" fill="none" opacity="0.7"/>
+  
+  <!-- Right arm/weapon (swinging motion) -->
+  <ellipse cx="35" cy="26" rx="3" ry="6" fill="#607d8b" transform="rotate(-15 35 26)"/>
+  <rect x="33" y="30" width="4" height="6" fill="#757575" transform="rotate(-15 35 33)"/>
+  
+  <!-- Legs (walking stride) -->
+  <!-- Left leg forward -->
+  <rect x="21" y="34" width="4" height="8" rx="1" fill="#546e7a"/>
+  <!-- Right leg back -->
+  <rect x="25" y="37" width="4" height="6" rx="1" fill="#546e7a"/>
+  
+  <!-- Boots -->
+  <rect x="21" y="40" width="4" height="3" fill="#455a64"/>
+  <rect x="25" y="41" width="4" height="3" fill="#455a64"/>
+</svg>

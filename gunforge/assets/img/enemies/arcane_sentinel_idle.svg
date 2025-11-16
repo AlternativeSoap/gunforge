@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Shadow -->
+  <ellipse cx="48" cy="88" rx="36" ry="8" fill="rgba(150,0,200,0.4)"/>
+  
+  <!-- Arcane aura -->
+  <circle cx="48" cy="48" r="50" fill="url(#arcaneGrad)" opacity="0.2"/>
+  
+  <defs>
+    <radialGradient id="arcaneGrad">
+      <stop offset="0%" style="stop-color:#d500f9;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#4a148c;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Main body (magical robes) -->
+  <ellipse cx="48" cy="56" rx="28" ry="30" fill="#4a148c"/>
+  <ellipse cx="48" cy="56" rx="24" ry="26" fill="#6a1b9a"/>
+  
+  <!-- Magical runes on body -->
+  <circle cx="38" cy="52" r="3" fill="#d500f9" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="58" cy="52" r="3" fill="#d500f9" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1.5s" begin="0.75s" repeatCount="indefinite"/>
+  </circle>
+  <path d="M 48 64 L 44 68 L 48 72 L 52 68 Z" fill="#e040fb" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Floating arms -->
+  <ellipse cx="22" cy="48" rx="8" ry="12" fill="#7b1fa2"/>
+  <ellipse cx="74" cy="48" rx="8" ry="12" fill="#7b1fa2"/>
+  
+  <!-- Magical orbs in hands -->
+  <circle cx="22" cy="54" r="6" fill="#d500f9" opacity="0.8">
+    <animate attributeName="r" values="6;7;6" dur="1.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="74" cy="54" r="6" fill="#d500f9" opacity="0.8">
+    <animate attributeName="r" values="6;7;6" dur="1.2s" begin="0.6s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Head (hooded) -->
+  <ellipse cx="48" cy="32" rx="18" ry="16" fill="#311b92"/>
+  <ellipse cx="48" cy="32" rx="14" ry="12" fill="#4a148c"/>
+  
+  <!-- Hood -->
+  <path d="M 30 28 Q 30 18 48 16 Q 66 18 66 28 Z" fill="#1a0033" opacity="0.8"/>
+  
+  <!-- Eyes (glowing purple) -->
+  <ellipse cx="40" cy="32" rx="5" ry="7" fill="#000000"/>
+  <ellipse cx="56" cy="32" rx="5" ry="7" fill="#000000"/>
+  <ellipse cx="40" cy="32" rx="3" ry="5" fill="#d500f9"/>
+  <ellipse cx="56" cy="32" rx="3" ry="5" fill="#d500f9"/>
+  <circle cx="40" cy="32" r="1.5" fill="#ffffff"/>
+  <circle cx="56" cy="32" r="1.5" fill="#ffffff"/>
+  
+  <!-- Floating runes around -->
+  <text x="18" y="38" font-size="10" fill="#e040fb" opacity="0.6" font-family="serif">✦</text>
+  <text x="74" y="38" font-size="10" fill="#e040fb" opacity="0.6" font-family="serif">✦</text>
+  <text x="32" y="76" font-size="10" fill="#e040fb" opacity="0.6" font-family="serif">✦</text>
+  <text x="60" y="76" font-size="10" fill="#e040fb" opacity="0.6" font-family="serif">✦</text>
+  
+  <!-- Magic particles -->
+  <circle cx="30" cy="40" r="2" fill="#e040fb" opacity="0.9">
+    <animate attributeName="cy" values="40;30;40" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="66" cy="42" r="2" fill="#e040fb" opacity="0.9">
+    <animate attributeName="cy" values="42;32;42" dur="1.7s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Central magic core -->
+  <circle cx="48" cy="56" r="10" fill="#d500f9" opacity="0.4">
+    <animate attributeName="r" values="10;14;10" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</svg>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gunforge: Wasteland Echoes</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+
+    <!-- Start overlay to unlock audio and pointer lock -->
+    <div id="overlay" class="overlay visible">
+      <div class="animated-bg"></div>
+      <div class="panel">
+        <div class="title-container">
+          <h1 class="game-title">
+            <span class="title-word" style="--delay: 0s;">GUNFORGE</span>
+          </h1>
+          <h2 class="game-subtitle">Wasteland Echoes</h2>
+        </div>
+        
+        <p class="tagline">A post-apocalyptic roguelike shooter</p>
+        
+        <div class="controls-section">
+          <h3>🎮 Controls</h3>
+          <div class="controls-grid">
+            <div class="control-item">
+              <span class="key">WASD</span>
+              <span class="desc">Move</span>
+            </div>
+            <div class="control-item">
+              <span class="key">Mouse</span>
+              <span class="desc">Aim & Shoot</span>
+            </div>
+            <div class="control-item">
+              <span class="key">Shift</span>
+              <span class="desc">Dash</span>
+            </div>
+            <div class="control-item">
+              <span class="key">E</span>
+              <span class="desc">Interact</span>
+            </div>
+            <div class="control-item">
+              <span class="key">R</span>
+              <span class="desc">Swap Weapon</span>
+            </div>
+            <div class="control-item">
+              <span class="key">M</span>
+              <span class="desc">Map</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Difficulty Selector -->
+        <div class="difficulty-selector">
+          <h3>⚔️ Select Difficulty</h3>
+          <div class="difficulty-buttons">
+            <button class="diff-btn diff-easy" data-difficulty="easy">
+              <div class="diff-icon">😊</div>
+              <strong>Easy</strong>
+              <span>+50% HP, +30% Damage<br>-30% Enemy Stats</span>
+            </button>
+            <button class="diff-btn diff-medium selected" data-difficulty="medium">
+              <div class="diff-icon">⚡</div>
+              <strong>Medium</strong>
+              <span>Balanced Experience<br>Standard Stats</span>
+            </button>
+            <button class="diff-btn diff-hard" data-difficulty="hard">
+              <div class="diff-icon">🔥</div>
+              <strong>Hard</strong>
+              <span>-20% HP, -10% Damage<br>+40% Enemy Stats</span>
+            </button>
+            <button class="diff-btn diff-nightmare" data-difficulty="nightmare">
+              <div class="diff-icon">💀</div>
+              <strong>Nightmare</strong>
+              <span>-50% HP, -20% Damage<br>+100% Enemy Stats</span>
+            </button>
+          </div>
+        </div>
+        
+        <button id="startBtn" class="start-button" onclick="window.requestGameStart && window.requestGameStart()">
+          <span class="btn-text">START GAME</span>
+          <span class="btn-glow"></span>
+        </button>
+      </div>
+    </div>
+    <script>
+      // Warn if running from file:// where ES modules won't load
+      if (location.protocol === 'file:') {
+        console.warn('This game must be opened via http(s) not file://. Start a local server.');
+        setTimeout(()=>{
+          const p = document.createElement('p');
+          p.textContent = 'Warning: Open this via a local server (http://localhost), not by double-clicking the file.';
+          p.style.color = '#ff5252';
+          p.style.marginTop = '8px';
+          document.querySelector('.panel')?.appendChild(p);
+        }, 0);
+      }
+      // Store selected difficulty (default: medium)
+      window.__GAME_DIFFICULTY__ = 'medium';
+      
+      // Difficulty button selection
+      document.addEventListener('DOMContentLoaded', () => {
+        const diffBtns = document.querySelectorAll('.diff-btn');
+        diffBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            // Remove selected class from all buttons
+            diffBtns.forEach(b => b.classList.remove('selected'));
+            // Add selected class to clicked button
+            btn.classList.add('selected');
+            // Store difficulty
+            window.__GAME_DIFFICULTY__ = btn.getAttribute('data-difficulty');
+            console.log('Difficulty selected:', window.__GAME_DIFFICULTY__);
+          });
+        });
+      });
+      
+      // Fallback: capture start intent before modules load
+      window.requestGameStart = function(){
+        window.__REQUEST_START__ = true;
+        const ov = document.getElementById('overlay');
+        ov?.classList.remove('visible');
+        console.log('Fallback start intent captured (before module). Difficulty:', window.__GAME_DIFFICULTY__);
+      };
+      // Global error handlers
+      window.addEventListener('error', function(e) {
+        console.error('Global error:', e.message, e.filename, e.lineno, e.colno);
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        console.error('Unhandled promise rejection:', e.reason);
+      });
+    </script>
+    <script type="module">
+      console.log('Bootloader: importing main.js ...');
+      import('./js/main.js')
+        .then(()=> console.log('Bootloader: main.js loaded'))
+        .catch(err => {
+          console.error('Failed to load main.js:', err);
+          const p = document.createElement('p');
+          p.textContent = 'Failed to load game scripts: ' + (err?.message || err);
+          p.style.color = '#ff5252';
+          p.style.marginTop = '8px';
+          document.querySelector('.panel')?.appendChild(p);
+        });
+    </script>
+  </body>
+  </html>

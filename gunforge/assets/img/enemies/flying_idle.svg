@@ -1,0 +1,26 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Flying - top-down idle (hovering) -->
+  <g transform="translate(18, 18)">
+    <!-- Shadow (elevated) -->
+    <ellipse cx="0" cy="10" rx="8" ry="3" fill="#000" opacity="0.2"/>
+    
+    <!-- Body (flying creature) -->
+    <circle cx="0" cy="0" r="10" fill="#4fc3f7" stroke="#03a9f4" stroke-width="2"/>
+    <circle cx="0" cy="0" r="7" fill="#81d4fa"/>
+    
+    <!-- Wings (spread) -->
+    <ellipse cx="-12" cy="0" rx="6" ry="10" fill="#4fc3f7" opacity="0.7"/>
+    <ellipse cx="12" cy="0" rx="6" ry="10" fill="#4fc3f7" opacity="0.7"/>
+    
+    <!-- Wing details -->
+    <ellipse cx="-12" cy="0" rx="4" ry="7" fill="#81d4fa" opacity="0.5"/>
+    <ellipse cx="12" cy="0" rx="4" ry="7" fill="#81d4fa" opacity="0.5"/>
+    
+    <!-- Direction indicator -->
+    <ellipse cx="0" cy="-6" rx="3" ry="5" fill="#fff" opacity="0.6"/>
+    
+    <!-- Eyes -->
+    <circle cx="-3" cy="-2" r="1.5" fill="#0277bd"/>
+    <circle cx="3" cy="-2" r="1.5" fill="#0277bd"/>
+  </g>
+</svg>

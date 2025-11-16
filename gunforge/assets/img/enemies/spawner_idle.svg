@@ -1,0 +1,28 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Spawner - top-down idle (portal generator) -->
+  <g transform="translate(20, 20)">
+    <!-- Shadow -->
+    <ellipse cx="0" cy="8" rx="12" ry="4" fill="#000" opacity="0.3"/>
+    
+    <!-- Body (mechanical) -->
+    <circle cx="0" cy="0" r="14" fill="#424242" stroke="#212121" stroke-width="2"/>
+    <circle cx="0" cy="0" r="11" fill="#616161"/>
+    
+    <!-- Central portal -->
+    <circle cx="0" cy="0" r="7" fill="#7c4dff" opacity="0.8"/>
+    <circle cx="0" cy="0" r="5" fill="#9575cd" opacity="0.6"/>
+    <circle cx="0" cy="0" r="3" fill="#b39ddb" opacity="0.8"/>
+    
+    <!-- Mechanical arms -->
+    <rect x="-2" y="-14" width="4" height="5" fill="#757575" stroke="#424242" stroke-width="1"/>
+    <rect x="-2" y="9" width="4" height="5" fill="#757575" stroke="#424242" stroke-width="1"/>
+    <rect x="-14" y="-2" width="5" height="4" fill="#757575" stroke="#424242" stroke-width="1"/>
+    <rect x="9" y="-2" width="5" height="4" fill="#757575" stroke="#424242" stroke-width="1"/>
+    
+    <!-- Energy nodes -->
+    <circle cx="0" cy="-11" r="2" fill="#7c4dff" opacity="0.7"/>
+    <circle cx="0" cy="11" r="2" fill="#7c4dff" opacity="0.7"/>
+    <circle cx="-11" cy="0" r="2" fill="#7c4dff" opacity="0.7"/>
+    <circle cx="11" cy="0" r="2" fill="#7c4dff" opacity="0.7"/>
+  </g>
+</svg>

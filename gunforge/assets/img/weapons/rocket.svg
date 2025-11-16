@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 32">
+  <!-- Rocket Launcher -->
+  <rect x="8" y="12" width="52" height="8" fill="#424242"/>
+  <rect x="4" y="10" width="8" height="12" fill="#616161"/>
+  <!-- Rocket tube -->
+  <rect x="56" y="10" width="24" height="12" fill="#212121"/>
+  <circle cx="80" cy="16" r="6" fill="#ff3d00"/>
+  <!-- Fins -->
+  <polygon points="60,10 64,6 64,10" fill="#ff5722"/>
+  <polygon points="60,22 64,26 64,22" fill="#ff5722"/>
+  <!-- Warhead tip -->
+  <polygon points="80,16 88,12 88,20" fill="#d84315"/>
+</svg>

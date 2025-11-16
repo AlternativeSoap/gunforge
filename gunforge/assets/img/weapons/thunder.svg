@@ -1,0 +1,18 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Thunder coil -->
+  <rect x="18" y="26" width="26" height="12" fill="#1e3a8a" stroke="#1e293b" stroke-width="1"/>
+  <!-- Electric core -->
+  <circle cx="32" cy="32" r="8" fill="#3b82f6" stroke="#2563eb" stroke-width="1"/>
+  <circle cx="32" cy="32" r="5" fill="#60a5fa"/>
+  <!-- Lightning bolt -->
+  <polygon points="32,26 30,32 34,32 32,38" fill="#ffff00" stroke="#fbbf24" stroke-width="1"/>
+  <!-- Coils -->
+  <circle cx="24" cy="28" r="3" fill="none" stroke="#60a5fa" stroke-width="2"/>
+  <circle cx="40" cy="28" r="3" fill="none" stroke="#60a5fa" stroke-width="2"/>
+  <circle cx="24" cy="36" r="3" fill="none" stroke="#60a5fa" stroke-width="2"/>
+  <circle cx="40" cy="36" r="3" fill="none" stroke="#60a5fa" stroke-width="2"/>
+  <!-- Grip -->
+  <path d="M 42,32 L 40,40 L 44,42 L 48,38 L 46,32 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Electric arcs -->
+  <path d="M 14,30 L 16,32 L 14,34" stroke="#60a5fa" stroke-width="1.5" fill="none" opacity="0.7"/>
+</svg>

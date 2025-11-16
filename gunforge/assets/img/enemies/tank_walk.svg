@@ -1,0 +1,20 @@
+<svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tank enemy - top-down walking -->
+  <g transform="translate(22, 22)">
+    <!-- Shadow (offset) -->
+    <ellipse cx="1" cy="10" rx="16" ry="5" fill="#000" opacity="0.2"/>
+    <!-- Body (large, armored, slightly tilted) -->
+    <ellipse cx="0" cy="0" rx="17" ry="19" fill="#8d6e63" stroke="#4e342e" stroke-width="3"/>
+    <!-- Armor plates -->
+    <ellipse cx="0" cy="0" rx="13" ry="15" fill="#a1887f" stroke="#5d4037" stroke-width="2"/>
+    <!-- Head/face -->
+    <circle cx="0" cy="-7" r="8" fill="#bcaaa4" stroke="#5d4037" stroke-width="2"/>
+    <!-- Eyes (menacing) -->
+    <rect x="-4" y="-9" width="2" height="3" fill="#000"/>
+    <rect x="2" y="-9" width="2" height="3" fill="#000"/>
+    <!-- Armor spikes (slightly rotated) -->
+    <polygon points="-11,-9 -14,-13 -9,-10" fill="#616161"/>
+    <polygon points="12,-7 15,-11 11,-9" fill="#616161"/>
+    <polygon points="0,-17 -1,-21 2,-18" fill="#616161"/>
+  </g>
+</svg>

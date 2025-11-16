@@ -1,0 +1,14 @@
+<svg width="20" height="40" viewBox="0 0 20 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Standing torch base (tripod) -->
+  <polygon points="10,36 6,40 14,40" fill="#424242"/>
+  <rect x="9" y="30" width="2" height="6" fill="#616161"/>
+  <!-- Torch holder -->
+  <circle cx="10" cy="28" r="3" fill="#757575"/>
+  <!-- Torch stem -->
+  <rect x="8" y="10" width="4" height="18" fill="#8d6e63"/>
+  <!-- Flame (medium) -->
+  <ellipse cx="10" cy="7" rx="4.2" ry="6.5" fill="#ff6f00" opacity="0.8"/>
+  <ellipse cx="10" cy="4" rx="3.2" ry="5.5" fill="#ff9800" opacity="0.9"/>
+  <ellipse cx="10" cy="2" rx="2.2" ry="4.5" fill="#ffc107" opacity="1"/>
+  <ellipse cx="10" cy="0" rx="1.2" ry="1.5" fill="#ffeb3b" opacity="0.8"/>
+</svg>

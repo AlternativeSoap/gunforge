@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Golden chest closed - glowing treasure -->
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ffb400;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff9500;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glowGrad">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  <!-- Glow effect -->
+  <ellipse cx="50" cy="60" rx="48" ry="35" fill="url(#glowGrad)" />
+  <!-- Chest body -->
+  <rect x="20" y="45" width="60" height="40" rx="4" fill="url(#goldGrad)" />
+  <rect x="22" y="47" width="56" height="36" rx="3" fill="#b8860b" />
+  <!-- Lid -->
+  <ellipse cx="50" cy="45" rx="30" ry="12" fill="url(#goldGrad)" />
+  <ellipse cx="50" cy="45" rx="28" ry="10" fill="#daa520" />
+  <!-- Lock -->
+  <rect x="45" y="55" width="10" height="20" rx="2" fill="#daa520" />
+  <circle cx="50" cy="65" r="5" fill="#8b6914" />
+  <circle cx="50" cy="65" r="2" fill="#000000" />
+  <!-- Highlights -->
+  <rect x="25" y="50" width="4" height="30" fill="#fff8dc" opacity="0.5" />
+  <ellipse cx="50" cy="46" rx="20" ry="4" fill="#fff8dc" opacity="0.6" />
+  <!-- Decorative bands -->
+  <rect x="20" y="60" width="60" height="2" fill="#8b6914" />
+  <rect x="20" y="75" width="60" height="2" fill="#8b6914" />
+</svg>

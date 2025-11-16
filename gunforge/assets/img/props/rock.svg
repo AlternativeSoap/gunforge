@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- Rock/boulder -->
+  <ellipse cx="24" cy="28" rx="20" ry="16" fill="#424242"/>
+  <ellipse cx="24" cy="24" rx="22" ry="18" fill="#616161"/>
+  <ellipse cx="24" cy="22" rx="20" ry="16" fill="#757575"/>
+  <!-- Cracks -->
+  <path d="M18,20 L16,24 M30,18 L32,22 M24,16 L24,20" stroke="#212121" stroke-width="2" fill="none"/>
+  <!-- Highlights -->
+  <ellipse cx="18" cy="18" rx="4" ry="3" fill="#9e9e9e" opacity="0.5"/>
+</svg>

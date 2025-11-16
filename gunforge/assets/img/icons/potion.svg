@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Modern potion bottle -->
+  <defs>
+    <linearGradient id="potionGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff4081;stop-opacity:0.9" />
+      <stop offset="50%" style="stop-color:#e91e63;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#c2185b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#88ccff;stop-opacity:0.4" />
+      <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#88ccff;stop-opacity:0.4" />
+    </linearGradient>
+    <radialGradient id="bubbleGrad">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Bottle shadow -->
+  <ellipse cx="50" cy="88" rx="18" ry="4" fill="#000" opacity="0.3"/>
+  
+  <!-- Bottle body -->
+  <path d="M35 50 Q30 60, 30 70 L30 80 Q30 85, 35 85 L65 85 Q70 85, 70 80 L70 70 Q70 60, 65 50 Z" 
+        fill="#4a90a8" stroke="#2a5a78" stroke-width="2.5"/>
+  
+  <!-- Liquid inside -->
+  <path d="M36 55 Q32 63, 32 72 L32 80 Q32 83, 35 83 L65 83 Q68 83, 68 80 L68 72 Q68 63, 64 55 Z" 
+        fill="url(#potionGrad)"/>
+  
+  <!-- Glass reflection -->
+  <path d="M38 55 Q36 60, 36 68 L36 78" 
+        stroke="url(#glassGrad)" stroke-width="4" fill="none" opacity="0.6"/>
+  
+  <!-- Bubbles in liquid -->
+  <circle cx="45" cy="65" r="3" fill="url(#bubbleGrad)"/>
+  <circle cx="55" cy="72" r="2.5" fill="url(#bubbleGrad)"/>
+  <circle cx="48" cy="77" r="2" fill="url(#bubbleGrad)"/>
+  <circle cx="58" cy="60" r="2" fill="url(#bubbleGrad)"/>
+  
+  <!-- Bottle neck -->
+  <path d="M42 40 L42 50 L58 50 L58 40 Z" fill="#5aa0b8" stroke="#2a5a78" stroke-width="2"/>
+  
+  <!-- Cork/stopper -->
+  <path d="M40 35 Q40 32, 43 32 L57 32 Q60 32, 60 35 L60 42 L40 42 Z" 
+        fill="#8b6f47" stroke="#5a4520" stroke-width="2"/>
+  <ellipse cx="50" cy="32" rx="8.5" ry="3" fill="#a0845f" stroke="#5a4520" stroke-width="1.5"/>
+  
+  <!-- Cork details -->
+  <line x1="45" y1="35" x2="45" y2="40" stroke="#5a4520" stroke-width="1" opacity="0.5"/>
+  <line x1="50" y1="35" x2="50" y2="40" stroke="#5a4520" stroke-width="1" opacity="0.5"/>
+  <line x1="55" y1="35" x2="55" y2="40" stroke="#5a4520" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Sparkle effects -->
+  <path d="M25 45 L26 48 L29 49 L26 50 L25 53 L24 50 L21 49 L24 48 Z" fill="#ff69b4" opacity="0.8"/>
+  <path d="M75 58 L76 60 L78 61 L76 62 L75 64 L74 62 L72 61 L74 60 Z" fill="#ff69b4" opacity="0.8"/>
+  <path d="M70 72 L70.5 73.5 L72 74 L70.5 74.5 L70 76 L69.5 74.5 L68 74 L69.5 73.5 Z" fill="#ff69b4" opacity="0.8"/>
+  
+  <!-- Heart symbol on bottle -->
+  <path d="M50 62 L46 58 Q44 56, 44 54 Q44 51, 46 51 Q48 51, 50 53 Q52 51, 54 51 Q56 51, 56 54 Q56 56, 54 58 Z" 
+        fill="#ff1744" stroke="#c2185b" stroke-width="1.5"/>
+</svg>

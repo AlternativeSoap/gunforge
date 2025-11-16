@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="spikeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#616161"/>
+      <stop offset="50%" stop-color="#424242"/>
+      <stop offset="100%" stop-color="#212121"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Base platform -->
+  <rect x="2" y="48" width="60" height="12" fill="#37474f" rx="2"/>
+  <rect x="2" y="48" width="60" height="4" fill="#546e7a"/>
+  
+  <!-- Spikes -->
+  <polygon points="10,48 15,20 20,48" fill="url(#spikeGrad)"/>
+  <polygon points="22,48 27,25 32,48" fill="url(#spikeGrad)"/>
+  <polygon points="34,48 39,22 44,48" fill="url(#spikeGrad)"/>
+  <polygon points="46,48 51,28 56,48" fill="url(#spikeGrad)"/>
+  
+  <!-- Highlights on spikes -->
+  <polygon points="10,48 15,20 16,48" fill="#757575" opacity="0.3"/>
+  <polygon points="22,48 27,25 28,48" fill="#757575" opacity="0.3"/>
+  <polygon points="34,48 39,22 40,48" fill="#757575" opacity="0.3"/>
+  <polygon points="46,48 51,28 52,48" fill="#757575" opacity="0.3"/>
+  
+  <!-- Blood stains -->
+  <ellipse cx="18" cy="52" rx="3" ry="2" fill="#c62828" opacity="0.5"/>
+  <ellipse cx="38" cy="53" rx="4" ry="2" fill="#c62828" opacity="0.4"/>
+</svg>

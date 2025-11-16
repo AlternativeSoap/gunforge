@@ -1,0 +1,12 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Crystal body -->
+  <polygon points="20,32 28,20 36,32 28,44" fill="#9966ff" stroke="#6633cc" stroke-width="1"/>
+  <polygon points="28,20 36,32 44,32 36,20" fill="#bb88ff" stroke="#8855dd" stroke-width="1"/>
+  <!-- Handle -->
+  <rect x="42" y="30" width="8" height="4" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Crystal shards -->
+  <polygon points="14,28 20,32 14,36" fill="#cc99ff" stroke="#9966ff" stroke-width="1"/>
+  <polygon points="10,30 14,32 10,34" fill="#ddaaff" stroke="#aa77ee" stroke-width="1"/>
+  <!-- Energy glow -->
+  <circle cx="28" cy="32" r="4" fill="#fff" opacity="0.6"/>
+</svg>

@@ -1,0 +1,30 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Elite Fast - top-down walk -->
+  <g transform="translate(18, 18)">
+    <!-- Shadow - shifted -->
+    <ellipse cx="1" cy="7" rx="9" ry="3" fill="#000" opacity="0.3"/>
+    
+    <!-- Body (streamlined, tilted) -->
+    <ellipse cx="0" cy="0" rx="11" ry="12" fill="#ff6f00" stroke="#d65600" stroke-width="2"/>
+    <ellipse cx="0" cy="0" rx="8" ry="9" fill="#ff8b33"/>
+    
+    <!-- Speed lines (motion) -->
+    <line x1="-13" y1="-4" x2="-9" y2="-3" stroke="#ff8b33" stroke-width="2" opacity="0.7"/>
+    <line x1="-13" y1="0" x2="-9" y2="0" stroke="#ff8b33" stroke-width="2" opacity="0.7"/>
+    <line x1="-13" y1="4" x2="-9" y2="3" stroke="#ff8b33" stroke-width="2" opacity="0.7"/>
+    
+    <!-- Elite glow - pulsing -->
+    <circle cx="0" cy="0" r="14" fill="#ff6f00" opacity="0.3"/>
+    
+    <!-- Direction indicator -->
+    <path d="M 0,-10 L -3,-6 L 3,-6 Z" fill="#ffa726" opacity="1"/>
+    
+    <!-- Eyes -->
+    <circle cx="-3" cy="-3" r="1.5" fill="#000"/>
+    <circle cx="3" cy="-3" r="1.5" fill="#000"/>
+    
+    <!-- Motion trails -->
+    <circle cx="-7" cy="0" r="2" fill="#ff6f00" opacity="0.3"/>
+    <circle cx="-10" cy="0" r="1.5" fill="#ff6f00" opacity="0.2"/>
+  </g>
+</svg>

@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <!-- Glowing gradient for portal -->
+    <radialGradient id="portalGlow" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#0088ff;stop-opacity:0.8" />
+      <stop offset="70%" style="stop-color:#0044aa;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#001144;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- Energy swirl gradient -->
+    <linearGradient id="energyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0099ff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#0044ff;stop-opacity:0.6" />
+    </linearGradient>
+    
+    <!-- Stone texture gradient -->
+    <linearGradient id="stoneGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8899aa;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#556677;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#334455;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Gold accent gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ffed4e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffa500;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer glow aura -->
+  <circle cx="100" cy="100" r="95" fill="url(#portalGlow)" opacity="0.6"/>
+  
+  <!-- Stone archway structure -->
+  <!-- Left pillar -->
+  <rect x="30" y="40" width="30" height="140" fill="url(#stoneGrad)" rx="4"/>
+  <rect x="32" y="42" width="26" height="5" fill="#9aaabb" opacity="0.4"/>
+  
+  <!-- Right pillar -->
+  <rect x="140" y="40" width="30" height="140" fill="url(#stoneGrad)" rx="4"/>
+  <rect x="142" y="42" width="26" height="5" fill="#9aaabb" opacity="0.4"/>
+  
+  <!-- Top arch -->
+  <ellipse cx="100" cy="40" rx="60" ry="35" fill="url(#stoneGrad)"/>
+  <path d="M 60 50 Q 100 10, 140 50" fill="none" stroke="#9aaabb" stroke-width="2" opacity="0.4"/>
+  
+  <!-- Gold decorative trim on arch -->
+  <path d="M 55 45 Q 100 15, 145 45" fill="none" stroke="url(#goldGrad)" stroke-width="3"/>
+  <circle cx="100" cy="25" r="6" fill="url(#goldGrad)"/>
+  <circle cx="70" cy="35" r="4" fill="url(#goldGrad)"/>
+  <circle cx="130" cy="35" r="4" fill="url(#goldGrad)"/>
+  
+  <!-- Rune symbols on pillars -->
+  <text x="45" y="100" font-size="20" fill="#00ccff" opacity="0.8" text-anchor="middle">◈</text>
+  <text x="155" y="100" font-size="20" fill="#00ccff" opacity="0.8" text-anchor="middle">◈</text>
+  
+  <!-- Portal vortex center -->
+  <ellipse cx="100" cy="110" rx="55" ry="65" fill="url(#energyGrad)" opacity="0.9"/>
+  
+  <!-- Swirling energy rings -->
+  <ellipse cx="100" cy="110" rx="45" ry="55" fill="none" stroke="#00ffff" stroke-width="2" opacity="0.6"/>
+  <ellipse cx="100" cy="110" rx="35" ry="45" fill="none" stroke="#0088ff" stroke-width="2" opacity="0.5"/>
+  <ellipse cx="100" cy="110" rx="25" ry="35" fill="none" stroke="#0066ff" stroke-width="2" opacity="0.4"/>
+  
+  <!-- Energy particles -->
+  <circle cx="80" cy="90" r="3" fill="#00ffff" opacity="0.8">
+    <animate attributeName="cy" values="90;130;90" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="120" cy="100" r="3" fill="#00aaff" opacity="0.7">
+    <animate attributeName="cy" values="100;140;100" dur="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="100" cy="80" r="2" fill="#00ffff" opacity="0.9">
+    <animate attributeName="cy" values="80;150;80" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.9;0.2;0.9" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Central bright core -->
+  <circle cx="100" cy="110" r="15" fill="#ffffff" opacity="0.8"/>
+  <circle cx="100" cy="110" r="10" fill="#00ffff" opacity="0.9">
+    <animate attributeName="r" values="10;12;10" dur="1.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.9;0.6;0.9" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Sparkles around portal -->
+  <circle cx="65" cy="70" r="2" fill="#ffffff" opacity="0.9">
+    <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="135" cy="75" r="2" fill="#ffffff" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="75" cy="150" r="2" fill="#00ffff" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.3;0.7" dur="1.3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="125" cy="145" r="2" fill="#00ffff" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.2;0.7" dur="1.1s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Base platform -->
+  <ellipse cx="100" cy="175" rx="65" ry="10" fill="url(#stoneGrad)" opacity="0.8"/>
+  <ellipse cx="100" cy="175" rx="60" ry="8" fill="#445566" opacity="0.5"/>
+  
+  <!-- Gold trim on base -->
+  <ellipse cx="100" cy="175" rx="65" ry="10" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
+</svg>

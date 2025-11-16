@@ -1,0 +1,17 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Launcher body -->
+  <rect x="18" y="26" width="28" height="12" fill="#8b4513" stroke="#5d2e0f" stroke-width="1"/>
+  <!-- Meteor chamber -->
+  <circle cx="32" cy="32" r="8" fill="#ff4500" stroke="#cc3300" stroke-width="1"/>
+  <circle cx="32" cy="32" r="5" fill="#ff6600"/>
+  <circle cx="32" cy="32" r="2" fill="#ffaa00"/>
+  <!-- Barrel -->
+  <rect x="12" y="28" width="8" height="8" fill="#5d2e0f" stroke="#3d1e0f" stroke-width="1"/>
+  <!-- Grip -->
+  <path d="M 44,32 L 42,40 L 46,42 L 50,38 L 48,32 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Heat vents -->
+  <rect x="22" y="24" width="2" height="4" fill="#ff6600"/>
+  <rect x="26" y="24" width="2" height="4" fill="#ff6600"/>
+  <rect x="36" y="24" width="2" height="4" fill="#ff6600"/>
+  <rect x="40" y="24" width="2" height="4" fill="#ff6600"/>
+</svg>

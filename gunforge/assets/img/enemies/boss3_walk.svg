@@ -1,0 +1,35 @@
+<svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="b3wcore" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#ffeef9" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#7a1b4a" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#120010" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="b3wglow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#d98bff" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#2b002f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="b3weyes" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00ffe6"/>
+      <stop offset="100%" stop-color="#a64dff"/>
+    </linearGradient>
+    <filter id="b3wblur"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <ellipse cx="48" cy="52" rx="42" ry="26" fill="url(#b3wglow)" opacity="0.7"/>
+  <g transform="translate(48,46) rotate(6)">
+    <path d="M -36 8 C -28 -26 28 -26 36 8 C 10 40 -10 38 -36 8 Z" fill="url(#b3wcore)" stroke="#5f1440" stroke-width="1.6"/>
+    <g fill="#2b002f" stroke="#7a1b4a" stroke-width="1">
+      <path d="M -30 -8 C -36 -20 -20 -22 -12 -10"/>
+      <path d="M -6 -12 C -2 -24 10 -22 14 -10"/>
+      <path d="M 12 -14 C 20 -26 34 -16 26 -6"/>
+    </g>
+    <ellipse cx="0" cy="22" rx="22" ry="12" fill="#2a0026" opacity="0.95"/>
+    <ellipse cx="0" cy="20" rx="10" ry="4" fill="#c76cf0" opacity="0.85" filter="url(#b3wblur)"/>
+    <ellipse cx="-14" cy="1" rx="4.5" ry="6.5" fill="url(#b3weyes)"/>
+    <ellipse cx="14" cy="1" rx="4.5" ry="6.5" fill="url(#b3weyes)"/>
+    <circle cx="-14" cy="1" r="1" fill="#000"/>
+    <circle cx="14" cy="1" r="1" fill="#000"/>
+    <path d="M -26 26 C -22 34 -18 34 -14 28" stroke="#3a0033" stroke-width="1.6" fill="none"/>
+    <path d="M 18 28 C 22 36 26 36 30 28" stroke="#3a0033" stroke-width="1.6" fill="none"/>
+  </g>
+</svg>

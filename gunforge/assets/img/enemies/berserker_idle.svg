@@ -1,0 +1,28 @@
+<svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Berserker - top-down idle (aggressive) -->
+  <g transform="translate(22, 22)">
+    <!-- Shadow -->
+    <ellipse cx="0" cy="9" rx="13" ry="5" fill="#000" opacity="0.3"/>
+    
+    <!-- Body (rage-filled) -->
+    <circle cx="0" cy="0" r="15" fill="#e53935" stroke="#b71c1c" stroke-width="2.5"/>
+    <circle cx="0" cy="0" r="12" fill="#ef5350"/>
+    
+    <!-- Rage aura -->
+    <circle cx="0" cy="0" r="16" fill="#f00" opacity="0.2"/>
+    
+    <!-- Weapons (dual axes) -->
+    <rect x="-14" y="-6" width="6" height="3" fill="#424242" stroke="#212121" stroke-width="1" transform="rotate(-45 -11 -5)"/>
+    <path d="M -15,-8 L -17,-10 L -13,-6 Z" fill="#9e9e9e" stroke="#424242" stroke-width="1"/>
+    
+    <rect x="8" y="-6" width="6" height="3" fill="#424242" stroke="#212121" stroke-width="1" transform="rotate(45 11 -5)"/>
+    <path d="M 15,-8 L 17,-10 L 13,-6 Z" fill="#9e9e9e" stroke="#424242" stroke-width="1"/>
+    
+    <!-- Enraged eyes -->
+    <circle cx="-4" cy="-4" r="2.5" fill="#ff0" opacity="1"/>
+    <circle cx="4" cy="-4" r="2.5" fill="#ff0" opacity="1"/>
+    
+    <!-- Forward indicator -->
+    <path d="M 0,-14 L -3,-9 L 3,-9 Z" fill="#fff" opacity="0.7"/>
+  </g>
+</svg>

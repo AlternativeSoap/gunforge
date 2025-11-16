@@ -1,0 +1,16 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Toxic barrel -->
+  <rect x="14" y="28" width="26" height="8" fill="#44aa44" stroke="#338833" stroke-width="1"/>
+  <!-- Toxin tank -->
+  <circle cx="38" cy="32" r="8" fill="#66ff66" stroke="#44dd44" stroke-width="1"/>
+  <circle cx="38" cy="32" r="5" fill="#88ff88"/>
+  <!-- Warning stripes -->
+  <rect x="36" y="28" width="2" height="8" fill="#ffff00"/>
+  <rect x="40" y="28" width="2" height="8" fill="#000"/>
+  <!-- Nozzle -->
+  <rect x="10" y="30" width="6" height="4" fill="#338833" stroke="#226622" stroke-width="1"/>
+  <!-- Grip -->
+  <path d="M 44,32 L 42,38 L 46,40 L 50,36 L 48,32 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Drip effect -->
+  <ellipse cx="12" cy="36" rx="2" ry="3" fill="#66ff66" opacity="0.7"/>
+</svg>

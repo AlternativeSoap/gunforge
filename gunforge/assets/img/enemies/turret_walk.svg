@@ -1,0 +1,32 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Turret - top-down walk (rotating) -->
+  <g transform="translate(20, 20)">
+    <!-- Shadow -->
+    <ellipse cx="0" cy="8" rx="13" ry="4" fill="#000" opacity="0.3"/>
+    
+    <!-- Base (tripod) -->
+    <circle cx="0" cy="0" r="14" fill="#546e7a" stroke="#37474f" stroke-width="2"/>
+    <circle cx="0" cy="0" r="11" fill="#607d8b"/>
+    
+    <!-- Base legs - rotated -->
+    <rect x="-1" y="-14" width="2" height="6" fill="#37474f" transform="rotate(15 0 0)"/>
+    <rect x="-12" y="5" width="6" height="2" fill="#37474f" transform="rotate(-15 -9 6)"/>
+    <rect x="6" y="5" width="6" height="2" fill="#37474f" transform="rotate(15 9 6)"/>
+    
+    <!-- Central turret -->
+    <circle cx="0" cy="0" r="7" fill="#455a64" stroke="#263238" stroke-width="1.5"/>
+    
+    <!-- Gun barrel (rotated) -->
+    <rect x="-2" y="-16" width="4" height="10" fill="#263238" stroke="#000" stroke-width="1" rx="1" transform="rotate(20 0 0)"/>
+    
+    <!-- Barrel tip -->
+    <rect x="-2.5" y="-17" width="5" height="2" fill="#000" transform="rotate(20 0 0)"/>
+    
+    <!-- Sensors - alert -->
+    <circle cx="-4" cy="-2" r="1.5" fill="#f00" opacity="1"/>
+    <circle cx="4" cy="-2" r="1.5" fill="#f00" opacity="1"/>
+    
+    <!-- Targeting arc -->
+    <path d="M -3,-8 A 9 9 0 0 1 3,-8" stroke="#ff0" stroke-width="0.5" opacity="0.6" fill="none"/>
+  </g>
+</svg>

@@ -1,0 +1,31 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Summoner - top-down idle (casting) -->
+  <g transform="translate(20, 20)">
+    <!-- Shadow -->
+    <ellipse cx="0" cy="8" rx="12" ry="4" fill="#000" opacity="0.3"/>
+    
+    <!-- Body (mystical) -->
+    <circle cx="0" cy="0" r="14" fill="#ab47bc" stroke="#8e24aa" stroke-width="2"/>
+    <circle cx="0" cy="0" r="11" fill="#ba68c8"/>
+    
+    <!-- Summoning circle -->
+    <circle cx="0" cy="0" r="16" stroke="#e1bee7" stroke-width="1.5" fill="none" opacity="0.7"/>
+    <circle cx="0" cy="0" r="14" stroke="#e1bee7" stroke-width="1" fill="none" opacity="0.5"/>
+    
+    <!-- Runes around body -->
+    <circle cx="0" cy="-12" r="2" fill="#e1bee7" opacity="0.8"/>
+    <circle cx="0" cy="12" r="2" fill="#e1bee7" opacity="0.8"/>
+    <circle cx="-12" cy="0" r="2" fill="#e1bee7" opacity="0.8"/>
+    <circle cx="12" cy="0" r="2" fill="#e1bee7" opacity="0.8"/>
+    
+    <!-- Diagonal runes -->
+    <circle cx="-8" cy="-8" r="1.5" fill="#e1bee7" opacity="0.6"/>
+    <circle cx="8" cy="-8" r="1.5" fill="#e1bee7" opacity="0.6"/>
+    <circle cx="-8" cy="8" r="1.5" fill="#e1bee7" opacity="0.6"/>
+    <circle cx="8" cy="8" r="1.5" fill="#e1bee7" opacity="0.6"/>
+    
+    <!-- Central focus -->
+    <circle cx="0" cy="0" r="6" fill="#8e24aa" opacity="0.6"/>
+    <circle cx="0" cy="0" r="3" fill="#e1bee7" opacity="0.8"/>
+  </g>
+</svg>

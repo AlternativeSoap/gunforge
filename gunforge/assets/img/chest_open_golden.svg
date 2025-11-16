@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <!-- Glow effect -->
+    <radialGradient id="glowOpen" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Golden body gradient -->
+    <linearGradient id="goldBodyOpen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700"/>
+      <stop offset="50%" stop-color="#ffb400"/>
+      <stop offset="100%" stop-color="#ff9500"/>
+    </linearGradient>
+    <!-- Lid gradient -->
+    <linearGradient id="goldLidOpen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe082"/>
+      <stop offset="100%" stop-color="#ffd700"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer glow -->
+  <circle cx="50" cy="50" r="48" fill="url(#glowOpen)"/>
+  
+  <!-- Chest body (bottom part) -->
+  <rect x="20" y="55" width="60" height="25" rx="4" fill="url(#goldBodyOpen)"/>
+  <rect x="20" y="55" width="60" height="3" fill="#8b6914"/>
+  
+  <!-- Decorative bands on body -->
+  <rect x="22" y="62" width="56" height="2" fill="#8b6914" opacity="0.5"/>
+  <rect x="22" y="72" width="56" height="2" fill="#8b6914" opacity="0.5"/>
+  
+  <!-- Chest lid (open, tilted back) -->
+  <rect x="20" y="30" width="60" height="20" rx="4" fill="url(#goldLidOpen)" transform="rotate(-35 50 50)"/>
+  
+  <!-- Treasure glow inside -->
+  <ellipse cx="50" cy="62" rx="20" ry="8" fill="#ffea82" opacity="0.6"/>
+  
+  <!-- Decorative highlights -->
+  <rect x="24" y="57" width="52" height="2" fill="#fff8dc" opacity="0.4"/>
+  
+  <!-- Coins/treasure peeking out -->
+  <circle cx="45" cy="60" r="4" fill="#ffea82"/>
+  <circle cx="55" cy="58" r="5" fill="#ffd700"/>
+  <circle cx="50" cy="63" r="3.5" fill="#ffb400"/>
+</svg>

@@ -1,0 +1,17 @@
+<svg width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fast enemy - top-down idle -->
+  <g transform="translate(14, 14)">
+    <!-- Shadow -->
+    <ellipse cx="0" cy="6" rx="8" ry="3" fill="#000" opacity="0.2"/>
+    <!-- Body (smaller, agile) -->
+    <circle cx="0" cy="0" r="10" fill="#ffa726" stroke="#ef6c00" stroke-width="2"/>
+    <!-- Head/face -->
+    <circle cx="0" cy="-3" r="5" fill="#ffb74d" stroke="#ef6c00" stroke-width="1.5"/>
+    <!-- Eyes -->
+    <circle cx="-1.5" cy="-4" r="1" fill="#000"/>
+    <circle cx="1.5" cy="-4" r="1" fill="#000"/>
+    <!-- Speed lines -->
+    <line x1="-12" y1="0" x2="-8" y2="0" stroke="#ffa726" stroke-width="1.5" opacity="0.5"/>
+    <line x1="8" y1="0" x2="12" y2="0" stroke="#ffa726" stroke-width="1.5" opacity="0.5"/>
+  </g>
+</svg>

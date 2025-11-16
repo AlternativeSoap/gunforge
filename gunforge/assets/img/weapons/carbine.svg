@@ -1,0 +1,14 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Barrel -->
+  <rect x="14" y="28" width="28" height="8" fill="#4a4a4a" stroke="#2a2a2a" stroke-width="1"/>
+  <!-- Body -->
+  <rect x="38" y="26" width="12" height="12" fill="#555" stroke="#333" stroke-width="1"/>
+  <!-- Magazine -->
+  <rect x="42" y="36" width="6" height="10" fill="#333" stroke="#222" stroke-width="1"/>
+  <!-- Stock -->
+  <rect x="48" y="28" width="8" height="8" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Rail -->
+  <rect x="28" y="26" width="12" height="2" fill="#333"/>
+  <!-- Grip -->
+  <path d="M 44,38 L 42,44 L 44,46 L 46,44 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+</svg>

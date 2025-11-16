@@ -1,0 +1,24 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bomber - top-down idle (explosive device) -->
+  <g transform="translate(20, 20)">
+    <!-- Shadow -->
+    <ellipse cx="0" cy="8" rx="12" ry="4" fill="#000" opacity="0.3"/>
+    
+    <!-- Main body (spherical bomb) -->
+    <circle cx="0" cy="0" r="14" fill="#ff8a65" stroke="#d65a3a" stroke-width="2"/>
+    <circle cx="0" cy="0" r="11" fill="#ff9f7a"/>
+    
+    <!-- Explosive markings -->
+    <path d="M -8,0 L 8,0" stroke="#d65a3a" stroke-width="2"/>
+    <path d="M 0,-8 L 0,8" stroke="#d65a3a" stroke-width="2"/>
+    
+    <!-- Fuse on top -->
+    <rect x="-1" y="-14" width="2" height="6" fill="#424242"/>
+    <circle cx="0" cy="-15" r="3" fill="#ff5722" opacity="0.8"/>
+    <circle cx="0" cy="-15" r="2" fill="#ff0" opacity="0.6"/>
+    
+    <!-- Danger symbol -->
+    <circle cx="0" cy="0" r="5" fill="#d65a3a" stroke="#ff5722" stroke-width="1"/>
+    <text x="0" y="2" text-anchor="middle" font-size="8" fill="#fff" font-weight="bold">!</text>
+  </g>
+</svg>

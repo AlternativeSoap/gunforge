@@ -1,0 +1,15 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Heavy revolver barrel -->
+  <rect x="12" y="26" width="22" height="12" fill="#4a4a4a" stroke="#2a2a2a" stroke-width="2"/>
+  <!-- Large cylinder -->
+  <circle cx="34" cy="32" r="10" fill="#555" stroke="#333" stroke-width="2"/>
+  <circle cx="34" cy="32" r="7" fill="#666"/>
+  <circle cx="32" cy="30" r="2.5" fill="#333"/>
+  <circle cx="36" cy="30" r="2.5" fill="#333"/>
+  <circle cx="32" cy="34" r="2.5" fill="#333"/>
+  <circle cx="36" cy="34" r="2.5" fill="#333"/>
+  <!-- Grip -->
+  <path d="M 42,32 L 44,38 L 46,46 L 42,48 L 38,42 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Muzzle -->
+  <rect x="10" y="28" width="4" height="8" fill="#222"/>
+</svg>

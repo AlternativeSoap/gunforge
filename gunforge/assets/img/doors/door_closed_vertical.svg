@@ -1,0 +1,39 @@
+<svg width="160" height="40" viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Left wall section (stone) -->
+  <rect x="0" y="0" width="40" height="40" fill="#555" stroke="#333" stroke-width="1"/>
+  <line x1="0" y1="10" x2="40" y2="10" stroke="#444" stroke-width="1"/>
+  <line x1="0" y1="20" x2="40" y2="20" stroke="#444" stroke-width="1"/>
+  <line x1="0" y1="30" x2="40" y2="30" stroke="#444" stroke-width="1"/>
+  
+  <!-- Right wall section (stone) -->
+  <rect x="120" y="0" width="40" height="40" fill="#555" stroke="#333" stroke-width="1"/>
+  <line x1="120" y1="10" x2="160" y2="10" stroke="#444" stroke-width="1"/>
+  <line x1="120" y1="20" x2="160" y2="20" stroke="#444" stroke-width="1"/>
+  <line x1="120" y1="30" x2="160" y2="30" stroke="#444" stroke-width="1"/>
+  
+  <!-- Door opening/frame -->
+  <rect x="40" y="0" width="80" height="40" fill="#222" stroke="#111" stroke-width="1"/>
+  
+  <!-- Closed door (wooden surface seen from above, fills opening) -->
+  <rect x="42" y="2" width="76" height="36" fill="#6B4423" stroke="#4A2F17" stroke-width="2"/>
+  
+  <!-- Wood grain (vertical planks) -->
+  <line x1="55" y1="2" x2="55" y2="38" stroke="#4A2F17" stroke-width="1" opacity="0.5"/>
+  <line x1="70" y1="2" x2="70" y2="38" stroke="#4A2F17" stroke-width="1" opacity="0.5"/>
+  <line x1="85" y1="2" x2="85" y2="38" stroke="#4A2F17" stroke-width="1" opacity="0.5"/>
+  <line x1="100" y1="2" x2="100" y2="38" stroke="#4A2F17" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Horizontal wood details -->
+  <line x1="42" y1="13" x2="118" y2="13" stroke="#8B5A3C" stroke-width="0.5" opacity="0.3"/>
+  <line x1="42" y1="27" x2="118" y2="27" stroke="#8B5A3C" stroke-width="0.5" opacity="0.3"/>
+  
+  <!-- Hinges on left side -->
+  <rect x="42" y="8" width="6" height="5" fill="#444" stroke="#222" stroke-width="1"/>
+  <rect x="42" y="27" width="6" height="5" fill="#444" stroke="#222" stroke-width="1"/>
+  <circle cx="45" cy="10.5" r="1" fill="#666"/>
+  <circle cx="45" cy="29.5" r="1" fill="#666"/>
+  
+  <!-- Door handle on right side -->
+  <circle cx="112" cy="20" r="2.5" fill="#B8860B" stroke="#8B6914" stroke-width="1"/>
+  <ellipse cx="112" cy="20" rx="3" ry="2" fill="none" stroke="#8B6914" stroke-width="0.5"/>
+</svg>

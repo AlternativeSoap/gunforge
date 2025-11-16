@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 32">
+  <!-- Vortex Cannon -->
+  <rect x="8" y="12" width="52" height="8" fill="#4527a0"/>
+  <rect x="4" y="10" width="8" height="12" fill="#5e35b1"/>
+  <!-- Vortex chamber -->
+  <circle cx="36" cy="16" r="10" fill="#651fff"/>
+  <circle cx="36" cy="16" r="6" fill="#7c4dff" opacity="0.7"/>
+  <circle cx="36" cy="16" r="3" fill="#b388ff" opacity="0.5"/>
+  <!-- Barrel -->
+  <rect x="56" y="10" width="24" height="12" fill="#311b92"/>
+  <circle cx="80" cy="16" r="8" fill="#651fff" opacity="0.6"/>
+</svg>

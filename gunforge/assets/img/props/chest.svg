@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Treasure chest closed -->
+  <rect x="8" y="28" width="48" height="28" fill="#795548"/>
+  <rect x="4" y="32" width="56" height="24" fill="#8d6e63"/>
+  <!-- Lock -->
+  <rect x="28" y="40" width="8" height="8" fill="#ffd54f"/>
+  <circle cx="32" cy="44" r="2" fill="#f57f17"/>
+  <!-- Lid -->
+  <path d="M 8,28 Q 32,8 56,28" fill="#6d4c41"/>
+  <path d="M 12,28 Q 32,12 52,28" fill="#5d4037"/>
+  <!-- Highlights -->
+  <rect x="12" y="36" width="4" height="16" fill="#a1887f" opacity="0.5"/>
+</svg>

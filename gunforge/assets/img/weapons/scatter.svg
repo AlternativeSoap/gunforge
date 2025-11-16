@@ -1,0 +1,15 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Short wide barrel -->
+  <rect x="18" y="24" width="20" height="16" fill="#4a4a4a" stroke="#2a2a2a" stroke-width="1"/>
+  <!-- Spread muzzle -->
+  <polygon points="18,26 12,22 12,42 18,38" fill="#333" stroke="#222" stroke-width="1"/>
+  <!-- Shells visible -->
+  <rect x="36" y="26" width="4" height="4" fill="#d4a574"/>
+  <rect x="36" y="32" width="4" height="4" fill="#d4a574"/>
+  <!-- Pump -->
+  <rect x="22" y="40" width="10" height="6" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Grip -->
+  <path d="M 38,32 L 36,38 L 40,40 L 44,36 L 42,32 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Stock -->
+  <polygon points="40,28 46,26 48,32 46,38 40,36" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+</svg>

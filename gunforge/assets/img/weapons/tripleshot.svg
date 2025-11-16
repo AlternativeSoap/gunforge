@@ -1,0 +1,14 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Three barrels -->
+  <rect x="14" y="22" width="24" height="6" fill="#4a4a4a" stroke="#2a2a2a" stroke-width="1"/>
+  <rect x="14" y="29" width="24" height="6" fill="#4a4a4a" stroke="#2a2a2a" stroke-width="1"/>
+  <rect x="14" y="36" width="24" height="6" fill="#4a4a4a" stroke="#2a2a2a" stroke-width="1"/>
+  <!-- Body connector -->
+  <rect x="36" y="24" width="10" height="16" fill="#555" stroke="#333" stroke-width="1"/>
+  <!-- Grip -->
+  <path d="M 44,32 L 42,40 L 44,44 L 48,42 L 48,36 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Muzzles -->
+  <circle cx="12" cy="25" r="2" fill="#222"/>
+  <circle cx="12" cy="32" r="2" fill="#222"/>
+  <circle cx="12" cy="39" r="2" fill="#222"/>
+</svg>

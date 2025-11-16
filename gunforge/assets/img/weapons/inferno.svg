@@ -1,0 +1,22 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Flamethrower tank -->
+  <rect x="22" y="24" width="18" height="16" fill="#8b0000" stroke="#660000" stroke-width="1"/>
+  <!-- Fuel gauge -->
+  <rect x="26" y="28" width="10" height="8" fill="#ff4500" opacity="0.6"/>
+  <!-- Nozzle -->
+  <rect x="14" y="28" width="10" height="8" fill="#660000" stroke="#440000" stroke-width="1"/>
+  <!-- Igniter -->
+  <rect x="12" y="30" width="4" height="4" fill="#333"/>
+  <circle cx="10" cy="32" r="2" fill="#ff6600"/>
+  <!-- Grip -->
+  <path d="M 38,32 L 36,40 L 40,42 L 44,38 L 42,32 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Fuel line -->
+  <rect x="36" y="30" width="6" height="4" fill="#333"/>
+  <!-- Flame effect -->
+  <ellipse cx="8" cy="32" rx="3" ry="4" fill="#ff6600" opacity="0.7"/>
+  <ellipse cx="6" cy="32" rx="2" ry="3" fill="#ff9933" opacity="0.7"/>
+  <ellipse cx="4" cy="32" rx="1.5" ry="2" fill="#ffcc00" opacity="0.7"/>
+  <!-- Warning stripes -->
+  <rect x="24" y="24" width="2" height="16" fill="#ffff00"/>
+  <rect x="38" y="24" width="2" height="16" fill="#000"/>
+</svg>

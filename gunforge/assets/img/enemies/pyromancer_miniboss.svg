@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="pyroGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6f00"/>
+      <stop offset="100%" stop-color="#bf360c"/>
+    </radialGradient>
+    <radialGradient id="flameCore" cx="50%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#fff3e0"/>
+      <stop offset="50%" stop-color="#ffab00"/>
+      <stop offset="100%" stop-color="#ff6f00"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Shadow -->
+  <ellipse cx="50" cy="88" rx="32" ry="7" fill="#000" opacity="0.4"/>
+  
+  <!-- Flame aura -->
+  <circle cx="50" cy="50" r="45" fill="url(#pyroGlow)" opacity="0.3"/>
+  
+  <!-- Body (robed figure) -->
+  <ellipse cx="50" cy="65" rx="25" ry="30" fill="#bf360c"/>
+  <ellipse cx="50" cy="65" rx="22" ry="27" fill="#d84315"/>
+  
+  <!-- Robe details -->
+  <path d="M 35 50 Q 50 60 65 50" fill="#ff5722" opacity="0.5"/>
+  <path d="M 32 70 Q 50 75 68 70" fill="#ff6f00" opacity="0.4"/>
+  
+  <!-- Head/Hood -->
+  <ellipse cx="50" cy="35" rx="18" ry="20" fill="#bf360c"/>
+  <ellipse cx="50" cy="33" rx="16" ry="18" fill="#d84315"/>
+  
+  <!-- Face (shadowed, glowing eyes) -->
+  <ellipse cx="50" cy="36" rx="12" ry="14" fill="#000" opacity="0.7"/>
+  <circle cx="45" cy="35" r="3" fill="#ffab00"/>
+  <circle cx="55" cy="35" r="3" fill="#ffab00"/>
+  <circle cx="45" cy="35" r="2" fill="#fff3e0"/>
+  <circle cx="55" cy="35" r="2" fill="#fff3e0"/>
+  
+  <!-- Flames (floating around) -->
+  <ellipse cx="25" cy="40" rx="5" ry="8" fill="url(#flameCore)" opacity="0.8"/>
+  <ellipse cx="75" cy="40" rx="5" ry="8" fill="url(#flameCore)" opacity="0.8"/>
+  <ellipse cx="30" cy="70" rx="6" ry="10" fill="url(#flameCore)" opacity="0.7"/>
+  <ellipse cx="70" cy="70" rx="6" ry="10" fill="url(#flameCore)" opacity="0.7"/>
+  
+  <!-- Staff/Rod -->
+  <rect x="68" y="30" width="4" height="55" fill="#5d4037"/>
+  <circle cx="70" cy="25" r="8" fill="#ffab00"/>
+  <circle cx="70" cy="25" r="5" fill="#ff6f00"/>
+  <circle cx="70" cy="25" r="3" fill="#fff3e0"/>
+  
+  <!-- Energy lines -->
+  <path d="M 50 45 Q 60 48 70 25" stroke="#ffab00" stroke-width="2" fill="none" opacity="0.5"/>
+  <path d="M 45 50 Q 35 52 25 40" stroke="#ff6f00" stroke-width="2" fill="none" opacity="0.5"/>
+</svg>

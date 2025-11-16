@@ -1,0 +1,17 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Massive barrel -->
+  <rect x="10" y="24" width="36" height="16" fill="#4a4a4a" stroke="#2a2a2a" stroke-width="2"/>
+  <!-- Barrel rifling -->
+  <rect x="8" y="28" width="4" height="8" fill="#222"/>
+  <circle cx="10" cy="32" r="3" fill="#111"/>
+  <!-- Heavy body -->
+  <rect x="44" y="22" width="12" height="20" fill="#555" stroke="#333" stroke-width="2"/>
+  <!-- Ammo belt -->
+  <rect x="24" y="18" width="20" height="4" fill="#d4a574" stroke="#8b7355" stroke-width="1"/>
+  <circle cx="28" cy="20" r="1.5" fill="#b8860b"/>
+  <circle cx="32" cy="20" r="1.5" fill="#b8860b"/>
+  <circle cx="36" cy="20" r="1.5" fill="#b8860b"/>
+  <circle cx="40" cy="20" r="1.5" fill="#b8860b"/>
+  <!-- Grip -->
+  <path d="M 48,42 L 46,50 L 50,52 L 54,48 L 52,42 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <radialGradient id="acidGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#9cff57"/>
+      <stop offset="70%" stop-color="#7cb342"/>
+      <stop offset="100%" stop-color="#558b2f"/>
+    </radialGradient>
+  </defs>
+  <!-- Main acid pool -->
+  <ellipse cx="128" cy="128" rx="116" ry="110" fill="url(#acidGrad)"/>
+  <!-- Bubbles (large) -->
+  <circle cx="90" cy="100" r="18" fill="#cddc39" opacity="0.6"/>
+  <circle cx="160" cy="90" r="22" fill="#cddc39" opacity="0.5"/>
+  <circle cx="140" cy="150" r="16" fill="#cddc39" opacity="0.7"/>
+  <circle cx="110" cy="160" r="14" fill="#cddc39" opacity="0.6"/>
+  <circle cx="75" cy="140" r="12" fill="#cddc39" opacity="0.5"/>
+  <circle cx="180" cy="130" r="20" fill="#cddc39" opacity="0.55"/>
+  <!-- Small bubbles -->
+  <circle cx="100" cy="120" r="8" fill="#cddc39" opacity="0.4"/>
+  <circle cx="150" cy="115" r="10" fill="#cddc39" opacity="0.45"/>
+  <circle cx="130" cy="175" r="7" fill="#cddc39" opacity="0.5"/>
+  <!-- Splatter marks around edge -->
+  <circle cx="50" cy="80" r="8" fill="#aed581" opacity="0.4"/>
+  <circle cx="210" cy="100" r="10" fill="#aed581" opacity="0.35"/>
+  <circle cx="60" cy="180" r="9" fill="#aed581" opacity="0.4"/>
+  <circle cx="200" cy="170" r="7" fill="#aed581" opacity="0.38"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 32">
+  <!-- Railgun -->
+  <rect x="8" y="14" width="72" height="4" fill="#00acc1"/>
+  <rect x="4" y="12" width="8" height="8" fill="#0097a7"/>
+  <!-- Charging coils -->
+  <circle cx="24" cy="16" r="6" fill="#18ffff" opacity="0.5"/>
+  <circle cx="40" cy="16" r="6" fill="#18ffff" opacity="0.5"/>
+  <circle cx="56" cy="16" r="6" fill="#18ffff" opacity="0.5"/>
+  <!-- Barrel -->
+  <rect x="76" y="12" width="16" height="8" fill="#006064"/>
+  <rect x="88" y="14" width="6" height="4" fill="#00e5ff"/>
+</svg>

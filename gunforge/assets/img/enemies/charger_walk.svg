@@ -1,0 +1,30 @@
+<svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+  <!-- Charger - top-down walk (charging) -->
+  <g transform="translate(22, 22)">
+    <!-- Shadow - shifted -->
+    <ellipse cx="1" cy="9" rx="13" ry="5" fill="#000" opacity="0.3"/>
+    
+    <!-- Body (bulky, leaning forward) -->
+    <ellipse cx="0" cy="0" rx="15" ry="16" fill="#d84315" stroke="#bf360c" stroke-width="2"/>
+    <ellipse cx="0" cy="0" rx="12" ry="13" fill="#e64a19"/>
+    
+    <!-- Horns/Spikes -->
+    <path d="M -12,-10 L -16,-14 L -14,-10 Z" fill="#616161" stroke="#424242" stroke-width="1"/>
+    <path d="M 12,-10 L 16,-14 L 14,-10 Z" fill="#616161" stroke="#424242" stroke-width="1"/>
+    
+    <!-- Forward indicator -->
+    <path d="M 0,-16 L -4,-10 L 4,-10 Z" fill="#fff" opacity="0.8"/>
+    
+    <!-- Eye glows - intense -->
+    <circle cx="-4" cy="-6" r="2" fill="#ff0" opacity="1"/>
+    <circle cx="4" cy="-6" r="2" fill="#ff0" opacity="1"/>
+    
+    <!-- Armor plates -->
+    <ellipse cx="0" cy="0" rx="10" ry="8" fill="#bf360c" opacity="0.4"/>
+    
+    <!-- Speed lines -->
+    <line x1="-16" y1="-4" x2="-13" y2="-2" stroke="#e64a19" stroke-width="2" opacity="0.5"/>
+    <line x1="-16" y1="0" x2="-13" y2="0" stroke="#e64a19" stroke-width="2" opacity="0.5"/>
+    <line x1="-16" y1="4" x2="-13" y2="2" stroke="#e64a19" stroke-width="2" opacity="0.5"/>
+  </g>
+</svg>

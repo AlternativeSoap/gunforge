@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Toxic Behemoth walk sprite - large hulking monster in motion -->
+  <g>
+    <!-- Body (slightly tilted) -->
+    <ellipse cx="48" cy="60" rx="35" ry="30" fill="#7cb342" opacity="0.9" transform="rotate(-5 48 60)"/>
+    <ellipse cx="48" cy="55" rx="30" ry="25" fill="#8bc34a" transform="rotate(-5 48 55)"/>
+    <!-- Toxic spots -->
+    <circle cx="33" cy="50" r="5" fill="#558b2f" opacity="0.6"/>
+    <circle cx="53" cy="58" r="6" fill="#558b2f" opacity="0.6"/>
+    <circle cx="43" cy="65" r="4" fill="#558b2f" opacity="0.6"/>
+    <!-- Arms (in motion) -->
+    <ellipse cx="23" cy="50" rx="8" ry="20" fill="#689f38" transform="rotate(-35 23 50)"/>
+    <ellipse cx="73" cy="60" rx="8" ry="20" fill="#689f38" transform="rotate(35 73 60)"/>
+    <!-- Head (slightly forward) -->
+    <circle cx="52" cy="33" r="18" fill="#9ccc65"/>
+    <!-- Eyes (glowing) -->
+    <circle cx="45" cy="30" r="4" fill="#cddc39"/>
+    <circle cx="59" cy="30" r="4" fill="#cddc39"/>
+    <!-- Mouth -->
+    <path d="M 44 40 Q 52 44 60 40" stroke="#558b2f" stroke-width="2" fill="none"/>
+    <!-- Toxic drips (more active) -->
+    <ellipse cx="46" cy="76" rx="4" ry="7" fill="#aed581" opacity="0.7"/>
+    <ellipse cx="50" cy="78" rx="3" ry="6" fill="#aed581" opacity="0.7"/>
+    <ellipse cx="54" cy="75" rx="3" ry="5" fill="#aed581" opacity="0.7"/>
+  </g>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Shadow -->
+  <ellipse cx="48" cy="88" rx="34" ry="7" fill="rgba(50,100,50,0.4)"/>
+  
+  <!-- Plague aura -->
+  <circle cx="48" cy="48" r="48" fill="url(#plagueGrad)" opacity="0.15"/>
+  
+  <defs>
+    <radialGradient id="plagueGrad">
+      <stop offset="0%" style="stop-color:#9ccc65;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#33691e;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Robe body -->
+  <ellipse cx="48" cy="58" rx="26" ry="28" fill="#3e2723"/>
+  <ellipse cx="48" cy="58" rx="22" ry="24" fill="#5d4037"/>
+  
+  <!-- Arms -->
+  <rect x="18" y="48" width="10" height="22" rx="5" fill="#5d4037"/>
+  <rect x="68" y="48" width="10" height="22" rx="5" fill="#5d4037"/>
+  <ellipse cx="23" cy="70" rx="6" ry="5" fill="#8d6e63"/>
+  <ellipse cx="73" cy="70" rx="6" ry="5" fill="#8d6e63"/>
+  
+  <!-- Head (plague mask) -->
+  <ellipse cx="48" cy="34" rx="18" ry="16" fill="#424242"/>
+  
+  <!-- Plague mask (bird beak) -->
+  <ellipse cx="48" cy="40" rx="8" ry="16" fill="#8d6e63"/>
+  <ellipse cx="48" cy="40" rx="6" ry="14" fill="#a1887f"/>
+  <line x1="48" y1="32" x2="48" y2="48" stroke="#3e2723" stroke-width="1"/>
+  
+  <!-- Eyes (glowing green) -->
+  <ellipse cx="40" cy="32" rx="4" ry="6" fill="#000000"/>
+  <ellipse cx="56" cy="32" rx="4" ry="6" fill="#000000"/>
+  <ellipse cx="40" cy="32" rx="2" ry="4" fill="#9ccc65"/>
+  <ellipse cx="56" cy="32" rx="2" ry="4" fill="#9ccc65"/>
+  
+  <!-- Hood -->
+  <path d="M 30 28 Q 30 20 48 18 Q 66 20 66 28 L 66 36 Q 48 38 30 36 Z" fill="#212121" opacity="0.8"/>
+  
+  <!-- Medicine pouch -->
+  <rect x="40" y="64" width="16" height="10" rx="2" fill="#6d4c41"/>
+  <circle cx="44" cy="68" r="2" fill="#9ccc65" opacity="0.7"/>
+  <circle cx="52" cy="68" r="2" fill="#9ccc65" opacity="0.7"/>
+  
+  <!-- Poison vials -->
+  <rect x="20" y="56" width="4" height="8" rx="1" fill="#33691e"/>
+  <ellipse cx="22" cy="56" rx="2" ry="1.5" fill="#9ccc65" opacity="0.8"/>
+  <rect x="72" y="56" width="4" height="8" rx="1" fill="#33691e"/>
+  <ellipse cx="74" cy="56" rx="2" ry="1.5" fill="#9ccc65" opacity="0.8"/>
+  
+  <!-- Plague particles -->
+  <circle cx="28" cy="44" r="2" fill="#9ccc65" opacity="0.7">
+    <animate attributeName="cy" values="44;36;44" dur="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="68" cy="46" r="2" fill="#9ccc65" opacity="0.7">
+    <animate attributeName="cy" values="46;38;46" dur="2.2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="42" cy="74" r="1.5" fill="#76ff03" opacity="0.6">
+    <animate attributeName="r" values="1.5;2.5;1.5" dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+</svg>

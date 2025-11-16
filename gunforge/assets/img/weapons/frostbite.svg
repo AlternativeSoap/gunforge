@@ -1,0 +1,16 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Cryo barrel -->
+  <rect x="14" y="28" width="28" height="8" fill="#4dd0e1" stroke="#26c6da" stroke-width="1"/>
+  <!-- Freeze chamber -->
+  <circle cx="32" cy="32" r="8" fill="#00bcd4" stroke="#0097a7" stroke-width="1"/>
+  <circle cx="32" cy="32" r="5" fill="#80deea"/>
+  <!-- Ice crystals -->
+  <polygon points="32,28 30,32 32,36 34,32" fill="#e0f7fa" opacity="0.8"/>
+  <polygon points="28,32 32,30 36,32 32,34" fill="#e0f7fa" opacity="0.8"/>
+  <!-- Grip -->
+  <path d="M 42,32 L 40,40 L 44,42 L 48,38 L 46,32 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Frost effect -->
+  <circle cx="12" cy="28" r="2" fill="#e0f7fa" opacity="0.6"/>
+  <circle cx="10" cy="32" r="2" fill="#e0f7fa" opacity="0.6"/>
+  <circle cx="12" cy="36" r="2" fill="#e0f7fa" opacity="0.6"/>
+</svg>

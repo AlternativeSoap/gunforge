@@ -1,0 +1,16 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Energy body -->
+  <rect x="16" y="26" width="32" height="12" fill="#0088ff" stroke="#0066cc" stroke-width="1"/>
+  <!-- Energy core -->
+  <circle cx="32" cy="32" r="6" fill="#00ffff" stroke="#00ccff" stroke-width="1"/>
+  <circle cx="32" cy="32" r="3" fill="#fff"/>
+  <!-- Barrel -->
+  <rect x="10" y="28" width="8" height="8" fill="#0066cc" stroke="#004499" stroke-width="1"/>
+  <!-- Grip -->
+  <path d="M 44,32 L 42,40 L 46,42 L 50,38 L 48,32 Z" fill="#334466" stroke="#223355" stroke-width="1"/>
+  <!-- Energy vents -->
+  <rect x="24" y="24" width="2" height="4" fill="#00ffff"/>
+  <rect x="38" y="24" width="2" height="4" fill="#00ffff"/>
+  <rect x="24" y="40" width="2" height="4" fill="#00ffff"/>
+  <rect x="38" y="40" width="2" height="4" fill="#00ffff"/>
+</svg>

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Shadow -->
+  <ellipse cx="48" cy="88" rx="32" ry="6" fill="rgba(0,0,0,0.3)"/>
+  
+  <defs>
+    <linearGradient id="rustGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#a1887f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5d4037;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main body (rusty construct) -->
+  <ellipse cx="48" cy="56" rx="28" ry="30" fill="url(#rustGrad)"/>
+  <ellipse cx="48" cy="56" rx="24" ry="26" fill="#8d6e63"/>
+  
+  <!-- Rust patches -->
+  <ellipse cx="36" cy="50" rx="6" ry="8" fill="#bf5e30" opacity="0.6"/>
+  <ellipse cx="58" cy="48" rx="5" ry="7" fill="#bf5e30" opacity="0.6"/>
+  <ellipse cx="44" cy="66" rx="7" ry="6" fill="#bf5e30" opacity="0.6"/>
+  
+  <!-- Head (worn) -->
+  <ellipse cx="48" cy="32" rx="18" ry="16" fill="#5d4037"/>
+  <ellipse cx="48" cy="32" rx="14" ry="12" fill="#8d6e63"/>
+  
+  <!-- Eyes (dim) -->
+  <ellipse cx="40" cy="32" rx="5" ry="6" fill="#000000"/>
+  <ellipse cx="56" cy="32" rx="5" ry="6" fill="#000000"/>
+  <ellipse cx="40" cy="32" rx="3" ry="4" fill="#ff8a50" opacity="0.7"/>
+  <ellipse cx="56" cy="32" rx="3" ry="4" fill="#ff8a50" opacity="0.7"/>
+  
+  <!-- Mouth vent -->
+  <rect x="42" y="40" width="12" height="4" rx="1" fill="#3e2723"/>
+  <rect x="44" y="40" width="2" height="4" fill="#ff8a50" opacity="0.4"/>
+  <rect x="50" y="40" width="2" height="4" fill="#ff8a50" opacity="0.4"/>
+  
+  <!-- Bolts/rivets -->
+  <circle cx="32" cy="28" r="2" fill="#3e2723"/>
+  <circle cx="64" cy="28" r="2" fill="#3e2723"/>
+  <circle cx="28" cy="52" r="2" fill="#3e2723"/>
+  <circle cx="68" cy="52" r="2" fill="#3e2723"/>
+  <circle cx="32" cy="70" r="2" fill="#3e2723"/>
+  <circle cx="64" cy="70" r="2" fill="#3e2723"/>
+  
+  <!-- Arms (construct) -->
+  <rect x="16" y="48" width="10" height="20" rx="2" fill="#5d4037" stroke="#3e2723" stroke-width="1.5"/>
+  <rect x="70" y="48" width="10" height="20" rx="2" fill="#5d4037" stroke="#3e2723" stroke-width="1.5"/>
+  <circle cx="21" cy="68" r="4" fill="#8d6e63" stroke="#3e2723" stroke-width="1"/>
+  <circle cx="75" cy="68" r="4" fill="#8d6e63" stroke="#3e2723" stroke-width="1"/>
+  
+  <!-- Chest panel -->
+  <rect x="40" y="54" width="16" height="12" rx="2" fill="#3e2723" stroke="#bf5e30" stroke-width="1"/>
+  <rect x="42" y="56" width="12" height="8" rx="1" fill="#5d4037"/>
+  
+  <!-- Cracks -->
+  <path d="M 42 46 L 46 52" stroke="#3e2723" stroke-width="1.5" opacity="0.8"/>
+  <path d="M 54 44 L 50 50" stroke="#3e2723" stroke-width="1.5" opacity="0.8"/>
+  
+  <!-- Antenna -->
+  <rect x="46" y="16" width="4" height="10" fill="#8d6e63"/>
+  <circle cx="48" cy="16" r="3" fill="#ff8a50" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</svg>

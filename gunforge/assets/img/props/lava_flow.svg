@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="lavaGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6f00"/>
+      <stop offset="50%" stop-color="#ff3d00"/>
+      <stop offset="100%" stop-color="#bf360c"/>
+    </radialGradient>
+    <radialGradient id="lavaCore" cx="50%" cy="30%" r="40%">
+      <stop offset="0%" stop-color="#fff3e0"/>
+      <stop offset="30%" stop-color="#ffab00"/>
+      <stop offset="100%" stop-color="#ff6f00"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Outer glow -->
+  <ellipse cx="64" cy="64" rx="60" ry="55" fill="url(#lavaGlow)" opacity="0.8"/>
+  
+  <!-- Bubbles and flowing lava -->
+  <circle cx="45" cy="50" r="12" fill="url(#lavaCore)" opacity="0.9"/>
+  <circle cx="75" cy="55" r="15" fill="url(#lavaCore)" opacity="0.85"/>
+  <circle cx="60" cy="70" r="10" fill="url(#lavaCore)" opacity="0.8"/>
+  <circle cx="30" cy="65" r="8" fill="url(#lavaCore)" opacity="0.75"/>
+  <circle cx="85" cy="70" r="9" fill="url(#lavaCore)" opacity="0.8"/>
+  
+  <!-- Surface texture -->
+  <ellipse cx="50" cy="45" rx="18" ry="12" fill="#ffab00" opacity="0.3"/>
+  <ellipse cx="75" cy="60" rx="20" ry="14" fill="#ffab00" opacity="0.25"/>
+  <ellipse cx="55" cy="75" rx="15" ry="10" fill="#ff6f00" opacity="0.3"/>
+  
+  <!-- Cracks -->
+  <path d="M 30 40 L 40 45 L 35 50" stroke="#bf360c" stroke-width="2" fill="none" opacity="0.6"/>
+  <path d="M 80 50 L 90 55 L 85 65" stroke="#bf360c" stroke-width="2" fill="none" opacity="0.6"/>
+</svg>

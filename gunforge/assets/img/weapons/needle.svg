@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Needle storm gun -->
+  <rect x="8" y="28" width="10" height="8" fill="#4a148c" stroke="#212121" stroke-width="1"/>
+  <rect x="16" y="26" width="28" height="12" fill="#6a1b9a" stroke="#212121" stroke-width="1"/>
+  <rect x="42" y="28" width="2" height="8" fill="#ce93d8"/>
+  <rect x="46" y="28" width="2" height="8" fill="#ce93d8"/>
+  <rect x="50" y="28" width="2" height="8" fill="#ce93d8"/>
+  <rect x="54" y="28" width="2" height="8" fill="#ce93d8"/>
+</svg>

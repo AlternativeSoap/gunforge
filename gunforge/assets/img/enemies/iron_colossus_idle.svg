@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Shadow -->
+  <ellipse cx="48" cy="92" rx="38" ry="4" fill="rgba(0,0,0,0.6)"/>
+  
+  <!-- Main body (massive iron torso) -->
+  <rect x="26" y="44" width="44" height="40" rx="4" fill="#546e7a"/>
+  <rect x="28" y="46" width="40" height="36" rx="3" fill="#607d8b"/>
+  
+  <!-- Armor plates -->
+  <rect x="28" y="46" width="40" height="12" fill="#455a64"/>
+  <rect x="28" y="62" width="40" height="10" fill="#455a64"/>
+  
+  <!-- Rivets -->
+  <circle cx="32" cy="52" r="2" fill="#263238"/>
+  <circle cx="64" cy="52" r="2" fill="#263238"/>
+  <circle cx="32" cy="67" r="2" fill="#263238"/>
+  <circle cx="64" cy="67" r="2" fill="#263238"/>
+  <circle cx="42" cy="52" r="2" fill="#263238"/>
+  <circle cx="54" cy="52" r="2" fill="#263238"/>
+  <circle cx="42" cy="67" r="2" fill="#263238"/>
+  <circle cx="54" cy="67" r="2" fill="#263238"/>
+  
+  <!-- Central chest plate glow -->
+  <rect x="42" y="58" width="12" height="8" rx="1" fill="#00bcd4" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="2s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Shoulders (large) -->
+  <rect x="12" y="36" width="16" height="18" rx="3" fill="#455a64"/>
+  <rect x="68" y="36" width="16" height="18" rx="3" fill="#455a64"/>
+  <rect x="14" y="38" width="12" height="14" rx="2" fill="#546e7a"/>
+  <rect x="70" y="38" width="12" height="14" rx="2" fill="#546e7a"/>
+  
+  <!-- Shoulder rivets -->
+  <circle cx="18" cy="44" r="1.5" fill="#263238"/>
+  <circle cx="24" cy="44" r="1.5" fill="#263238"/>
+  <circle cx="72" cy="44" r="1.5" fill="#263238"/>
+  <circle cx="78" cy="44" r="1.5" fill="#263238"/>
+  
+  <!-- Arms (thick) -->
+  <rect x="14" y="54" width="12" height="28" rx="2" fill="#546e7a"/>
+  <rect x="70" y="54" width="12" height="28" rx="2" fill="#546e7a"/>
+  
+  <!-- Arm joints -->
+  <circle cx="20" cy="64" r="4" fill="#455a64"/>
+  <circle cx="76" cy="64" r="4" fill="#455a64"/>
+  <circle cx="20" cy="64" r="2" fill="#263238"/>
+  <circle cx="76" cy="64" r="2" fill="#263238"/>
+  
+  <!-- Fists -->
+  <rect x="14" y="78" width="12" height="10" rx="2" fill="#455a64"/>
+  <rect x="70" y="78" width="12" height="10" rx="2" fill="#455a64"/>
+  
+  <!-- Head/Helmet -->
+  <rect x="38" y="22" width="20" height="24" rx="2" fill="#455a64"/>
+  <rect x="40" y="24" width="16" height="20" rx="1" fill="#546e7a"/>
+  
+  <!-- Helmet crest -->
+  <path d="M 42 22 L 48 16 L 54 22 Z" fill="#607d8b"/>
+  
+  <!-- Visor/Eyes (glowing) -->
+  <rect x="42" y="32" width="12" height="6" rx="1" fill="#000000"/>
+  <rect x="42" y="32" width="12" height="6" rx="1" fill="#00bcd4" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.4;0.7" dur="2s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Face vent -->
+  <line x1="44" y1="40" x2="44" y2="42" stroke="#263238" stroke-width="1"/>
+  <line x1="48" y1="40" x2="48" y2="42" stroke="#263238" stroke-width="1"/>
+  <line x1="52" y1="40" x2="52" y2="42" stroke="#263238" stroke-width="1"/>
+  
+  <!-- Legs -->
+  <rect x="34" y="82" width="10" height="10" rx="1" fill="#546e7a"/>
+  <rect x="52" y="82" width="10" height="10" rx="1" fill="#546e7a"/>
+  
+  <!-- Metallic highlights -->
+  <rect x="30" y="48" width="3" height="32" fill="#78909c" opacity="0.5"/>
+  <rect x="63" y="48" width="3" height="32" fill="#78909c" opacity="0.5"/>
+  
+  <!-- Steam vents -->
+  <circle cx="22" cy="56" r="1.5" fill="#b0bec5" opacity="0.6">
+    <animate attributeName="cy" values="56;48;56" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="74" cy="56" r="1.5" fill="#b0bec5" opacity="0.6">
+    <animate attributeName="cy" values="56;48;56" dur="1.8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;0;0.6" dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+</svg>

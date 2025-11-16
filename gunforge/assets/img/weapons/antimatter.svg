@@ -1,0 +1,17 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Antimatter core -->
+  <circle cx="30" cy="32" r="10" fill="#1a0033" stroke="#4a0099" stroke-width="2"/>
+  <circle cx="30" cy="32" r="7" fill="#6600cc"/>
+  <circle cx="30" cy="32" r="4" fill="#9933ff"/>
+  <circle cx="30" cy="32" r="2" fill="#fff"/>
+  <!-- Containment field -->
+  <circle cx="30" cy="32" r="12" fill="none" stroke="#9933ff" stroke-width="1" stroke-dasharray="2,2"/>
+  <!-- Barrel -->
+  <rect x="14" y="28" width="10" height="8" fill="#2a004a" stroke="#1a0033" stroke-width="1"/>
+  <!-- Grip -->
+  <path d="M 40,32 L 38,40 L 42,42 L 46,38 L 44,32 Z" fill="#5d4e37" stroke="#3d2e17" stroke-width="1"/>
+  <!-- Energy particles -->
+  <circle cx="10" cy="28" r="1.5" fill="#9933ff"/>
+  <circle cx="8" cy="32" r="1.5" fill="#cc66ff"/>
+  <circle cx="10" cy="36" r="1.5" fill="#9933ff"/>
+</svg>

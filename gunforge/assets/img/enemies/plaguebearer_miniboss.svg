@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="toxicGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7cb342"/>
+      <stop offset="100%" stop-color="#558b2f"/>
+    </radialGradient>
+    <radialGradient id="bubbleGrad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#c5e1a5"/>
+      <stop offset="100%" stop-color="#7cb342"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Shadow (oozing) -->
+  <ellipse cx="50" cy="88" rx="38" ry="8" fill="#33691e" opacity="0.5"/>
+  
+  <!-- Toxic aura -->
+  <circle cx="50" cy="50" r="46" fill="url(#toxicGlow)" opacity="0.2"/>
+  
+  <!-- Main body (blob-like) -->
+  <ellipse cx="50" cy="58" rx="34" ry="30" fill="#558b2f"/>
+  <ellipse cx="50" cy="55" rx="32" ry="28" fill="#689f38"/>
+  <ellipse cx="50" cy="52" rx="30" ry="26" fill="#7cb342"/>
+  
+  <!-- Bulges/Growths -->
+  <ellipse cx="30" cy="50" rx="18" ry="22" fill="#558b2f" opacity="0.7"/>
+  <ellipse cx="70" cy="52" rx="16" ry="20" fill="#558b2f" opacity="0.7"/>
+  <ellipse cx="50" cy="72" rx="22" ry="18" fill="#558b2f" opacity="0.6"/>
+  
+  <!-- Bubbles/Pustules -->
+  <circle cx="40" cy="45" r="8" fill="url(#bubbleGrad)" opacity="0.8"/>
+  <circle cx="60" cy="48" r="10" fill="url(#bubbleGrad)" opacity="0.8"/>
+  <circle cx="50" cy="60" r="7" fill="url(#bubbleGrad)" opacity="0.7"/>
+  <circle cx="35" cy="63" r="6" fill="url(#bubbleGrad)" opacity="0.7"/>
+  <circle cx="65" cy="65" r="5" fill="url(#bubbleGrad)" opacity="0.7"/>
+  
+  <!-- Toxic drips -->
+  <ellipse cx="30" cy="75" rx="4" ry="8" fill="#7cb342" opacity="0.6"/>
+  <ellipse cx="50" cy="80" rx="3" ry="7" fill="#7cb342" opacity="0.6"/>
+  <ellipse cx="70" cy="78" rx="4" ry="9" fill="#7cb342" opacity="0.6"/>
+  
+  <!-- Eyes (multiple, uneven) -->
+  <ellipse cx="38" cy="38" rx="7" ry="9" fill="#33691e"/>
+  <ellipse cx="62" cy="40" rx="8" ry="10" fill="#33691e"/>
+  <ellipse cx="50" cy="50" rx="6" ry="8" fill="#33691e" opacity="0.8"/>
+  
+  <!-- Pupils (glowing green) -->
+  <circle cx="38" cy="38" r="4" fill="#aed581"/>
+  <circle cx="62" cy="40" r="4" fill="#aed581"/>
+  <circle cx="50" cy="50" r="3" fill="#aed581" opacity="0.8"/>
+  
+  <!-- Highlights -->
+  <ellipse cx="40" cy="45" rx="4" ry="5" fill="#c5e1a5" opacity="0.4"/>
+  <ellipse cx="60" cy="48" rx="5" ry="6" fill="#c5e1a5" opacity="0.4"/>
+  
+  <!-- Gas clouds -->
+  <circle cx="20" cy="35" r="8" fill="#9ccc65" opacity="0.3"/>
+  <circle cx="80" cy="38" r="10" fill="#9ccc65" opacity="0.3"/>
+  <circle cx="50" cy="25" r="6" fill="#9ccc65" opacity="0.3"/>
+</svg>

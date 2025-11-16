@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Shadow with toxic glow -->
+  <ellipse cx="48" cy="88" rx="40" ry="8" fill="rgba(100,255,100,0.3)"/>
+  
+  <!-- Toxic aura -->
+  <circle cx="48" cy="50" r="52" fill="url(#toxicGrad)" opacity="0.2"/>
+  
+  <defs>
+    <radialGradient id="toxicGrad">
+      <stop offset="0%" style="stop-color:#76ff03;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#33691e;stop-opacity:0" />
+    </radialGradient>
+    <linearGradient id="bodyToxic" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#558b2f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1b5e20;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main body (bulbous) -->
+  <ellipse cx="48" cy="58" rx="36" ry="32" fill="url(#bodyToxic)"/>
+  <ellipse cx="48" cy="58" rx="32" ry="28" fill="#689f38"/>
+  
+  <!-- Toxic spots -->
+  <ellipse cx="32" cy="52" rx="8" ry="10" fill="#76ff03" opacity="0.6"/>
+  <ellipse cx="62" cy="48" rx="6" ry="8" fill="#76ff03" opacity="0.6"/>
+  <ellipse cx="42" cy="68" rx="7" ry="9" fill="#76ff03" opacity="0.6"/>
+  <ellipse cx="58" cy="64" rx="6" ry="7" fill="#76ff03" opacity="0.6"/>
+  
+  <!-- Head (grotesque) -->
+  <ellipse cx="48" cy="32" rx="22" ry="20" fill="#558b2f"/>
+  <ellipse cx="48" cy="32" rx="18" ry="16" fill="#689f38"/>
+  
+  <!-- Eyes (multiple) -->
+  <ellipse cx="36" cy="28" rx="6" ry="8" fill="#000000"/>
+  <ellipse cx="48" cy="26" rx="5" ry="7" fill="#000000"/>
+  <ellipse cx="60" cy="28" rx="6" ry="8" fill="#000000"/>
+  <ellipse cx="36" cy="28" rx="3" ry="5" fill="#76ff03"/>
+  <ellipse cx="48" cy="26" rx="2.5" ry="4" fill="#76ff03"/>
+  <ellipse cx="60" cy="28" rx="3" ry="5" fill="#76ff03"/>
+  
+  <!-- Mouth (dripping) -->
+  <path d="M 35 40 Q 48 46 61 40" stroke="#1b5e20" stroke-width="3" fill="none"/>
+  <ellipse cx="40" cy="42" rx="2" ry="3" fill="#76ff03" opacity="0.8"/>
+  <ellipse cx="48" cy="44" rx="2" ry="3" fill="#76ff03" opacity="0.8"/>
+  <ellipse cx="56" cy="42" rx="2" ry="3" fill="#76ff03" opacity="0.8"/>
+  
+  <!-- Tentacles/appendages -->
+  <path d="M 16 56 Q 12 62 10 68 Q 8 62 10 56" fill="#558b2f" stroke="#1b5e20" stroke-width="1.5"/>
+  <path d="M 80 56 Q 84 62 86 68 Q 88 62 86 56" fill="#558b2f" stroke="#1b5e20" stroke-width="1.5"/>
+  <circle cx="10" cy="68" r="4" fill="#76ff03" opacity="0.7"/>
+  <circle cx="86" cy="68" r="4" fill="#76ff03" opacity="0.7"/>
+  
+  <!-- Toxic drips -->
+  <ellipse cx="28" cy="76" rx="2" ry="4" fill="#76ff03" opacity="0.9">
+    <animate attributeName="ry" values="4;6;4" dur="1.2s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="48" cy="82" rx="2.5" ry="5" fill="#76ff03" opacity="0.9">
+    <animate attributeName="ry" values="5;7;5" dur="1.5s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="68" cy="78" rx="2" ry="4" fill="#76ff03" opacity="0.9">
+    <animate attributeName="ry" values="4;6;4" dur="1.3s" repeatCount="indefinite"/>
+  </ellipse>
+  
+  <!-- Toxic bubbles -->
+  <circle cx="24" cy="44" r="3" fill="#76ff03" opacity="0.5">
+    <animate attributeName="cy" values="44;36;44" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="3;2;3" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="72" cy="50" r="2.5" fill="#76ff03" opacity="0.5">
+    <animate attributeName="cy" values="50;42;50" dur="1.8s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="2.5;1.5;2.5" dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Pulsing core -->
+  <ellipse cx="48" cy="58" rx="10" ry="12" fill="#76ff03" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="1.5s" repeatCount="indefinite"/>
+  </ellipse>
+</svg>

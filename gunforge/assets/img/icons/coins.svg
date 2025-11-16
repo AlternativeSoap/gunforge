@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Modern coin stack icon -->
+  <defs>
+    <linearGradient id="coinGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ffed4e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffaa00;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="coinShine">
+      <stop offset="0%" style="stop-color:#fff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Bottom coin -->
+  <ellipse cx="50" cy="75" rx="22" ry="8" fill="#aa7700" opacity="0.5"/>
+  <ellipse cx="50" cy="72" rx="22" ry="8" fill="url(#coinGrad1)" stroke="#aa7700" stroke-width="2"/>
+  <ellipse cx="50" cy="72" rx="16" ry="5" fill="url(#coinShine)" opacity="0.3"/>
+  <text x="50" y="76" font-size="12" fill="#aa7700" text-anchor="middle" font-weight="bold">$</text>
+  
+  <!-- Middle coin -->
+  <ellipse cx="50" cy="60" rx="22" ry="8" fill="url(#coinGrad1)" stroke="#aa7700" stroke-width="2"/>
+  <ellipse cx="50" cy="60" rx="16" ry="5" fill="url(#coinShine)" opacity="0.3"/>
+  <text x="50" y="64" font-size="12" fill="#aa7700" text-anchor="middle" font-weight="bold">$</text>
+  
+  <!-- Top coin -->
+  <ellipse cx="50" cy="48" rx="22" ry="8" fill="url(#coinGrad1)" stroke="#aa7700" stroke-width="2"/>
+  <ellipse cx="50" cy="48" rx="16" ry="5" fill="url(#coinShine)" opacity="0.3"/>
+  <text x="50" y="52" font-size="12" fill="#aa7700" text-anchor="middle" font-weight="bold">$</text>
+  
+  <!-- Sparkles -->
+  <path d="M25 35 L26 38 L29 39 L26 40 L25 43 L24 40 L21 39 L24 38 Z" fill="#ffed4e" stroke="#ffd700" stroke-width="0.5"/>
+  <path d="M75 55 L76 57 L78 58 L76 59 L75 61 L74 59 L72 58 L74 57 Z" fill="#ffed4e" stroke="#ffd700" stroke-width="0.5"/>
+  <path d="M70 30 L71 32 L73 33 L71 34 L70 36 L69 34 L67 33 L69 32 Z" fill="#ffed4e" stroke="#ffd700" stroke-width="0.5"/>
+  
+  <!-- Top star shine -->
+  <circle cx="50" cy="30" r="3" fill="#ffed4e" opacity="0.8"/>
+  <path d="M50 22 L51 28 L57 29 L52 33 L54 39 L50 35 L46 39 L48 33 L43 29 L49 28 Z" fill="#ffed4e" stroke="#ffd700" stroke-width="1"/>
+</svg>

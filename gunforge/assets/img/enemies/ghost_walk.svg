@@ -1,0 +1,30 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ghost - top-down walk (phasing) -->
+  <g transform="translate(20, 20)" opacity="0.7">
+    <!-- Shadow (very faint) -->
+    <ellipse cx="1" cy="8" rx="9" ry="3" fill="#000" opacity="0.15"/>
+    
+    <!-- Ethereal body - phasing -->
+    <ellipse cx="0" cy="0" rx="13" ry="14" fill="#37474f" stroke="#263238" stroke-width="1.5"/>
+    <ellipse cx="0" cy="0" rx="10" ry="11" fill="#455a64" opacity="0.8"/>
+    
+    <!-- Ghostly trails - extended -->
+    <ellipse cx="-10" cy="0" rx="6" ry="4" fill="#607d8b" opacity="0.5"/>
+    <ellipse cx="10" cy="1" rx="6" ry="4" fill="#607d8b" opacity="0.5"/>
+    <circle cx="0" cy="-9" r="5" fill="#607d8b" opacity="0.4"/>
+    <circle cx="0" cy="9" r="5" fill="#607d8b" opacity="0.4"/>
+    
+    <!-- Glowing eyes -->
+    <circle cx="-4" cy="-3" r="2.5" fill="#fff" opacity="0.9"/>
+    <circle cx="4" cy="-3" r="2.5" fill="#fff" opacity="0.9"/>
+    <circle cx="-4" cy="-3" r="1.5" fill="#0ff" opacity="0.9"/>
+    <circle cx="4" cy="-3" r="1.5" fill="#0ff" opacity="0.9"/>
+    
+    <!-- Direction indicator -->
+    <ellipse cx="0" cy="-6" rx="3" ry="5" fill="#fff" opacity="0.4"/>
+    
+    <!-- Phase particles -->
+    <circle cx="-8" cy="-5" r="1" fill="#fff" opacity="0.6"/>
+    <circle cx="8" cy="5" r="1" fill="#fff" opacity="0.6"/>
+  </g>
+</svg>

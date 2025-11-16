@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 36">
+  <!-- Decorative vase -->
+  <path d="M10,8 Q8,12 8,18 L8,28 Q8,32 14,32 Q20,32 20,28 L20,18 Q20,12 18,8 Z" fill="#ff6f00"/>
+  <ellipse cx="14" cy="8" rx="8" ry="4" fill="#ff8f00"/>
+  <ellipse cx="14" cy="32" rx="8" ry="3" fill="#e65100"/>
+  <!-- Pattern -->
+  <path d="M10,16 Q14,18 18,16" stroke="#ffb300" stroke-width="1.5" fill="none"/>
+  <path d="M10,20 Q14,22 18,20" stroke="#ffb300" stroke-width="1.5" fill="none"/>
+  <path d="M10,24 Q14,26 18,24" stroke="#ffb300" stroke-width="1.5" fill="none"/>
+</svg>

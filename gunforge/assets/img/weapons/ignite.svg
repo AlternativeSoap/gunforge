@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Fire weapon -->
+  <rect x="8" y="28" width="10" height="8" fill="#5d4037" stroke="#212121" stroke-width="1"/>
+  <rect x="16" y="26" width="24" height="12" fill="#bf360c" stroke="#212121" stroke-width="1"/>
+  <rect x="38" y="24" width="16" height="16" fill="#ff6f00" stroke="#212121" stroke-width="1"/>
+  <path d="M 52 28 L 56 32 L 52 36" fill="#ff9800" stroke="#212121" stroke-width="0.8"/>
+  <circle cx="50" cy="32" r="2" fill="#ffeb3b" opacity="0.8"/>
+</svg>

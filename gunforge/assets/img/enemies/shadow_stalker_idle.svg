@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Shadow (barely visible) -->
+  <ellipse cx="48" cy="90" rx="24" ry="4" fill="rgba(0,0,0,0.6)"/>
+  
+  <!-- Dark aura -->
+  <circle cx="48" cy="48" r="44" fill="url(#shadowGrad)" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.2;0.4" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <defs>
+    <radialGradient id="shadowGrad">
+      <stop offset="0%" style="stop-color:#424242;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0" />
+    </radialGradient>
+    <radialGradient id="bodyGrad">
+      <stop offset="0%" style="stop-color:#424242" />
+      <stop offset="100%" style="stop-color:#1a1a1a" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Main body (shadowy) -->
+  <ellipse cx="48" cy="56" rx="26" ry="28" fill="url(#bodyGrad)" opacity="0.85">
+    <animate attributeName="opacity" values="0.85;0.65;0.85" dur="1.8s" repeatCount="indefinite"/>
+  </ellipse>
+  
+  <!-- Shadow wisps/tendrils -->
+  <path d="M 30 60 Q 22 58 18 62 Q 14 66 16 70" stroke="#616161" stroke-width="3" fill="none" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 66 60 Q 74 58 78 62 Q 82 66 80 70" stroke="#616161" stroke-width="3" fill="none" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2s" begin="1s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 48 74 Q 46 82 42 86" stroke="#616161" stroke-width="2.5" fill="none" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.2;0.5" dur="1.5s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 48 74 Q 50 82 54 86" stroke="#616161" stroke-width="2.5" fill="none" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.2;0.5" dur="1.5s" begin="0.75s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Hood/Head -->
+  <ellipse cx="48" cy="36" rx="18" ry="20" fill="#212121"/>
+  <path d="M 30 36 Q 30 26 48 24 Q 66 26 66 36" fill="#000000" opacity="0.7"/>
+  
+  <!-- Face - barely visible -->
+  <ellipse cx="48" cy="38" rx="14" ry="12" fill="#1a1a1a" opacity="0.8"/>
+  
+  <!-- Eyes (glowing red) -->
+  <ellipse cx="40" cy="36" rx="5" ry="6" fill="#000000"/>
+  <ellipse cx="56" cy="36" rx="5" ry="6" fill="#000000"/>
+  <ellipse cx="40" cy="36" rx="3" ry="4" fill="#d32f2f" opacity="0.9">
+    <animate attributeName="opacity" values="0.9;0.5;0.9" dur="2s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="56" cy="36" rx="3" ry="4" fill="#d32f2f" opacity="0.9">
+    <animate attributeName="opacity" values="0.9;0.5;0.9" dur="2s" repeatCount="indefinite"/>
+  </ellipse>
+  <circle cx="40" cy="35" r="1" fill="#ff6659"/>
+  <circle cx="56" cy="35" r="1" fill="#ff6659"/>
+  
+  <!-- Cloak/Arms -->
+  <ellipse cx="26" cy="52" rx="8" ry="14" fill="#212121" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.4;0.7" dur="2s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="70" cy="52" rx="8" ry="14" fill="#212121" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.4;0.7" dur="2s" begin="1s" repeatCount="indefinite"/>
+  </ellipse>
+  
+  <!-- Daggers/Blades -->
+  <path d="M 26 58 L 22 66 L 24 68 L 28 60 Z" fill="#757575" opacity="0.8"/>
+  <path d="M 70 58 L 74 66 L 72 68 L 68 60 Z" fill="#757575" opacity="0.8"/>
+  
+  <!-- Shadow particles -->
+  <circle cx="34" cy="50" r="2" fill="#424242" opacity="0.7">
+    <animate attributeName="cy" values="50;44;50" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0;0.7" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="62" cy="52" r="2" fill="#424242" opacity="0.7">
+    <animate attributeName="cy" values="52;46;52" dur="1.8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0;0.7" dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="48" cy="66" r="2.5" fill="#616161" opacity="0.6">
+    <animate attributeName="cy" values="66;60;66" dur="1.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;0;0.6" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Central shadow essence -->
+  <circle cx="48" cy="56" r="6" fill="#000000" opacity="0.5">
+    <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</svg>

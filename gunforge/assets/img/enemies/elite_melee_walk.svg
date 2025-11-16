@@ -1,0 +1,43 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Elite Melee - top-down walk -->
+  <defs>
+    <filter id="eliteGlowWalk">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g transform="translate(20, 20)" filter="url(#eliteGlowWalk)">
+    <!-- Shadow - shifted -->
+    <ellipse cx="1" cy="8" rx="11" ry="4" fill="#000" opacity="0.3"/>
+    
+    <!-- Body -->
+    <ellipse cx="0" cy="0" rx="13" ry="14" fill="#ff1744" stroke="#c5003e" stroke-width="2.5"/>
+    <ellipse cx="0" cy="0" rx="10" ry="11" fill="#ff4569"/>
+    
+    <!-- Elite aura - pulsing -->
+    <circle cx="0" cy="0" r="16" fill="#ff1744" opacity="0.4"/>
+    
+    <!-- Spikes -->
+    <polygon points="-12,-4 -16,-2 -12,0" fill="#ff1744"/>
+    <polygon points="12,-4 16,-2 12,0" fill="#ff1744"/>
+    <polygon points="0,-14 2,-10 -2,-10" fill="#ff1744"/>
+    <polygon points="0,12 2,16 -2,16" fill="#ff1744"/>
+    
+    <!-- Weapon (sword swinging) -->
+    <rect x="11" y="-6" width="3" height="14" fill="#616161" stroke="#424242" stroke-width="1" rx="1" transform="rotate(20 12 1)"/>
+    <path d="M 10,-8 L 11,-11 L 12,-8 Z" fill="#9e9e9e" stroke="#424242" stroke-width="0.5" transform="rotate(20 11 -9)"/>
+    
+    <!-- Eyes (glowing) -->
+    <circle cx="-4" cy="-3" r="2.5" fill="#f00" opacity="1"/>
+    <circle cx="4" cy="-3" r="2.5" fill="#f00" opacity="1"/>
+    
+    <!-- Direction indicator -->
+    <ellipse cx="0" cy="-7" rx="4" ry="6" fill="#fff" opacity="0.4"/>
+    
+    <!-- Motion lines -->
+    <line x1="13" y1="-8" x2="16" y2="-10" stroke="#ff1744" stroke-width="1.5" opacity="0.5"/>
+  </g>
+</svg>
