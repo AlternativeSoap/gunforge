@@ -1,7 +1,7 @@
 // main.js
 // Core loop, camera, rendering, room transitions, collisions, inputs, and particles.
 
-import { GAME, PALETTES, INPUT_KEYS, WEAPONS, DIFFICULTY, RARITY, ITEMS, circleIntersect, clamp, dist2, pick, BOSS_VARIANTS, THEMED_ROOMS } from './data.js';
+import { GAME, PALETTES, INPUT_KEYS, WEAPONS, DIFFICULTY, RARITY, ITEMS, circleIntersect, clamp, dist2, pick, BOSS_VARIANTS, THEMED_ROOMS, SETTINGS, saveSettings } from './data.js';
 import { AudioManager } from './audio.js';
 import { Player } from './player.js';
 import { Enemy, Boss } from './enemy.js';
@@ -9,8 +9,18 @@ import { Dungeon } from './room.js';
 import { Coin, Chest, CoinChest, HiddenChest, ItemPickup, traderInventory, levelUpChoices, applyLevelUp } from './loot.js';
 import { SpikeField, AcidPool, Mine } from './traps.js';
 import { Prop } from './props.js';
-import { drawHUD, drawShop } from './ui.js';
+import { drawHUD, drawShop, drawSettings } from './ui.js';
 import { SKILL_TREE, SkillTreeManager } from './skilltree.js';
+
+// Import save system
+const saveManagerScript = document.createElement('script');
+saveManagerScript.src = './js/save.js';
+document.head.appendChild(saveManagerScript);
+
+// Expose GAME, SkillTreeManager, and WEAPONS globally for save system access
+window.GAME = GAME;
+window.SkillTreeManager = SkillTreeManager;
+window.WEAPONS = WEAPONS;
 
 console.log('Main.js: Imports loaded successfully');
 
@@ -113,10 +123,17 @@ const game = {
   fxScale: 1,
   trapdoorCooldown: 0,
   hintText: '',
+  settingsOpen: false,
+  gameTime: 0, // Track total play time in seconds
+  SETTINGS: SETTINGS,
+  saveSettings: saveSettings,
   getCurrentRoom() {
     return this.rooms.get(this.currentRoomKey);
   }
 };
+
+// Expose game globally for save menu access
+window.game = game;
 
 // Input
 const downSet = new Set();
@@ -141,7 +158,8 @@ window.addEventListener('keydown', (e)=>{
   }
   // pause toggle
   if (k==='escape' && game.started) {
-    if (game.shopOpen) { game.shopOpen = null; }
+    if (game.settingsOpen) { game.settingsOpen = false; game.paused = false; }
+    else if (game.shopOpen) { game.shopOpen = null; }
     else if (game.skillTreeOpen) { 
       // ESC closes skill tree or goes back to branch selection (does not affect pause state)
       if (game.skillTreeManager?.selectedBranch && game.skillTreeManager?.unlockedSkills.size === 0) {
@@ -153,15 +171,29 @@ window.addEventListener('keydown', (e)=>{
     else if (game.fullMapOpen) { game.fullMapOpen = false; }
     else { game.paused = !game.paused; }
   }
+  // New Run hotkey (N) when paused
+  if (k==='n' && game.started && game.paused && !game.settingsOpen && !game.shopOpen && !game.skillTreeOpen && !game.fullMapOpen) {
+    newRun();
+  }
   // full map toggle
   if (k==='m' && game.started && !game.levelUpChoices && !game.shopOpen && !game.skillTreeOpen) {
     game.fullMapOpen = !game.fullMapOpen;
     if (game.fullMapOpen) game.paused = true;
     else game.paused = false;
   }
-  // skill tree toggle (does NOT pause - risky to open during combat!)
+  // skill tree toggle - check for enemies first
   if (k==='t' && game.started && !game.levelUpChoices && !game.shopOpen && !game.fullMapOpen && !game.paused) {
-    game.skillTreeOpen = !game.skillTreeOpen;
+    if (!game.skillTreeOpen) {
+      // Check if there are enemies in current room
+      const hasEnemies = game.enemies && game.enemies.length > 0;
+      if (hasEnemies) {
+        game.promptTimed('⚠️ Clear all enemies before opening skill tree!', 1.5);
+      } else {
+        game.skillTreeOpen = true;
+      }
+    } else {
+      game.skillTreeOpen = false;
+    }
   }
   if (k==='b' && game.skillTreeOpen && game.skillTreeManager) {
     if (game.skillTreeManager.selectedBranch && game.skillTreeManager.unlockedSkills.size === 0) {
@@ -180,6 +212,54 @@ window.addEventListener('keydown', (e)=>{
   // volume
   if ((k==='=' || k==='+') && game.started) { const g = Math.min(1, (game.audio.master?.gain.value ?? 0.9) + 0.05); game.audio.setMasterVolume(g); game.promptTimed(`Volume ${(g*100)|0}%`, 0.8); }
   if ((k==='-' || k==='_') && game.started) { const g = Math.max(0, (game.audio.master?.gain.value ?? 0.9) - 0.05); game.audio.setMasterVolume(g); game.promptTimed(`Volume ${(g*100)|0}%`, 0.8); }
+  
+  // Easter eggs & cheat codes (optimized - only check specific keys)
+  if (game.started && k.length === 1) {
+    if (!game.cheatBuffer) game.cheatBuffer = '';
+    game.cheatBuffer += k;
+    if (game.cheatBuffer.length > 15) game.cheatBuffer = game.cheatBuffer.slice(-15);
+    
+    // Only check for cheats if buffer ends with potential cheat trigger letters
+    const lastChar = game.cheatBuffer.slice(-1);
+    if (lastChar === 'e' || lastChar === 'f' || lastChar === 'd' || lastChar === 'y') {
+      // Cheat: "godmode" - invincibility
+      if (game.cheatBuffer.endsWith('godmode')) {
+        game.player.godMode = !game.player.godMode;
+        game.promptTimed(game.player.godMode ? '🛡️ GOD MODE ACTIVATED' : 'God mode disabled', 2);
+        game.cheatBuffer = '';
+        spawnLevelUpCelebration(game.player.x, game.player.y);
+      }
+      // Cheat: "richaf" - get 10000 coins
+      else if (game.cheatBuffer.endsWith('richaf')) {
+        game.coins += 10000;
+        game.promptTimed('💰 +10,000 COINS!', 2);
+        game.cheatBuffer = '';
+        for(let i=0; i<50; i++) spawnCoinSparkles(game.player.x + (Math.random()-0.5)*100, game.player.y + (Math.random()-0.5)*100);
+      }
+      // Cheat: "nuke" - kill all enemies
+      else if (game.cheatBuffer.endsWith('nuke')) {
+        const killedCount = game.enemies.length;
+        game.enemies.forEach(e => { e.hp = 0; e.dead = true; });
+        game.promptTimed(`💥 NUKED ${killedCount} ENEMIES!`, 2);
+        game.cheatBuffer = '';
+        spawnExplosion(null, game.player.x, game.player.y);
+        game.camera.shake = 30;
+      }
+      // Cheat: "speed" - max speed
+      else if (game.cheatBuffer.endsWith('speed')) {
+        game.player.moveSpeed = 500;
+        game.promptTimed('⚡ SUPER SPEED!', 2);
+        game.cheatBuffer = '';
+      }
+      // Cheat: "party" - rainbow particles everywhere!
+      else if (game.cheatBuffer.endsWith('party')) {
+        game.partyMode = !game.partyMode;
+        game.promptTimed(game.partyMode ? '🎉 PARTY MODE!' : 'Party mode off', 2);
+        game.cheatBuffer = '';
+      }
+    }
+  }
+  
   updateInput();
 });
 window.addEventListener('keyup', (e)=>{
@@ -195,18 +275,52 @@ canvas.addEventListener('mousemove', (e)=>{
   const rect = canvas.getBoundingClientRect();
   game.mouse.x = e.clientX - rect.left;
   game.mouse.y = e.clientY - rect.top;
+  
+  // Handle slider dragging in settings
+  if (game.settingsOpen && game.mouse.down && game.draggingSlider) {
+    handleSliderDrag();
+  }
+  
+  // Handle skill tree panning/dragging
+  if (game.skillTreeOpen && game.skillTreeManager && game.skillTreeManager.isDragging) {
+    const dx = e.clientX - game.skillTreeManager.dragStartX;
+    const dy = e.clientY - game.skillTreeManager.dragStartY;
+    game.skillTreeManager.cameraX = game.skillTreeManager.dragStartCameraX - dx;
+    game.skillTreeManager.cameraY = game.skillTreeManager.dragStartCameraY - dy;
+  }
 });
-canvas.addEventListener('mousedown', ()=>{ 
+canvas.addEventListener('mousedown', (e)=>{ 
   game.mouse.down = true; 
   game.mouse.wasDownBeforeLevelUp = true; // Track if mouse was held when level-up opens
+  
+  // Start skill tree dragging
+  if (game.skillTreeOpen && game.skillTreeManager && game.skillTreeManager.selectedBranch) {
+    game.skillTreeManager.isDragging = true;
+    game.skillTreeManager.dragStartX = e.clientX || game.mouse.x;
+    game.skillTreeManager.dragStartY = e.clientY || game.mouse.y;
+    game.skillTreeManager.dragStartCameraX = game.skillTreeManager.cameraX;
+    game.skillTreeManager.dragStartCameraY = game.skillTreeManager.cameraY;
+  }
 });
 canvas.addEventListener('mouseup', ()=>{ 
   game.mouse.down = false; 
   game.mouse.wasDownBeforeLevelUp = false; // Reset on mouse up
+  game.draggingSlider = null; // Stop dragging slider
+  
+  // Stop skill tree dragging
+  if (game.skillTreeManager) {
+    game.skillTreeManager.isDragging = false;
+  }
 });
 window.addEventListener('mouseup', ()=>{ 
   game.mouse.down = false; 
   game.mouse.wasDownBeforeLevelUp = false;
+  game.draggingSlider = null; // Stop dragging slider
+  
+  // Stop skill tree dragging
+  if (game.skillTreeManager) {
+    game.skillTreeManager.isDragging = false;
+  }
 }); // Fix: always reset shooting if mouse released outside canvas
 canvas.addEventListener('mouseleave', ()=>{
   // Optionally hide crosshair or set a flag if needed
@@ -235,27 +349,62 @@ canvas.addEventListener('click', ()=>{
     for (let i=0;i<3;i++){ const x = startX + i*(cw + gap); if (game.mouse.x >= x && game.mouse.x <= x+cw && game.mouse.y >= y && game.mouse.y <= y+ch) { handleShopChoice(i); break; } }
   } else if (game.skillTreeOpen) {
     handleSkillTreeClick();
+  } else if (game.settingsOpen) {
+    // Settings menu clicks - must check BEFORE game.paused since settings also sets paused=true
+    handleSettingsClick();
   } else if (game.paused) {
-    // pause menu buttons: Resume and New Run
-    const panelW = 600, panelH = 420;
-    const panelX = game.width/2 - panelW/2, panelY = game.height/2 - panelH/2;
-    const buttonY = panelY + panelH - 90;
-    const buttonH = 54;
-    const gap = 20;
-    const buttonW = (panelW - 120 - gap) / 2;
-    const resumeX = panelX + 60;
-    const newRunX = resumeX + buttonW + gap;
-    
-    // Resume button (left)
-    if (game.mouse.x >= resumeX && game.mouse.x <= resumeX+buttonW && 
-        game.mouse.y >= buttonY && game.mouse.y <= buttonY+buttonH) {
-      game.paused = false;
-    }
-    
-    // New Run button (right)
-    if (game.mouse.x >= newRunX && game.mouse.x <= newRunX+buttonW && 
-        game.mouse.y >= buttonY && game.mouse.y <= buttonY+buttonH) {
-      newRun();
+    // pause menu buttons: Resume, New Run, Save Game, Settings, Quick Save
+    if (game.pauseButtons) {
+      const { resume, newRun: newRunBtn, saveGame, settings, quickSave } = game.pauseButtons;
+      
+      // Resume button
+      if (game.mouse.x >= resume.x && game.mouse.x <= resume.x + resume.w && 
+          game.mouse.y >= resume.y && game.mouse.y <= resume.y + resume.h) {
+        game.paused = false;
+      }
+      
+      // New Run button
+      if (game.mouse.x >= newRunBtn.x && game.mouse.x <= newRunBtn.x + newRunBtn.w && 
+          game.mouse.y >= newRunBtn.y && game.mouse.y <= newRunBtn.y + newRunBtn.h) {
+        newRun();
+      }
+      
+      // Save Game button - open save menu
+      if (saveGame && game.mouse.x >= saveGame.x && game.mouse.x <= saveGame.x + saveGame.w && 
+          game.mouse.y >= saveGame.y && game.mouse.y <= saveGame.y + saveGame.h) {
+        const saveMenu = document.getElementById('saveMenu');
+        if (saveMenu) {
+          saveMenu.classList.add('visible');
+          // Update mode and slots when opening from pause menu
+          if (window.updateSaveMenuMode) window.updateSaveMenuMode();
+          if (window.updateSaveSlots) window.updateSaveSlots();
+        }
+      }
+      
+      // Settings button
+      if (game.mouse.x >= settings.x && game.mouse.x <= settings.x + settings.w && 
+          game.mouse.y >= settings.y && game.mouse.y <= settings.y + settings.h) {
+        game.settingsOpen = true;
+        game.paused = true;
+      }
+      
+      // Quick Save button
+      if (quickSave && window.saveManager && game.mouse.x >= quickSave.x && game.mouse.x <= quickSave.x + quickSave.w && 
+          game.mouse.y >= quickSave.y && game.mouse.y <= quickSave.y + quickSave.h) {
+        // Quick save to last used slot or slot 1
+        const saved = window.saveManager.autoSave(
+          game.player,
+          game.coins,
+          game.depth,
+          GAME.difficulty,
+          game.gameTime || 0
+        );
+        if (saved) {
+          const slotNum = window.saveManager.currentSlot || 1;
+          game.promptTimed(`⚡ Quick Saved to Slot ${slotNum}!`, 1.5);
+          console.log('[Pause Menu] Quick saved to slot:', slotNum);
+        }
+      }
     }
   } else if (game.dead) {
     // death overlay: New Run button
@@ -281,10 +430,63 @@ function startGame(source='unknown'){
     if (game.started) { console.log('[startGame] Already started (source:', source, ')'); return; }
     console.log('[startGame] Invoked by', source);
     
-    // Apply selected difficulty from overlay
-    if (window.__GAME_DIFFICULTY__) {
+    // Check if loading from save slot
+    if (window.__LOAD_FROM_SLOT__ && window.saveManager) {
+      const slotNum = window.__LOAD_FROM_SLOT__;
+      // Clear load flag IMMEDIATELY to prevent infinite loop
+      window.__LOAD_FROM_SLOT__ = null;
+      console.log('[startGame] Loading from save slot:', slotNum);
+      
+      const saveData = window.saveManager.loadFromSlot(slotNum);
+      if (saveData) {
+        try {
+          // Apply save data to game
+          const restored = window.saveManager.applyLoadedData(game.player, saveData);
+          if (restored) {
+            game.coins = restored.coins;
+            game.depth = restored.currentLayer;
+            GAME.difficulty = restored.difficulty;
+            game.gameTime = restored.gameTime || 0;
+            
+            // Update game's skill tree manager reference
+            game.skillTreeManager = game.player.skillTreeManager;
+            
+            console.log('[startGame] Save loaded successfully:', {
+              level: saveData.level,
+              layer: restored.currentLayer,
+              difficulty: restored.difficulty,
+              coins: restored.coins
+            });
+            
+            game.promptTimed('💾 Game Loaded!', 2);
+          } else {
+            console.error('[startGame] Failed to apply save data');
+            game.promptTimed('❌ Failed to load save', 2);
+            return; // Don't start game if load failed
+          }
+        } catch (loadErr) {
+          console.error('[startGame] Error loading save:', loadErr);
+          game.promptTimed('❌ Save corrupted', 2);
+          return; // Don't start game if load failed
+        }
+      } else {
+        console.warn('[startGame] Failed to load save from slot:', slotNum);
+        game.promptTimed('❌ Save not found', 2);
+        return; // Don't start game if save not found
+      }
+    }
+    // Apply selected difficulty from overlay (only for new game)
+    else if (window.__GAME_DIFFICULTY__) {
       GAME.difficulty = window.__GAME_DIFFICULTY__;
       console.log('[startGame] Difficulty set to:', GAME.difficulty);
+    }
+    
+    // Generate new dungeon if needed (for new games or after newRun)
+    if (!game.dungeon || game.rooms.size === 0) {
+      console.log('[startGame] Generating new dungeon for depth:', game.depth);
+      game.dungeon = new Dungeon().generateCount(6, 10, game.depth);
+      game.rooms = game.dungeon.rooms;
+      game.currentRoomKey = game.dungeon.start;
     }
     
     if (overlay) {
@@ -296,9 +498,13 @@ function startGame(source='unknown'){
     game.started = true;
     game.paused = false;
     
-    // Initialize skill tree manager
-    game.skillTreeManager = new SkillTreeManager(game.player);
-    console.log('[startGame] Skill tree manager initialized');
+    // Initialize skill tree manager (or reuse loaded one)
+    if (!game.skillTreeManager) {
+      game.skillTreeManager = new SkillTreeManager(game.player);
+      console.log('[startGame] Skill tree manager initialized');
+    } else {
+      console.log('[startGame] Using loaded skill tree manager');
+    }
     
     // Attempt audio init without await so it can't block start
     Promise.resolve().then(()=> game.audio.init()).then(()=>{
@@ -540,6 +746,33 @@ function buildRoomCache(room){
   // Store wall colors for later use
   room.wallBaseColor = wallBaseColor;
   room.wallDetailColor = wallDetailColor;
+  
+  // Add themed floor tile overlay if room has a theme (cached in renderCache)
+  if (room.theme) {
+    cctx.save();
+    const tileSize = 64;
+    const tileColors = {
+      library: ['#3e2723', '#4e342e'],
+      armory: ['#424242', '#616161'],
+      crypt: ['#263238', '#37474f'],
+      laboratory: ['#e0e0e0', '#f5f5f5'],
+      dungeon: ['#1a1a1a', '#2a2a2a'],
+      garden: ['#33691e', '#558b2f'],
+      dark_chamber: ['#0d0d0d', '#1a1a1a'],
+      bright_hall: ['#fafafa', '#ffffff']
+    };
+    const colors = tileColors[room.theme] || ['#212121', '#424242'];
+    
+    for (let x = 0; x < W; x += tileSize) {
+      for (let y = 0; y < H; y += tileSize) {
+        const colorIndex = ((x / tileSize) + (y / tileSize)) % 2;
+        cctx.fillStyle = colors[colorIndex];
+        cctx.globalAlpha = 0.15;
+        cctx.fillRect(x, y, tileSize, tileSize);
+      }
+    }
+    cctx.restore();
+  }
   
   // decorative border
   cctx.strokeStyle = '#222'; cctx.lineWidth = 1; cctx.strokeRect(20,20,W-40,H-40);
@@ -1666,12 +1899,16 @@ function loop(now){
 function tick(dt){
   // Stop all gameplay updates until Start is clicked
   if (!game.started) return;
+  // Track game time (only when actually playing)
+  if (game.started && !game.dead && !game.paused && !game.levelUpChoices && !game.shopOpen && !game.skillTreeOpen) {
+    game.gameTime += dt;
+  }
   // Stop updates when dead (only overlay draws)
   if (game.dead) return;
   // Pause menu
   if (game.paused) return;
-  // Pause entirely during level-up selection (UI still draws)
-  if (game.levelUpChoices || game.shopOpen) return;
+  // Pause entirely during level-up selection, shop, or skill tree (UI still draws)
+  if (game.levelUpChoices || game.shopOpen || game.skillTreeOpen) return;
   const theme = PALETTES[game.theme];
 
   // Input actions
@@ -1709,9 +1946,21 @@ function tick(dt){
   // Update player and aim world coords
   updateMouseWorld();
   game.player.update(dt, game.input, game.mouse, game);
+  
+  // Add dash trail particles
+  if (game.player.dashTime > 0) {
+    if (!game.dashTrailTime) game.dashTrailTime = 0;
+    game.dashTrailTime -= dt;
+    if (game.dashTrailTime <= 0) {
+      game.dashTrailTime = 0.02; // Every 20ms
+      spawnDashTrail(game.player.x, game.player.y, '#00e676');
+    }
+  }
 
   // Enemies
-  for (const e of game.enemies) e.update(dt, game);
+  for (const e of game.enemies) {
+    if (e && typeof e.update === 'function') e.update(dt, game);
+  }
   // Handle enemy-triggered explosions (from bomber proximity or on-death)
   for (const e of game.enemies) {
     if (e.pendingExplosion) {
@@ -1763,7 +2012,11 @@ function tick(dt){
   // build simple spatial grid for enemies to speed up projectile collisions
   const cell = 160; const grid = new Map();
   function cellKey(ix,iy){ return ix+","+iy; }
-  for (const e of game.enemies){ const ix = (e.x/cell)|0, iy = (e.y/cell)|0; const k = cellKey(ix,iy); (grid.get(k) || grid.set(k, []).get(k)).push(e); }
+  for (const e of game.enemies){ 
+    if (e && typeof e.takeDamage === 'function') {
+      const ix = (e.x/cell)|0, iy = (e.y/cell)|0; const k = cellKey(ix,iy); (grid.get(k) || grid.set(k, []).get(k)).push(e);
+    }
+  }
   for (const p of game.projectiles) {
     if (p.from!=='player') continue;
     const ix = (p.x/cell)|0, iy = (p.y/cell)|0;
@@ -1781,7 +2034,7 @@ function tick(dt){
   const attackAngle = Math.atan2(e.y - p.y, e.x - p.x);
   e.damage(dmg, game, attackAngle); e.knockVx += (p.vx)*0.02; e.knockVy += (p.vy)*0.02; p.life = 0; game.audio.hit();
         spawnHitSparks(p.x, p.y, e.color);
-  if (isCrit) spawnFloatText('CRIT', e.x, e.y-14, '#ff5252');
+  if (isCrit) { spawnCriticalHit(e.x, e.y); game.camera.shake = Math.max(game.camera.shake, 6); }
   // lifesteal
   const ls = game.player.lifesteal || 0; if (ls>0) game.player.heal(dmg * ls);
         spawnFloatText(`-${Math.round(dmg)}`, e.x, e.y, '#ffca28');
@@ -1810,9 +2063,16 @@ function tick(dt){
             const comboBonus = Math.floor(game.player.combo / 5);
             const c = 1 + Math.floor(Math.random()*3) + comboBonus; 
             game.coins += c; 
+            spawnCoinSparkles(e.x, e.y);
             spawnFloatText(`+${c}c`, e.x, e.y, '#ffee58');
             if (game.player.combo >= 5 && game.player.combo % 5 === 0) {
               spawnFloatText('COMBO x' + game.player.combo, e.x, e.y - 30, '#00e676');
+              // Add extra particles for combo milestones
+              const comboLevel = Math.floor(game.player.combo / 5);
+              for(let i=0; i<comboLevel && i<8 && game.particles.length<MAX_PARTICLES; i++){
+                game.particles.push(new StarParticle(e.x, e.y, '#00e676', 0.8));
+              }
+              game.camera.shake = Math.max(game.camera.shake, 2 + comboLevel);
             }
             const xpGain = 18 + comboBonus * 3;
             const lvl = game.player.addXp(xpGain);
@@ -1820,6 +2080,8 @@ function tick(dt){
               game.levelUpChoices = levelUpChoices(); 
               levelUpOpenTime = Date.now(); 
               game.audio.playLevelUp(); 
+              spawnLevelUpCelebration(game.player.x, game.player.y);
+              game.camera.shake = Math.max(game.camera.shake, 12);
               // Add skill point on level up
               if (game.skillTreeManager) {
                 game.skillTreeManager.addSkillPoint();
@@ -1846,7 +2108,7 @@ function tick(dt){
   }
   // enemy melee contact damage with cooldown and feedback
   for (const e of game.enemies) {
-    if (e.dead) continue;
+    if (!e || typeof e.takeDamage !== 'function' || e.dead) continue;
     e.attackCd = Math.max(0, e.attackCd - dt); // tick down attack cooldown
     if (circleIntersect(e.x, e.y, e.r, game.player.x, game.player.y, game.player.r)) {
       if (e.attackCd <= 0 && e.attackRate > 0) {
@@ -1884,6 +2146,7 @@ function tick(dt){
             // spawn coins only for non-explosive props (crates, etc)
             const coinCount = 2 + Math.floor(Math.random() * 4);
             game.coins += coinCount;
+            spawnCoinSparkles(prop.x, prop.y);
             spawnFloatText(`+${coinCount}c`, prop.x, prop.y, '#ffee58');
           }
           spawnDeathBurst(prop.x, prop.y, prop.type === 'crate' ? '#6d4c41' : '#8d6e63');
@@ -1896,7 +2159,7 @@ function tick(dt){
   
   // Enemies can trigger traps and explosive barrels
   for (const e of game.enemies) {
-    if (e.dead) continue;
+    if (!e || e.dead || typeof e.takeDamage !== 'function') continue;
     // Check traps
     for (const trap of currentRoom.contents.traps) {
       if (trap.triggered) continue;
@@ -1934,10 +2197,26 @@ function tick(dt){
     prt.update(dt);
     if (prt.t < prt.life && game.particles.length < maxParticles) game.particles.push(prt);
   }
+  
+  // Party mode - spawn rainbow particles around player (optimized)
+  if (game.partyMode && SETTINGS.graphics.particles && game.particles.length < maxParticles - 50) {
+    if (!game.partyTimer) game.partyTimer = 0;
+    game.partyTimer -= dt;
+    if (game.partyTimer <= 0) {
+      game.partyTimer = 0.1; // Reduced from 0.05 to 0.1 (half the particle spawn rate)
+      const colors = ['#ff0080', '#00ffff', '#ffff00', '#00ff00', '#ff00ff', '#ff8000'];
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 50 + Math.random() * 100;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      game.particles.push(new Particle(game.player.x, game.player.y, Math.cos(angle)*speed, Math.sin(angle)*speed, 0.6, color, 3));
+    }
+  }
 
   // if room cleared now, ping doors
   const roomEnemies = game.enemies.length;
   const room = game.rooms.get(game.currentRoomKey);
+  // Safety check: ensure room exists before accessing properties
+  if (!room) return;
   // Only mark room as cleared if it was locked/had enemies to begin with
   const shouldBeLocked = (room.type==='combat' || room.type==='trap' || room.type==='boss');
   if (!room.cleared && roomEnemies === 0 && shouldBeLocked && room.spawned) {
@@ -2120,7 +2399,8 @@ function tick(dt){
         game.prompt = 'Press E to enter the portal';
         
         // Check for E key press to enter portal
-        if (game.input.interact && !interactLock) {
+        const interactPressed = [...downSet].some(k => INPUT_KEYS.interact.includes(k));
+        if (interactPressed && !interactLock) {
           interactLock = true;
           console.log('[Portal] Entering next level from depth', game.depth);
           game.promptTimed('🌀 Entering the dimensional rift...', 2.0);
@@ -2166,8 +2446,24 @@ function draw(dt){
   // parallax background
   ctx.save();
   ctx.fillStyle = theme.bg; ctx.fillRect(0,0,game.width,game.height);
-  // fog grid
-  ctx.fillStyle = theme.fog; for (let i=0;i<game.width;i+=64){ ctx.fillRect(i,0,1,game.height);} for (let j=0;j<game.height;j+=64){ ctx.fillRect(0,j,game.width,1);} 
+  
+  // fog grid (cached to avoid nested loop fillRect calls every frame)
+  if (!game.cachedFogGrid || game.cachedFogGrid.color !== theme.fog) {
+    const fogCanvas = document.createElement('canvas');
+    fogCanvas.width = game.width;
+    fogCanvas.height = game.height;
+    const fogCtx = fogCanvas.getContext('2d');
+    fogCtx.fillStyle = theme.fog;
+    for (let i=0; i<game.width; i+=64) {
+      fogCtx.fillRect(i, 0, 1, game.height);
+    }
+    for (let j=0; j<game.height; j+=64) {
+      fogCtx.fillRect(0, j, game.width, 1);
+    }
+    game.cachedFogGrid = { canvas: fogCanvas, color: theme.fog };
+  }
+  ctx.drawImage(game.cachedFogGrid.canvas, 0, 0);
+  
   ctx.restore();
 
   // world transform
@@ -2177,6 +2473,11 @@ function draw(dt){
 
   // room floor via cached render (falls back if missing)
   const room = game.rooms.get(game.currentRoomKey);
+  // Safety check: if room doesn't exist (e.g., during newRun), skip rendering
+  if (!room) {
+    ctx.restore();
+    return;
+  }
   const W = room.w, H = room.h;
   if (room?.renderCache) {
     ctx.drawImage(room.renderCache, 0, 0);
@@ -2187,32 +2488,7 @@ function draw(dt){
     if (MAP_PATTERN) { ctx.save(); ctx.globalAlpha = 0.85; ctx.fillStyle = MAP_PATTERN; ctx.fillRect(0,0,W, H); ctx.restore(); }
   }
   
-  // Draw floor tiles for themed rooms
-  if (room.theme) {
-    ctx.save();
-    const tileSize = 64;
-    const tileColors = {
-      library: ['#3e2723', '#4e342e'],
-      armory: ['#424242', '#616161'],
-      crypt: ['#263238', '#37474f'],
-      laboratory: ['#e0e0e0', '#f5f5f5'],
-      dungeon: ['#1a1a1a', '#2a2a2a'],
-      garden: ['#33691e', '#558b2f'],
-      dark_chamber: ['#0d0d0d', '#1a1a1a'],
-      bright_hall: ['#fafafa', '#ffffff']
-    };
-    const colors = tileColors[room.theme] || ['#212121', '#424242'];
-    
-    for (let x = 0; x < W; x += tileSize) {
-      for (let y = 0; y < H; y += tileSize) {
-        const colorIndex = ((x / tileSize) + (y / tileSize)) % 2;
-        ctx.fillStyle = colors[colorIndex];
-        ctx.globalAlpha = 0.15;
-        ctx.fillRect(x, y, tileSize, tileSize);
-      }
-    }
-    ctx.restore();
-  }
+  // Floor tiles for themed rooms are now cached in renderCache during buildRoomCache()
   
   // Apply lighting overlay based on room light level
   if (room.lightLevel !== undefined) {
@@ -2229,44 +2505,55 @@ function draw(dt){
     ctx.restore();
   }
   
-  // Themed room visual effects
+  // Themed room visual effects (OPTIMIZED - Cached gradients)
+  // Cache gradients on first use to avoid creating them every frame
+  if (!room.cachedGradients) {
+    room.cachedGradients = {};
+    
+    if (room.type === 'dark') {
+      room.cachedGradients.vignette = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
+      room.cachedGradients.vignette.addColorStop(0, 'rgba(26, 26, 46, 0)');
+      room.cachedGradients.vignette.addColorStop(1, 'rgba(10, 5, 20, 0.8)');
+    } else if (room.type === 'toxic') {
+      // Pre-create base gradient (pulse will be applied via globalAlpha)
+      room.cachedGradients.fog = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.6);
+      room.cachedGradients.fog.addColorStop(0, 'rgba(124, 179, 66, 0)');
+      room.cachedGradients.fog.addColorStop(0.7, 'rgba(124, 179, 66, 0.12)');
+      room.cachedGradients.fog.addColorStop(1, 'rgba(85, 139, 47, 0.18)');
+    }
+  }
+  
+  // Pre-calculate pulse at 15 FPS instead of 60 FPS
+  if (!room.pulseCache || performance.now() - room.pulseCache.lastUpdate > 66) {
+    room.pulseCache = {
+      value: 0.5 + Math.sin(performance.now() * 0.0025) * 0.5,
+      lastUpdate: performance.now()
+    };
+  }
+  const pulse = room.pulseCache.value;
+  
   if (room.type === 'dark') {
-    // Dark room - heavy darkness with slight purple tint
     ctx.save();
     ctx.fillStyle = 'rgba(10, 5, 20, 0.6)';
     ctx.fillRect(0, 0, W, H);
-    // Vignette effect
-    const vignette = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
-    vignette.addColorStop(0, 'rgba(26, 26, 46, 0)');
-    vignette.addColorStop(1, 'rgba(10, 5, 20, 0.8)');
-    ctx.fillStyle = vignette;
+    ctx.fillStyle = room.cachedGradients.vignette;
     ctx.fillRect(0, 0, W, H);
     ctx.restore();
   } else if (room.type === 'explosive') {
-    // Explosive room - orange/red heat haze
     ctx.save();
-    const pulse = 0.5 + Math.sin(performance.now() * 0.002) * 0.5;
     ctx.fillStyle = `rgba(255, 107, 53, ${pulse * 0.08})`;
     ctx.fillRect(0, 0, W, H);
     ctx.restore();
   } else if (room.type === 'toxic') {
-    // Toxic room - green poison fog
     ctx.save();
-    const pulse = 0.5 + Math.sin(performance.now() * 0.003) * 0.5;
-    const fog = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.6);
-    fog.addColorStop(0, 'rgba(124, 179, 66, 0)');
-    fog.addColorStop(0.7, `rgba(124, 179, 66, ${pulse * 0.12})`);
-    fog.addColorStop(1, `rgba(85, 139, 47, ${pulse * 0.18})`);
-    ctx.fillStyle = fog;
+    ctx.globalAlpha = pulse;
+    ctx.fillStyle = room.cachedGradients.fog;
     ctx.fillRect(0, 0, W, H);
     ctx.restore();
   } else if (room.type === 'frozen') {
-    // Frozen room - blue ice effects
     ctx.save();
     ctx.fillStyle = 'rgba(100, 181, 246, 0.1)';
     ctx.fillRect(0, 0, W, H);
-    // Ice crystals effect
-    const pulse = 0.5 + Math.sin(performance.now() * 0.004) * 0.5;
     ctx.fillStyle = `rgba(227, 242, 253, ${pulse * 0.05})`;
     ctx.fillRect(0, 0, W, H);
     ctx.restore();
@@ -2407,15 +2694,31 @@ function draw(dt){
   for (const t of room.contents.traps) t.draw(ctx);
   // draw blocking props
   for (const p of room.contents.props) p.draw(ctx);
-  // draw traders with visible indicator
+  // draw traders with visible indicator (OPTIMIZED - cached gradients and SVG)
   for (const l of room.contents.loot) {
     if (l.type === 'trader') {
       // Draw trader/merchant character
       ctx.save();
       
-      // Animated floating effect
-      const floatOffset = Math.sin(performance.now() * 0.002) * 4;
-      const pulseGlow = 0.5 + Math.sin(performance.now() * 0.003) * 0.3;
+      // Cache merchant gradient once (instead of creating every frame)
+      if (!l.cachedGlowGrad) {
+        l.cachedGlowGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 70);
+        l.cachedGlowGrad.addColorStop(0, 'rgba(255, 202, 40, 0.4)');
+        l.cachedGlowGrad.addColorStop(0.5, 'rgba(255, 202, 40, 0.2)');
+        l.cachedGlowGrad.addColorStop(1, 'rgba(255, 202, 40, 0)');
+      }
+      
+      // Pre-calculate animation at 15 FPS instead of 60 FPS
+      if (!l.animCache || performance.now() - l.animCache.lastUpdate > 66) {
+        l.animCache = {
+          floatOffset: Math.sin(performance.now() * 0.002) * 4,
+          pulseGlow: 0.5 + Math.sin(performance.now() * 0.003) * 0.3,
+          coinTime: performance.now() * 0.001,
+          lastUpdate: performance.now()
+        };
+      }
+      const floatOffset = l.animCache.floatOffset;
+      const pulseGlow = l.animCache.pulseGlow;
       
       // Ground shadow
       ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
@@ -2423,19 +2726,22 @@ function draw(dt){
       ctx.ellipse(l.x, l.y + 45, 35, 8, 0, 0, Math.PI * 2);
       ctx.fill();
       
-      // Mystical glow aura
-      const glowGrad = ctx.createRadialGradient(l.x, l.y + floatOffset, 0, l.x, l.y + floatOffset, 70);
-      glowGrad.addColorStop(0, `rgba(255, 202, 40, ${pulseGlow * 0.4})`);
-      glowGrad.addColorStop(0.5, `rgba(255, 202, 40, ${pulseGlow * 0.2})`);
-      glowGrad.addColorStop(1, 'rgba(255, 202, 40, 0)');
-      ctx.fillStyle = glowGrad;
+      // Mystical glow aura (use cached gradient with position and alpha)
+      ctx.translate(l.x, l.y + floatOffset);
+      ctx.globalAlpha = pulseGlow;
+      ctx.fillStyle = l.cachedGlowGrad;
       ctx.beginPath();
-      ctx.arc(l.x, l.y + floatOffset, 70, 0, Math.PI * 2);
+      ctx.arc(0, 0, 70, 0, Math.PI * 2);
       ctx.fill();
+      ctx.globalAlpha = 1.0;
+      ctx.translate(-l.x, -(l.y + floatOffset));
       
-      // Load and draw merchant SVG
-      const merchantImg = new Image();
-      if (!merchantImg.src) merchantImg.src = 'assets/img/icons/merchant.svg';
+      // Load and draw merchant SVG (cached globally)
+      if (!window.MERCHANT_IMG_CACHE) {
+        window.MERCHANT_IMG_CACHE = new Image();
+        window.MERCHANT_IMG_CACHE.src = 'assets/img/icons/merchant.svg';
+      }
+      const merchantImg = window.MERCHANT_IMG_CACHE;
       if (merchantImg.complete && merchantImg.naturalWidth > 0) {
         ctx.drawImage(merchantImg, l.x - 40, l.y - 50 + floatOffset, 80, 80);
       } else {
@@ -2570,7 +2876,9 @@ function draw(dt){
       l.draw?.(ctx);
     }
   }
-  for (const e of game.enemies) e.draw(ctx);
+  for (const e of game.enemies) {
+    if (e && typeof e.draw === 'function') e.draw(ctx);
+  }
   for (const p of game.projectiles) p.draw(ctx);
   for (const p of game.enemyProjectiles) p.draw(ctx);
   // particles
@@ -2704,8 +3012,10 @@ function draw(dt){
     ctx.restore();
   }
 
-  // HUD
-  drawHUD(ctx, game);
+  // HUD (hide when settings menu is open)
+  if (!game.settingsOpen) {
+    drawHUD(ctx, game);
+  }
 
   // Death overlay
   if (game.dead) {
@@ -3080,12 +3390,132 @@ function draw(dt){
     ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
     ctx.fillText('Press N', newRunX + buttonW/2, buttonY + buttonH/2 + 12);
     
+    // Save Game and Settings buttons (side by side)
+    const lowerButtonY = buttonY + buttonH + 20;
+    const lowerButtonH = 50;
+    const lowerGap = 15;
+    const lowerButtonW = (panelW - 120 - lowerGap) / 2;
+    const saveGameX = panelX + 60;
+    const settingsX = saveGameX + lowerButtonW + lowerGap;
+    
+    // Save Game button (left)
+    const saveGameHovered = game.mouse.x >= saveGameX && game.mouse.x <= saveGameX+lowerButtonW && 
+                            game.mouse.y >= lowerButtonY && game.mouse.y <= lowerButtonY+lowerButtonH;
+    
+    if (saveGameHovered) {
+      ctx.shadowColor = '#2196f3';
+      ctx.shadowBlur = 25;
+    }
+    
+    const saveGameGrad = ctx.createLinearGradient(saveGameX, lowerButtonY, saveGameX, lowerButtonY + lowerButtonH);
+    if (saveGameHovered) {
+      saveGameGrad.addColorStop(0, '#42a5f5');
+      saveGameGrad.addColorStop(1, '#1e88e5');
+    } else {
+      saveGameGrad.addColorStop(0, '#2196f3');
+      saveGameGrad.addColorStop(1, '#1565c0');
+    }
+    ctx.fillStyle = saveGameGrad;
+    ctx.fillRect(saveGameX, lowerButtonY, lowerButtonW, lowerButtonH);
+    
+    ctx.shadowBlur = 0;
+    
+    ctx.strokeStyle = saveGameHovered ? '#64b5f6' : 'rgba(255, 255, 255, 0.2)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(saveGameX, lowerButtonY, lowerButtonW, lowerButtonH);
+    
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px system-ui, Arial';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillText('💾 Save Game', saveGameX + lowerButtonW/2, lowerButtonY + lowerButtonH/2);
+    
+    // Settings button (right)
+    const settingsHovered = game.mouse.x >= settingsX && game.mouse.x <= settingsX+lowerButtonW && 
+                            game.mouse.y >= lowerButtonY && game.mouse.y <= lowerButtonY+lowerButtonH;
+    
+    if (settingsHovered) {
+      ctx.shadowColor = '#ffca28';
+      ctx.shadowBlur = 25;
+    }
+    
+    const settingsGrad = ctx.createLinearGradient(settingsX, lowerButtonY, settingsX, lowerButtonY + lowerButtonH);
+    if (settingsHovered) {
+      settingsGrad.addColorStop(0, '#ffd54f');
+      settingsGrad.addColorStop(1, '#ffa000');
+    } else {
+      settingsGrad.addColorStop(0, '#ffca28');
+      settingsGrad.addColorStop(1, '#ff8f00');
+    }
+    ctx.fillStyle = settingsGrad;
+    ctx.fillRect(settingsX, lowerButtonY, lowerButtonW, lowerButtonH);
+    
+    ctx.shadowBlur = 0;
+    
+    ctx.strokeStyle = settingsHovered ? '#ffe082' : 'rgba(255, 255, 255, 0.2)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(settingsX, lowerButtonY, lowerButtonW, lowerButtonH);
+    
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 18px system-ui, Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('⚙ Settings', settingsX + lowerButtonW/2, lowerButtonY + lowerButtonH/2);
+    
+    // Quick Save button (bottom, centered)
+    const quickSaveW = 240;
+    const quickSaveH = 45;
+    const quickSaveX = panelX + (panelW - quickSaveW) / 2;
+    const quickSaveY = lowerButtonY + lowerButtonH + 15;
+    
+    const quickSaveHovered = game.mouse.x >= quickSaveX && game.mouse.x <= quickSaveX + quickSaveW && 
+                             game.mouse.y >= quickSaveY && game.mouse.y <= quickSaveY + quickSaveH;
+    
+    if (quickSaveHovered) {
+      ctx.shadowColor = '#00e676';
+      ctx.shadowBlur = 20;
+    }
+    
+    const quickSaveGrad = ctx.createLinearGradient(quickSaveX, quickSaveY, quickSaveX, quickSaveY + quickSaveH);
+    if (quickSaveHovered) {
+      quickSaveGrad.addColorStop(0, '#00e676');
+      quickSaveGrad.addColorStop(1, '#00c853');
+    } else {
+      quickSaveGrad.addColorStop(0, '#00c853');
+      quickSaveGrad.addColorStop(1, '#00a843');
+    }
+    ctx.fillStyle = quickSaveGrad;
+    ctx.fillRect(quickSaveX, quickSaveY, quickSaveW, quickSaveH);
+    
+    ctx.shadowBlur = 0;
+    
+    ctx.strokeStyle = quickSaveHovered ? '#69f0ae' : 'rgba(255, 255, 255, 0.2)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(quickSaveX, quickSaveY, quickSaveW, quickSaveH);
+    
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 16px system-ui, Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('⚡ Quick Save', quickSaveX + quickSaveW/2, quickSaveY + quickSaveH/2);
+    
+    // Store button bounds for click detection
+    game.pauseButtons = {
+      resume: { x: resumeX, y: buttonY, w: buttonW, h: buttonH },
+      newRun: { x: newRunX, y: buttonY, w: buttonW, h: buttonH },
+      saveGame: { x: saveGameX, y: lowerButtonY, w: lowerButtonW, h: lowerButtonH },
+      settings: { x: settingsX, y: lowerButtonY, w: lowerButtonW, h: lowerButtonH },
+      quickSave: { x: quickSaveX, y: quickSaveY, w: quickSaveW, h: quickSaveH }
+    };
+    
     ctx.restore();
   }
   // Shop overlay
   if (game.shopOpen) drawShop(ctx, game);
   // Skill tree overlay
   if (game.skillTreeOpen) drawSkillTree(ctx, game);
+  // Settings overlay
+  if (game.settingsOpen) drawSettings(ctx, game);
 }
 
 function drawSkillTree(ctx, game) {
@@ -3097,143 +3527,249 @@ function drawSkillTree(ctx, game) {
   ctx.save();
   ctx.resetTransform();
   
-  // Dark overlay with gradient
-  const overlayGrad = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width * 0.6);
-  overlayGrad.addColorStop(0, 'rgba(0,0,0,0.90)');
-  overlayGrad.addColorStop(1, 'rgba(0,0,0,0.96)');
+  // Animated gradient background
+  const time = performance.now() * 0.0005;
+  const grad1 = ctx.createLinearGradient(0, 0, width, height);
+  grad1.addColorStop(0, `rgba(${15 + Math.sin(time) * 5}, ${5 + Math.cos(time) * 3}, ${25 + Math.sin(time * 0.7) * 5}, 0.96)`);
+  grad1.addColorStop(0.5, `rgba(${20 + Math.cos(time * 1.3) * 5}, ${10 + Math.sin(time * 0.9) * 3}, ${30 + Math.cos(time) * 5}, 0.98)`);
+  grad1.addColorStop(1, `rgba(${10 + Math.sin(time * 1.1) * 5}, ${8 + Math.cos(time * 1.2) * 3}, ${20 + Math.sin(time * 0.8) * 5}, 0.96)`);
+  ctx.fillStyle = grad1;
+  ctx.fillRect(0, 0, width, height);
+  
+  // Animated particles
+  for (let i = 0; i < 30; i++) {
+    const px = (width * (i / 30) + time * 40 * (i % 3 - 1)) % width;
+    const py = (height * ((i * 0.618) % 1) + time * 30 * (i % 2)) % height;
+    const size = 1 + (i % 3) * 0.5;
+    const alpha = 0.06 + Math.sin(time * 3 + i) * 0.06;
+    ctx.fillStyle = `rgba(255, 200, 100, ${alpha})`;
+    ctx.beginPath();
+    ctx.arc(px, py, size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  
+  // Radial overlay for depth
+  const overlayGrad = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width * 0.65);
+  overlayGrad.addColorStop(0, 'rgba(0,0,0,0)');
+  overlayGrad.addColorStop(1, 'rgba(0,0,0,0.4)');
   ctx.fillStyle = overlayGrad;
   ctx.fillRect(0, 0, width, height);
   
   // Animated pulse
   const pulse = 0.5 + Math.sin(performance.now() * 0.003) * 0.5;
   
-  // Title
+  // Compact header
   ctx.shadowColor = '#ff7a00';
-  ctx.shadowBlur = 20 * pulse;
-  ctx.fillStyle = '#ff7a00';
-  ctx.font = 'bold 32px system-ui, Arial';
+  ctx.shadowBlur = 25 * pulse;
+  const titleGrad = ctx.createLinearGradient(width/2 - 150, 20, width/2 + 150, 40);
+  titleGrad.addColorStop(0, '#ff9500');
+  titleGrad.addColorStop(0.5, '#ffca28');
+  titleGrad.addColorStop(1, '#ff7a00');
+  ctx.fillStyle = titleGrad;
+  ctx.font = 'bold 36px system-ui, Arial';
   ctx.textAlign = 'center';
-  ctx.fillText('SKILL TREE', width/2, 50);
+  ctx.fillText('⚡ SKILL TREE ⚡', width/2, 40);
   ctx.shadowBlur = 0;
   
-  // Subtitle
-  ctx.fillStyle = '#aaa';
-  ctx.font = '14px system-ui, Arial';
-  ctx.fillText(`Skill Points: ${stm.skillPoints}`, width/2, 75);
-  ctx.fillStyle = '#ff5252';
-  ctx.font = '12px system-ui, Arial';
-  ctx.fillText('⚠️ WARNING: Game continues! You can still be killed!', width/2, 92);
+  // Skill points display with background panel
+  const spPanelW = 200, spPanelH = 35;
+  const spPanelX = width/2 - spPanelW/2, spPanelY = 60;
   
-  // Back button hints
+  const spGrad = ctx.createLinearGradient(spPanelX, spPanelY, spPanelX, spPanelY + spPanelH);
+  spGrad.addColorStop(0, 'rgba(40, 40, 50, 0.9)');
+  spGrad.addColorStop(1, 'rgba(25, 25, 35, 0.9)');
+  ctx.fillStyle = spGrad;
+  ctx.fillRect(spPanelX, spPanelY, spPanelW, spPanelH);
+  
+  ctx.strokeStyle = 'rgba(255, 202, 40, 0.5)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(spPanelX, spPanelY, spPanelW, spPanelH);
+  
+  ctx.fillStyle = '#ffca28';
+  ctx.font = 'bold 18px system-ui, Arial';
+  ctx.fillText(`Skill Points: ${stm.skillPoints}`, width/2, spPanelY + 23);
+  
+  // Warning message
+  ctx.fillStyle = '#ff5252';
+  ctx.font = 'bold 11px system-ui, Arial';
+  ctx.fillText('⚠️ Game continues! Stay alert!', width/2, 105);
+  
+  // Hint text with better styling
+  ctx.fillStyle = 'rgba(200, 200, 200, 0.8)';
+  ctx.font = '11px system-ui, Arial';
   if (stm.selectedBranch && stm.unlockedSkills.size === 0) {
-    ctx.fillStyle = '#888';
-    ctx.font = '11px system-ui, Arial';
-    ctx.fillText('(Press B or ESC to go back | Press T to close)', width/2, 112);
+    ctx.fillText('Press B/ESC to go back • Press T to close', width/2, 122);
   } else if (!stm.selectedBranch) {
-    ctx.fillStyle = '#888';
-    ctx.font = '11px system-ui, Arial';
-    ctx.fillText('(Press B, ESC, or T to close)', width/2, 112);
+    ctx.fillText('Press B/ESC/T to close', width/2, 122);
   } else {
-    ctx.fillStyle = '#888';
-    ctx.font = '11px system-ui, Arial';
-    ctx.fillText('(Press T or ESC to close)', width/2, 112);
+    ctx.fillText('Press T/ESC to close', width/2, 122);
   }
   
   // Branch selection area if no branch selected yet
   if (!stm.selectedBranch) {
+    // Section title with glow
+    ctx.shadowColor = '#ffca28';
+    ctx.shadowBlur = 15;
     ctx.fillStyle = '#ffca28';
-    ctx.font = 'bold 20px system-ui, Arial';
-    ctx.fillText('Choose Your Path', width/2, 155);
+    ctx.font = 'bold 24px system-ui, Arial';
+    ctx.fillText('✨ Choose Your Path ✨', width/2, 155);
+    ctx.shadowBlur = 0;
     
     const branchNames = Object.keys(SKILL_TREE.branches);
     const branchW = 220, branchH = 280, gap = 25;
-    const startX = width/2 - (branchW * 1.5 + gap);
-    const branchY = 200;
+    const cols = 2, rows = 2;
+    const totalWidth = cols * branchW + (cols - 1) * gap;
+    const totalHeight = rows * branchH + (rows - 1) * gap;
+    const startX = width/2 - totalWidth/2;
+    const branchY = 160;
     
     for (let i = 0; i < branchNames.length; i++) {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
       const branchKey = branchNames[i];
       const branch = SKILL_TREE.branches[branchKey];
-      const bx = startX + i * (branchW + gap);
+      const bx = startX + col * (branchW + gap);
+      const by = branchY + row * (branchH + gap);
       
       // Check if mouse is hovering
       const isHovered = game.mouse.x >= bx && game.mouse.x <= bx + branchW &&
-                        game.mouse.y >= branchY && game.mouse.y <= branchY + branchH;
+                        game.mouse.y >= by && game.mouse.y <= by + branchH;
       
-      // Background panel
+      // Glow effect on hover
       if (isHovered) {
         ctx.shadowColor = branch.color;
-        ctx.shadowBlur = 20;
+        ctx.shadowBlur = 30;
       }
       
-      const panelGrad = ctx.createLinearGradient(bx, branchY, bx, branchY + branchH);
-      panelGrad.addColorStop(0, 'rgba(20, 20, 25, 0.95)');
-      panelGrad.addColorStop(1, 'rgba(10, 10, 15, 0.95)');
+      // Modern gradient background
+      const panelGrad = ctx.createLinearGradient(bx, by, bx, by + branchH);
+      panelGrad.addColorStop(0, 'rgba(30, 30, 40, 0.95)');
+      panelGrad.addColorStop(0.5, 'rgba(20, 20, 30, 0.98)');
+      panelGrad.addColorStop(1, 'rgba(15, 15, 25, 0.95)');
       ctx.fillStyle = panelGrad;
-      ctx.fillRect(bx, branchY, branchW, branchH);
+      ctx.fillRect(bx, by, branchW, branchH);
+      
+      // Top accent bar
+      const accentGrad = ctx.createLinearGradient(bx, by, bx + branchW, by);
+      accentGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      accentGrad.addColorStop(0.5, branch.color + '80');
+      accentGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = accentGrad;
+      ctx.fillRect(bx, by, branchW, 3);
       
       ctx.shadowBlur = 0;
       
-      // Border
-      ctx.strokeStyle = isHovered ? branch.color : 'rgba(100, 100, 100, 0.5)';
-      ctx.lineWidth = isHovered ? 3 : 2;
-      ctx.strokeRect(bx, branchY, branchW, branchH);
+      // Animated border
+      ctx.strokeStyle = isHovered ? branch.color : 'rgba(100, 100, 100, 0.4)';
+      ctx.lineWidth = isHovered ? 4 : 2;
+      ctx.strokeRect(bx, by, branchW, branchH);
       
-      // Icon
-      ctx.font = '48px system-ui, Arial';
+      // Icon with glow
+      if (isHovered) {
+        ctx.shadowColor = branch.color;
+        ctx.shadowBlur = 25;
+      }
+      ctx.font = '52px system-ui, Arial';
       ctx.fillStyle = branch.color;
-      ctx.fillText(branch.icon, bx + branchW/2, branchY + 65);
+      ctx.fillText(branch.icon, bx + branchW/2, by + 70);
+      ctx.shadowBlur = 0;
       
-      // Name
+      // Name with gradient
+      const nameGrad = ctx.createLinearGradient(bx, by + 90, bx, by + 108);
+      nameGrad.addColorStop(0, branch.color);
+      nameGrad.addColorStop(1, branch.color + 'cc');
+      ctx.fillStyle = nameGrad;
       ctx.font = 'bold 20px system-ui, Arial';
-      ctx.fillStyle = branch.color;
-      ctx.fillText(branch.name, bx + branchW/2, branchY + 105);
+      ctx.fillText(branch.name, bx + branchW/2, by + 108);
       
       // Description
       ctx.font = '12px system-ui, Arial';
-      ctx.fillStyle = '#ccc';
-      ctx.fillText(branch.description, bx + branchW/2, branchY + 130);
+      ctx.fillStyle = 'rgba(200, 200, 210, 0.9)';
+      ctx.fillText(branch.description, bx + branchW/2, by + 130);
       
-      // Skill list preview
-      ctx.font = '11px system-ui, Arial';
+      // Skill list preview (without costs since skills don't have cost property)
+      ctx.font = '10px system-ui, Arial';
       ctx.textAlign = 'left';
-      ctx.fillStyle = '#aaa';
-      let skillY = branchY + 160;
-      for (let j = 0; j < Math.min(6, branch.skills.length); j++) {
+      let skillY = by + 152;
+      for (let j = 0; j < Math.min(5, branch.skills.length); j++) {
         const skill = branch.skills[j];
         const prefix = skill.ultimate ? '⭐ ' : '• ';
-        ctx.fillText(prefix + skill.name, bx + 15, skillY);
-        skillY += 19;
+        ctx.fillStyle = skill.ultimate ? '#ffca28' : '#bbb';
+        ctx.fillText(prefix + skill.name, bx + 12, skillY);
+        skillY += 18;
       }
       
       ctx.textAlign = 'center';
     }
   } else {
-    // Show selected branch tree
+    // Show selected branch tree - NEW WIDER DESIGN
     const branch = SKILL_TREE.branches[stm.selectedBranch];
     
-    // Branch header
+    // Modern back button (top-left)
+    const backBtnW = 110;
+    const backBtnH = 38;
+    const backBtnX = 25;
+    const backBtnY = 25;
+    const backHovered = game.mouse.x >= backBtnX && game.mouse.x <= backBtnX + backBtnW &&
+                        game.mouse.y >= backBtnY && game.mouse.y <= backBtnY + backBtnH;
+    
+    if (backHovered) {
+      ctx.shadowColor = branch.color;
+      ctx.shadowBlur = 20;
+    }
+    
+    const backGrad = ctx.createLinearGradient(backBtnX, backBtnY, backBtnX, backBtnY + backBtnH);
+    if (backHovered) {
+      backGrad.addColorStop(0, 'rgba(65, 65, 80, 0.95)');
+      backGrad.addColorStop(1, 'rgba(50, 50, 65, 0.9)');
+    } else {
+      backGrad.addColorStop(0, 'rgba(50, 50, 65, 0.85)');
+      backGrad.addColorStop(1, 'rgba(35, 35, 50, 0.8)');
+    }
+    ctx.fillStyle = backGrad;
+    ctx.fillRect(backBtnX, backBtnY, backBtnW, backBtnH);
+    
+    ctx.strokeStyle = backHovered ? branch.color : 'rgba(150, 150, 170, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(backBtnX, backBtnY, backBtnW, backBtnH);
+    ctx.shadowBlur = 0;
+    
+    ctx.fillStyle = backHovered ? '#ffffff' : '#ddd';
+    ctx.font = 'bold 14px system-ui, Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('← Back', backBtnX + backBtnW/2, backBtnY + backBtnH/2 + 5);
+    
+    // Branch header - compact
+    ctx.shadowColor = branch.color;
+    ctx.shadowBlur = 18;
     ctx.fillStyle = branch.color;
     ctx.font = 'bold 26px system-ui, Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText(`${branch.icon} ${branch.name}`, width/2, 150);
+    ctx.fillText(`${branch.icon} ${branch.name}`, width/2, 155);
+    ctx.shadowBlur = 0;
     
-    ctx.fillStyle = '#aaa';
+    ctx.fillStyle = 'rgba(200, 200, 210, 0.85)';
     ctx.font = '13px system-ui, Arial';
-    ctx.fillText(branch.description, width/2, 175);
+    ctx.fillText(branch.description, width/2, 177);
     
-    // Draw skill nodes in tier layout (scaled down)
-    const nodeSize = 70;
-    const nodeGap = 100;
-    const tiers = [[], [], [], []];
+    // HUGE SKILL TREE LAYOUT WITH CAMERA - INCREASED SPACING
+    const nodeSize = 95;
+    const nodeGap = 200; // Increased from 160 to 200 for better spacing
+    const tiers = [[], [], [], [], [], [], []]; // 7 tiers now
     
     // Group skills by tier
     for (const skill of branch.skills) {
-      if (skill.tier >= 1 && skill.tier <= 4) {
+      if (skill.tier >= 1 && skill.tier <= 7) {
         tiers[skill.tier - 1].push(skill);
       }
     }
     
-    const startY = 230;
+    // Virtual canvas size (much larger than screen)
+    const virtualCenterX = 0;
+    const virtualStartY = -200;
+    
+    // Apply camera transform
+    ctx.save();
+    ctx.translate(-stm.cameraX, -stm.cameraY);
     let hoveredSkill = null;
     let hoveredPos = null;
     
@@ -3241,55 +3777,80 @@ function drawSkillTree(ctx, game) {
       const skills = tiers[tier];
       if (skills.length === 0) continue;
       
-      const tierY = startY + tier * (nodeSize + nodeGap + 30);
-      const tierStartX = width/2 - (skills.length - 1) * nodeGap / 2;
+      const tierY = virtualStartY + tier * (nodeSize + nodeGap + 30);
+      const tierStartX = virtualCenterX - (skills.length - 1) * nodeGap / 2;
       
       for (let i = 0; i < skills.length; i++) {
         const skill = skills[i];
         const nx = tierStartX + i * nodeGap;
         const ny = tierY;
         
+        // Screen position (after camera transform)
+        const screenX = nx - stm.cameraX;
+        const screenY = ny - stm.cameraY;
+        
+        // Skip if off screen (optimization)
+        if (screenX < -nodeSize || screenX > width + nodeSize || 
+            screenY < -nodeSize || screenY > height + nodeSize) continue;
+        
         const unlocked = stm.unlockedSkills.has(skill.id);
         const canUnlock = stm.canUnlock(skill.id);
-        const isHovered = game.mouse.x >= nx - nodeSize/2 && game.mouse.x <= nx + nodeSize/2 &&
-                          game.mouse.y >= ny - nodeSize/2 && game.mouse.y <= ny + nodeSize/2;
+        const isHovered = game.mouse.x >= screenX - nodeSize/2 && game.mouse.x <= screenX + nodeSize/2 &&
+                          game.mouse.y >= screenY - nodeSize/2 && game.mouse.y <= screenY + nodeSize/2;
         
-        // Draw connection lines to requirements
+        // Draw connection lines to requirements (enhanced)
         if (skill.requires && skill.requires.length > 0) {
-          ctx.strokeStyle = unlocked ? branch.color : 'rgba(100, 100, 100, 0.3)';
-          ctx.lineWidth = 2;
           for (const reqId of skill.requires) {
             // Find required skill position
             for (let t = 0; t < tier; t++) {
               const idx = tiers[t].findIndex(s => s.id === reqId);
               if (idx !== -1) {
-                const reqX = width/2 - (tiers[t].length - 1) * nodeGap / 2 + idx * nodeGap;
-                const reqY = startY + t * (nodeSize + nodeGap);
+                const reqX = virtualCenterX - (tiers[t].length - 1) * nodeGap / 2 + idx * nodeGap;
+                const reqY = virtualStartY + t * (nodeSize + nodeGap + 30);
+                
+                // Glow for unlocked paths
+                if (unlocked) {
+                  ctx.shadowColor = branch.color;
+                  ctx.shadowBlur = 15;
+                  ctx.strokeStyle = branch.color + 'cc';
+                  ctx.lineWidth = 3;
+                } else {
+                  ctx.strokeStyle = 'rgba(100, 100, 100, 0.3)';
+                  ctx.lineWidth = 2;
+                  ctx.shadowBlur = 0;
+                }
+                
                 ctx.beginPath();
                 ctx.moveTo(reqX, reqY + nodeSize/2);
                 ctx.lineTo(nx, ny - nodeSize/2);
                 ctx.stroke();
+                ctx.shadowBlur = 0;
               }
             }
           }
         }
         
-        // Node background
+        // Node background with enhanced gradients
         if (isHovered && canUnlock) {
           ctx.shadowColor = branch.color;
-          ctx.shadowBlur = 20;
+          ctx.shadowBlur = 25;
         }
         
         const nodeGrad = ctx.createRadialGradient(nx, ny, 0, nx, ny, nodeSize/2);
         if (unlocked) {
-          nodeGrad.addColorStop(0, branch.color + '60');
+          // Brighter gradient for unlocked
+          nodeGrad.addColorStop(0, branch.color + '80');
+          nodeGrad.addColorStop(0.5, branch.color + '50');
           nodeGrad.addColorStop(1, branch.color + '20');
         } else if (canUnlock) {
-          nodeGrad.addColorStop(0, 'rgba(50, 50, 60, 0.9)');
-          nodeGrad.addColorStop(1, 'rgba(30, 30, 40, 0.9)');
+          // Modern dark gradient for available
+          nodeGrad.addColorStop(0, 'rgba(60, 60, 75, 0.95)');
+          nodeGrad.addColorStop(0.7, 'rgba(40, 40, 55, 0.9)');
+          nodeGrad.addColorStop(1, 'rgba(25, 25, 35, 0.85)');
         } else {
-          nodeGrad.addColorStop(0, 'rgba(30, 30, 30, 0.7)');
-          nodeGrad.addColorStop(1, 'rgba(20, 20, 20, 0.7)');
+          // Locked gradient
+          nodeGrad.addColorStop(0, 'rgba(35, 35, 40, 0.7)');
+          nodeGrad.addColorStop(1, 'rgba(18, 18, 22, 0.7)');
         }
         ctx.fillStyle = nodeGrad;
         ctx.beginPath();
@@ -3298,122 +3859,171 @@ function drawSkillTree(ctx, game) {
         
         ctx.shadowBlur = 0;
         
-        // Node border
+        // Node border with glow
         if (unlocked) {
+          ctx.shadowColor = branch.color;
+          ctx.shadowBlur = 12;
           ctx.strokeStyle = branch.color;
           ctx.lineWidth = 4;
         } else if (canUnlock) {
-          ctx.strokeStyle = isHovered ? branch.color : '#666';
-          ctx.lineWidth = isHovered ? 3 : 2;
+          if (isHovered) {
+            ctx.shadowColor = branch.color;
+            ctx.shadowBlur = 18;
+          }
+          ctx.strokeStyle = isHovered ? branch.color : '#777';
+          ctx.lineWidth = isHovered ? 3.5 : 2.5;
         } else {
-          ctx.strokeStyle = '#333';
+          ctx.strokeStyle = '#444';
           ctx.lineWidth = 2;
         }
         ctx.stroke();
+        ctx.shadowBlur = 0;
         
-        // Skill name (shortened)
-        ctx.fillStyle = unlocked ? '#fff' : canUnlock ? '#ddd' : '#666';
-        ctx.font = 'bold 10px system-ui, Arial';
+        // Skill name with better styling and wrapping
+        ctx.font = 'bold 12px system-ui, Arial';
         ctx.textAlign = 'center';
-        const nameLines = skill.name.split(' ');
-        if (nameLines.length > 2) {
-          ctx.fillText(nameLines.slice(0, 2).join(' '), nx, ny - 4);
-          ctx.fillText(nameLines.slice(2).join(' '), nx, ny + 8);
+        
+        if (unlocked) {
+          ctx.fillStyle = '#ffffff';
+          ctx.shadowColor = branch.color;
+          ctx.shadowBlur = 10;
+        } else if (canUnlock) {
+          ctx.fillStyle = '#e5e5e5';
         } else {
-          ctx.fillText(skill.name, nx, ny);
+          ctx.fillStyle = '#888';
         }
         
-        // Ultimate indicator
+        // Smart text wrapping for wider nodes
+        const words = skill.name.split(' ');
+        if (words.length === 1) {
+          ctx.fillText(skill.name, nx, ny + 3);
+        } else if (words.length === 2) {
+          ctx.fillText(words[0], nx, ny - 5);
+          ctx.fillText(words[1], nx, ny + 9);
+        } else {
+          // For 3+ words, try to split evenly
+          const mid = Math.ceil(words.length / 2);
+          ctx.fillText(words.slice(0, mid).join(' '), nx, ny - 5);
+          ctx.fillText(words.slice(mid).join(' '), nx, ny + 9);
+        }
+        ctx.shadowBlur = 0;
+        
+        // Ultimate indicator with glow
         if (skill.ultimate) {
-          ctx.font = '16px system-ui, Arial';
-          ctx.fillText('⭐', nx, ny - 26);
+          ctx.shadowColor = '#ffca28';
+          ctx.shadowBlur = 18;
+          ctx.font = '20px system-ui, Arial';
+          ctx.fillStyle = '#ffca28';
+          ctx.fillText('⭐', nx, ny - 35);
+          ctx.shadowBlur = 0;
+        }
+        
+        // Cost indicator for expensive skills
+        const cost = skill.cost || 1;
+        if (cost > 1) {
+          ctx.shadowColor = '#ff5252';
+          ctx.shadowBlur = 15;
+          ctx.font = 'bold 16px system-ui, Arial';
+          ctx.fillStyle = cost >= 3 ? '#ff1744' : '#ff5252';
+          ctx.fillText(`${cost} pts`, nx, ny + 40);
+          ctx.shadowBlur = 0;
         }
         
         // Store hovered skill for later rendering
         if (isHovered) {
           hoveredSkill = { skill, unlocked, canUnlock, color: branch.color };
-          hoveredPos = { nx, ny, nodeSize };
+          hoveredPos = { nx: screenX, ny: screenY, nodeSize };
         }
       }
     }
     
-    // Universal skills sidebar
-    ctx.fillStyle = 'rgba(20, 20, 25, 0.95)';
-    ctx.fillRect(20, 180, 160, height - 200);
-    ctx.strokeStyle = '#666';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(20, 180, 160, height - 200);
+    // Restore context (end camera transform)
+    ctx.restore();
     
-    ctx.fillStyle = '#90caf9';
-    ctx.font = 'bold 12px system-ui, Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Universal Skills', 100, 200);
+    // Pan indicator (moved to bottom since no universal panel)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.font = '12px system-ui, Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText('🖱️ Click and drag to pan', width - 20, height - 20);
     
-    ctx.textAlign = 'left';
-    ctx.font = '10px system-ui, Arial';
-    let uniY = 220;
-    const universalX = 20;
-    const universalW = 160;
-    for (const skill of SKILL_TREE.universal) {
-      const unlocked = stm.unlockedSkills.has(skill.id);
-      const canUnlock = stm.canUnlock(skill.id);
-      
-      // Check if hovering over this universal skill
-      const isUniversalHovered = game.mouse.x >= universalX && game.mouse.x <= universalX + universalW &&
-                                  game.mouse.y >= uniY - 12 && game.mouse.y <= uniY + 6;
-      
-      ctx.fillStyle = unlocked ? '#4caf50' : canUnlock ? '#fff' : '#666';
-      ctx.fillText((unlocked ? '✓ ' : canUnlock ? '○ ' : '● ') + skill.name, 30, uniY);
-      
-      // Store hovered universal skill
-      if (isUniversalHovered) {
-        hoveredSkill = { skill, unlocked, canUnlock, color: '#90caf9' };
-        hoveredPos = { nx: universalX + universalW + 10, ny: uniY - 6, nodeSize: 18 };
-      }
-      
-      uniY += 18;
-    }
+    // Universal skills removed - now accessible as a branch
     
     // Draw tooltip AFTER everything else (on top)
     if (hoveredSkill) {
       const { skill, unlocked, canUnlock, color } = hoveredSkill;
       const { nx, ny, nodeSize } = hoveredPos;
       
-      const tooltipW = 220;
-      const tooltipH = 65;
-      const ttx = nx + nodeSize/2 + 15;
-      const tty = ny - tooltipH/2;
+      const tooltipW = 240;
+      const tooltipH = 75;
+      // Smart positioning - avoid going off screen
+      let ttx = nx + nodeSize/2 + 20;
+      let tty = ny - tooltipH/2;
       
-      // Tooltip background
-      ctx.fillStyle = 'rgba(20, 20, 25, 0.98)';
+      if (ttx + tooltipW > width - 20) ttx = nx - tooltipW - nodeSize/2 - 20;
+      if (tty < 20) tty = 20;
+      if (tty + tooltipH > height - 20) tty = height - tooltipH - 20;
+      
+      // Tooltip background with gradient
+      const tooltipGrad = ctx.createLinearGradient(ttx, tty, ttx, tty + tooltipH);
+      tooltipGrad.addColorStop(0, 'rgba(25, 25, 35, 0.98)');
+      tooltipGrad.addColorStop(1, 'rgba(18, 18, 28, 0.98)');
+      ctx.fillStyle = tooltipGrad;
       ctx.fillRect(ttx, tty, tooltipW, tooltipH);
+      
+      // Top accent bar
+      const ttAccentGrad = ctx.createLinearGradient(ttx, tty, ttx + tooltipW, tty);
+      ttAccentGrad.addColorStop(0, color + '50');
+      ttAccentGrad.addColorStop(0.5, color);
+      ttAccentGrad.addColorStop(1, color + '50');
+      ctx.fillStyle = ttAccentGrad;
+      ctx.fillRect(ttx, tty, tooltipW, 3);
+      
+      // Border with glow
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 12;
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;
       ctx.strokeRect(ttx, tty, tooltipW, tooltipH);
+      ctx.shadowBlur = 0;
       
       // Tooltip text
       ctx.textAlign = 'left';
       ctx.fillStyle = color;
-      ctx.font = 'bold 13px system-ui, Arial';
-      ctx.fillText(skill.name, ttx + 10, tty + 18);
+      ctx.font = 'bold 14px system-ui, Arial';
+      ctx.fillText(skill.name, ttx + 12, tty + 22);
       
-      ctx.fillStyle = '#ccc';
+      ctx.fillStyle = '#d5d5d5';
       ctx.font = '11px system-ui, Arial';
-      wrapText(ctx, skill.desc, ttx + 10, tty + 34, tooltipW - 20, 14);
+      wrapText(ctx, skill.desc, ttx + 12, tty + 38, tooltipW - 24, 15);
       
-      if (canUnlock) {
+      // Cost display - all skills cost 1 SP
+      ctx.fillStyle = '#ffca28';
+      ctx.font = 'bold 13px system-ui, Arial';
+      ctx.shadowColor = '#ffca28';
+      ctx.shadowBlur = 12;
+      ctx.fillText('⚡ Cost: 1 SP', ttx + 12, tty + tooltipH - 14);
+      ctx.shadowBlur = 0;
+      
+      // Status indicator
+      if (unlocked) {
         ctx.fillStyle = '#4caf50';
+        ctx.shadowColor = '#4caf50';
+        ctx.shadowBlur = 8;
+        ctx.font = 'bold 11px system-ui, Arial';
+        ctx.fillText('✓ UNLOCKED', ttx + tooltipW - 90, tty + 22);
+        ctx.shadowBlur = 0;
+      } else if (canUnlock) {
+        ctx.fillStyle = '#4caf50';
+        ctx.shadowColor = '#4caf50';
+        ctx.shadowBlur = 8;
         ctx.font = 'bold 10px system-ui, Arial';
-        ctx.fillText('Click to unlock (Cost: 1 SP)', ttx + 10, tty + tooltipH - 8);
-      } else if (unlocked) {
-        ctx.fillStyle = '#ffca28';
-        ctx.font = 'bold 10px system-ui, Arial';
-        ctx.fillText('✓ Unlocked', ttx + 10, tty + tooltipH - 8);
+        ctx.fillText('✓ Click to unlock', ttx + tooltipW - 105, tty + tooltipH - 12);
+        ctx.shadowBlur = 0;
       } else {
-        ctx.fillStyle = '#888';
+        ctx.fillStyle = '#ff5252';
         ctx.font = 'bold 10px system-ui, Arial';
-        const reason = stm.skillPoints <= 0 ? 'Need more skill points' : 'Unlock requirements first';
-        ctx.fillText(reason, ttx + 10, tty + tooltipH - 8);
+        const reason = stm.skillPoints < skill.cost ? `Need ${skill.cost - stm.skillPoints} more SP` : 'Unlock requirements first';
+        ctx.fillText('✗ ' + reason, ttx + 12, tty + tooltipH - 28);
       }
     }
   }
@@ -3447,39 +4057,65 @@ function handleSkillTreeClick() {
   const mx = game.mouse.x;
   const my = game.mouse.y;
   
-  // Branch selection (if no branch chosen yet)
+  // Branch selection (if no branch chosen yet) - 2x2 GRID
   if (!manager.selectedBranch) {
-    const branches = ['tank', 'dps', 'support'];
-    const cardWidth = 220;
-    const cardHeight = 280;
-    const gap = 25;
-    const startX = (canvas.width - (cardWidth * 3 + gap * 2)) / 2;
-    const startY = 200;
+    const branchNames = Object.keys(SKILL_TREE.branches);
+    const branchW = 220, branchH = 280, gap = 25;
+    const cols = 2, rows = 2;
+    const totalWidth = cols * branchW + (cols - 1) * gap;
+    const startX = canvas.width/2 - totalWidth/2;
+    const startY = 160;
     
-    for (let i = 0; i < branches.length; i++) {
-      const x = startX + i * (cardWidth + gap);
-      const y = startY;
+    for (let i = 0; i < branchNames.length; i++) {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const x = startX + col * (branchW + gap);
+      const y = startY + row * (branchH + gap);
       
-      if (mx >= x && mx <= x + cardWidth && my >= y && my <= y + cardHeight) {
-        manager.selectedBranch = branches[i];
-        console.log('Selected branch:', branches[i]);
+      if (mx >= x && mx <= x + branchW && my >= y && my <= y + branchH) {
+        manager.selectedBranch = branchNames[i];
+        // Reset camera when selecting a branch
+        manager.cameraX = 0;
+        manager.cameraY = 0;
+        console.log('Selected branch:', branchNames[i]);
         break;
       }
     }
     return;
   }
   
-  // Skill node clicks (when branch is selected)
-  const nodeRadius = 35;
-  const nodeSize = 70;
-  const nodeGap = 100;
-  const startY = 230;
+  // Check back button (when branch is selected)
+  const backBtnW = 110;
+  const backBtnH = 38;
+  const backBtnX = 25;
+  const backBtnY = 25;
+  if (mx >= backBtnX && mx <= backBtnX + backBtnW && my >= backBtnY && my <= backBtnY + backBtnH) {
+    manager.selectedBranch = null;
+    // Reset camera when going back to branch selection
+    manager.cameraX = 0;
+    manager.cameraY = 0;
+    console.log('Returning to branch selection');
+    return;
+  }
   
-  // Organize skills by tier
-  const tiers = [[], [], [], []];
-  const branchSkills = SKILL_TREE.branches[manager.selectedBranch];
+  // Skill node clicks (when branch is selected) - VIRTUAL CANVAS WITH CAMERA
+  const nodeRadius = 47; // Larger click area for 95px nodes
+  const nodeSize = 95;
+  const nodeGap = 200; // Increased spacing to match rendering
+  
+  // Virtual canvas coordinates
+  const virtualCenterX = 0;
+  const virtualStartY = -200;
+  
+  // Translate mouse position to virtual space
+  const virtualMouseX = mx + manager.cameraX;
+  const virtualMouseY = my + manager.cameraY;
+  
+  // Organize skills by tier (7 tiers now for ultra-powerful skills)
+  const tiers = [[], [], [], [], [], [], []];
+  const branchSkills = SKILL_TREE.branches[manager.selectedBranch].skills;
   for (const skill of branchSkills) {
-    if (skill.tier >= 1 && skill.tier <= 4) {
+    if (skill.tier >= 1 && skill.tier <= 7) {
       tiers[skill.tier - 1].push(skill);
     }
   }
@@ -3489,15 +4125,15 @@ function handleSkillTreeClick() {
     const skills = tiers[tier];
     if (skills.length === 0) continue;
     
-    const tierY = startY + tier * (nodeSize + nodeGap + 10);
-    const tierStartX = canvas.width / 2 - (skills.length - 1) * nodeGap / 2;
+    const tierY = virtualStartY + tier * (nodeSize + nodeGap + 20);
+    const tierStartX = virtualCenterX - (skills.length - 1) * nodeGap / 2;
     
     for (let i = 0; i < skills.length; i++) {
       const skill = skills[i];
       const nx = tierStartX + i * nodeGap;
       const ny = tierY;
       
-      const dist = Math.sqrt((mx - nx) ** 2 + (my - ny) ** 2);
+      const dist = Math.sqrt((virtualMouseX - nx) ** 2 + (virtualMouseY - ny) ** 2);
       if (dist <= nodeRadius) {
         if (manager.canUnlock(skill.id)) {
           manager.unlockSkill(skill.id);
@@ -3510,26 +4146,7 @@ function handleSkillTreeClick() {
     }
   }
   
-  // Check universal skills (left sidebar) - just check text clicks
-  const universalX = 20;
-  const universalW = 160;
-  const universalStartY = 220;
-  const universalSpacing = 18;
-  
-  for (let i = 0; i < SKILL_TREE.universal.length; i++) {
-    const skill = SKILL_TREE.universal[i];
-    const y = universalStartY + i * universalSpacing;
-    
-    if (mx >= universalX && mx <= universalX + universalW && my >= y - 12 && my <= y + 6) {
-      if (manager.canUnlock(skill.id)) {
-        manager.unlockSkill(skill.id);
-        console.log('Unlocked universal skill:', skill.name);
-      } else {
-        console.log('Cannot unlock skill:', skill.name, '- Check requirements or skill points');
-      }
-      return;
-    }
-  }
+  // Universal skills removed - now accessible as a branch selection
 }
 
 function drawFullMap(ctx, game) {
@@ -3653,11 +4270,147 @@ function handleShopChoice(idx){
   if (shop.items.length === 0) game.shopOpen = null;
 }
 
+function handleSettingsClick() {
+  const mx = game.mouse.x;
+  const my = game.mouse.y;
+  const { width, height } = game;
+  
+  // Calculate panel dimensions (same as drawSettings)
+  const panelW = Math.min(560, width - 80);
+  const panelH = Math.min(760, height - 60);
+  const panelX = (width - panelW) / 2;
+  const panelY = (height - panelH) / 2;
+  
+  // Close button
+  const closeW = 240, closeH = 52;
+  const closeX = (width - closeW) / 2;
+  const closeY = panelY + panelH - closeH - 24;
+  
+  if (mx >= closeX && mx <= closeX + closeW && my >= closeY && my <= closeY + closeH) {
+    game.settingsOpen = false;
+    game.paused = false;
+    saveSettings();
+    if (!SETTINGS.audio.muteAll && SETTINGS.audio.sfxVolume > 0) game.audio.hit();
+    return;
+  }
+  
+  // Calculate settings layout (same as drawSettings)
+  const centerCol = panelX + panelW / 2;
+  const settingsWidth = 420;
+  const settingsX = centerCol - settingsWidth / 2;
+  const startY = panelY + 90;
+  const lineHeight = 44;
+  const controlX = settingsX + 250; // Where toggles/sliders start
+  
+  let y = startY + 36; // Start after "AUDIO" header
+  
+  // Helper to check toggle click
+  const checkToggle = (currentY, category, setting) => {
+    const toggleW = 300; // Full row width
+    const toggleH = 30;
+    if (mx >= settingsX && mx <= settingsX + toggleW && 
+        my >= currentY - 15 && my <= currentY - 15 + toggleH) {
+      SETTINGS[category][setting] = !SETTINGS[category][setting];
+      if (!SETTINGS.audio.muteAll && SETTINGS.audio.sfxVolume > 0) game.audio.hit();
+      if (category === 'audio' && setting === 'muteAll') {
+        game.audio.setMuted(SETTINGS.audio.muteAll);
+      }
+      saveSettings();
+      return true;
+    }
+    return false;
+  };
+  
+  // Helper to check slider click/drag
+  const checkSlider = (currentY, category, setting) => {
+    const sliderX = controlX;
+    const sliderW = 180;
+    const sliderH = 40; // Increased height for easier clicking
+    // Only check if clicking directly on the slider track (not the label)
+    if (mx >= sliderX && mx <= sliderX + sliderW && 
+        my >= currentY - 20 && my <= currentY + 20) {
+      // Start dragging this slider
+      game.draggingSlider = { category, setting, sliderX, sliderW };
+      
+      // Calculate value based on slider position
+      const sliderValue = clamp((mx - sliderX) / sliderW, 0, 1);
+      SETTINGS[category][setting] = Math.round(sliderValue * 1000) / 1000;
+      
+      if (category === 'audio' && game.audio) {
+        if (setting === 'musicVolume') {
+          game.audio.setMusicVolume(SETTINGS.audio.musicVolume);
+        } else if (setting === 'sfxVolume') {
+          game.audio.setSFXVolume(SETTINGS.audio.sfxVolume);
+          if (SETTINGS.audio.sfxVolume === 0 && !SETTINGS.audio.muteAll) {
+            SETTINGS.audio.muteAll = true;
+            game.audio.setMuted(true);
+          } else if (SETTINGS.audio.sfxVolume > 0 && SETTINGS.audio.muteAll) {
+            SETTINGS.audio.muteAll = false;
+            game.audio.setMuted(false);
+          }
+        }
+      }
+      saveSettings();
+      return true;
+    }
+    return false;
+  };
+  
+  // AUDIO SECTION
+  if (checkToggle(y, 'audio', 'muteAll')) return; y += lineHeight;
+  if (checkSlider(y, 'audio', 'musicVolume')) return; y += lineHeight;
+  if (checkSlider(y, 'audio', 'sfxVolume')) return; y += lineHeight + 12;
+  
+  // GRAPHICS SECTION
+  y += 36; // Skip header
+  if (checkToggle(y, 'graphics', 'particles')) return; y += lineHeight;
+  if (checkToggle(y, 'graphics', 'screenShake')) return; y += lineHeight;
+  if (checkToggle(y, 'graphics', 'vignette')) return; y += lineHeight;
+  if (checkToggle(y, 'graphics', 'showFPS')) return; y += lineHeight + 12;
+  
+  // UI SECTION
+  y += 36; // Skip header
+  if (checkToggle(y, 'ui', 'showEnemyHealthbars')) return; y += lineHeight;
+  if (checkToggle(y, 'ui', 'showDamageNumbers')) return; y += lineHeight;
+  if (checkToggle(y, 'ui', 'showMinimap')) return; y += lineHeight;
+  if (checkToggle(y, 'ui', 'showCrosshair')) return;
+}
+
+function handleSliderDrag() {
+  if (!game.draggingSlider) return;
+  
+  const { category, setting, sliderX, sliderW } = game.draggingSlider;
+  const mx = game.mouse.x;
+  
+  // Calculate value based on current mouse position
+  const sliderValue = clamp((mx - sliderX) / sliderW, 0, 1);
+  SETTINGS[category][setting] = Math.round(sliderValue * 1000) / 1000;
+  
+  // Apply audio changes in real-time
+  if (category === 'audio' && game.audio) {
+    if (setting === 'musicVolume') {
+      game.audio.setMusicVolume(SETTINGS.audio.musicVolume);
+    } else if (setting === 'sfxVolume') {
+      game.audio.setSFXVolume(SETTINGS.audio.sfxVolume);
+      if (SETTINGS.audio.sfxVolume === 0 && !SETTINGS.audio.muteAll) {
+        SETTINGS.audio.muteAll = true;
+        game.audio.setMuted(true);
+      } else if (SETTINGS.audio.sfxVolume > 0 && SETTINGS.audio.muteAll) {
+        SETTINGS.audio.muteAll = false;
+        game.audio.setMuted(false);
+      }
+    }
+  }
+  
+  saveSettings();
+}
+
 // Explosion helper (area damage + feedback)
 function triggerExplosion(x, y, radius, dmg){
   // Damage enemies
   for (const e of game.enemies) {
-    if (e.dead) continue; if (dist2(x,y,e.x,e.y) <= radius*radius) e.damage(dmg, game);
+    if (!e || typeof e.damage !== 'function' || e.dead) continue; 
+    if (dist2(x,y,e.x,e.y) <= radius*radius) e.damage(dmg, game);
   }
   // Damage player
   if (dist2(x, y, game.player.x, game.player.y) <= radius*radius) {
@@ -3754,6 +4507,24 @@ class TextParticle {
   draw(ctx){ const a=Math.max(0,1-this.t/this.life); if(a<=0) return; ctx.save(); ctx.globalAlpha=a; ctx.fillStyle=this.color; ctx.font='14px system-ui, Segoe UI, Arial'; ctx.textAlign='center'; ctx.fillText(this.text, this.x, this.y); ctx.restore(); }
 }
 
+class StarParticle {
+  constructor(x,y,color='#ffca28',life=0.6){ this.x=x; this.y=y; this.color=color; this.life=life; this.t=0; this.vx=(Math.random()-0.5)*60; this.vy=-80-Math.random()*40; this.spin=Math.random()*6-3; this.angle=Math.random()*Math.PI*2; this.size=8+Math.random()*6; }
+  update(dt){ this.t+=dt; this.x+=this.vx*dt; this.y+=this.vy*dt; this.vx*=0.95; this.vy+=30*dt; this.angle+=this.spin*dt; }
+  draw(ctx){ const a=Math.max(0,1-this.t/this.life); if(a<=0) return; ctx.save(); ctx.globalAlpha=a; ctx.translate(this.x,this.y); ctx.rotate(this.angle); ctx.fillStyle=this.color; ctx.shadowBlur=8; ctx.shadowColor=this.color; const s=this.size; for(let i=0;i<5;i++){ const ang=i*Math.PI*2/5; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(ang)*s, Math.sin(ang)*s); ctx.lineTo(Math.cos(ang+Math.PI*0.4)*s*0.4, Math.sin(ang+Math.PI*0.4)*s*0.4); ctx.closePath(); ctx.fill(); } ctx.restore(); }
+}
+
+class TrailParticle {
+  constructor(x,y,color='#00e676',size=4,life=0.3){ this.x=x; this.y=y; this.color=color; this.size=size; this.life=life; this.t=0; this.vx=0; this.vy=0; }
+  update(dt){ this.t+=dt; }
+  draw(ctx){ const a=Math.max(0,1-this.t/this.life); if(a<=0) return; ctx.save(); ctx.globalAlpha=a*0.6; ctx.fillStyle=this.color; ctx.shadowBlur=10; ctx.shadowColor=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size*(1-this.t/this.life),0,Math.PI*2); ctx.fill(); ctx.restore(); }
+}
+
+class SparkleParticle {
+  constructor(x,y,color='#ffca28',life=0.8){ this.x=x; this.y=y; this.color=color; this.life=life; this.t=0; this.vx=(Math.random()-0.5)*80; this.vy=-120-Math.random()*60; this.twinkle=Math.random()*Math.PI*2; }
+  update(dt){ this.t+=dt; this.x+=this.vx*dt; this.y+=this.vy*dt; this.vx*=0.96; this.vy+=50*dt; this.twinkle+=dt*10; }
+  draw(ctx){ const a=Math.max(0,1-this.t/this.life)*(0.5+Math.sin(this.twinkle)*0.5); if(a<=0) return; ctx.save(); ctx.globalAlpha=a; ctx.fillStyle=this.color; ctx.shadowBlur=6; ctx.shadowColor=this.color; const s=3+Math.sin(this.twinkle)*2; ctx.fillRect(this.x-s/2,this.y-1,s,2); ctx.fillRect(this.x-1,this.y-s/2,2,s); ctx.restore(); }
+}
+
 const MAX_PARTICLES = 300; // reduced from 450 for better performance
 function spawnHitSparks(x,y,color){ 
   let n = (game.lowFx? 3:6) * game.fxScale; // reduced from 4:8
@@ -3784,6 +4555,46 @@ function spawnExplosion(room,x,y){
 }
 function spawnFloatText(txt,x,y,color){ game.particles.push(new TextParticle(x + (Math.random()-0.5)*12, y - 12, txt, color)); }
 
+function spawnCriticalHit(x,y){
+  if(!SETTINGS.graphics.particles || game.lowFx) return;
+  const n = Math.min(8, Math.floor(6 * game.fxScale));
+  for(let i=0; i<n && game.particles.length<MAX_PARTICLES; i++){
+    game.particles.push(new StarParticle(x,y,'#ff4444',0.7));
+  }
+  spawnFloatText('CRITICAL!', x, y-20, '#ff4444');
+}
+
+function spawnCoinSparkles(x,y){
+  if(!SETTINGS.graphics.particles || game.lowFx) return;
+  const n = Math.min(6, Math.floor(4 * game.fxScale));
+  for(let i=0; i<n && game.particles.length<MAX_PARTICLES; i++){
+    game.particles.push(new SparkleParticle(x,y,'#ffca28',0.6));
+  }
+}
+
+function spawnDashTrail(x,y,color='#00e676'){
+  if(!SETTINGS.graphics.particles || game.lowFx) return;
+  if(game.particles.length<MAX_PARTICLES){
+    game.particles.push(new TrailParticle(x,y,color,8,0.4));
+  }
+}
+
+function spawnLevelUpCelebration(x,y){
+  if(!SETTINGS.graphics.particles) return;
+  const n = Math.min(20, Math.floor(15 * game.fxScale));
+  for(let i=0; i<n && game.particles.length<MAX_PARTICLES; i++){
+    const angle = (i/n) * Math.PI * 2;
+    const speed = 150 + Math.random()*100;
+    const colors = ['#00e676','#ffca28','#00bcd4','#ff4444','#e91e63'];
+    const color = colors[i % colors.length];
+    game.particles.push(new Particle(x,y,Math.cos(angle)*speed,Math.sin(angle)*speed,0.8+Math.random()*0.3,color,3));
+  }
+  // Add some stars
+  for(let i=0; i<5 && game.particles.length<MAX_PARTICLES; i++){
+    game.particles.push(new StarParticle(x,y,['#ffca28','#00e676','#00bcd4'][i%3],0.9));
+  }
+}
+
 function drawCrosshair(ctx){
   const x = game.mouse.worldX, y = game.mouse.worldY;
   ctx.save(); ctx.strokeStyle = game.player.dashCd<=0 && game.player.stamina>=25 ? '#00e676' : '#ffffffaa'; ctx.lineWidth = 2;
@@ -3793,27 +4604,31 @@ function drawCrosshair(ctx){
 }
 
 async function newRun(){
-  // Return to home screen for difficulty selection
-  game.started = false;
-  game.paused = false;
-  game.dead = false;
-  game.shopOpen = null;
-  game.levelUpChoices = null;
-  
-  // Show the overlay again
-  const overlay = document.getElementById('overlay');
-  if (overlay) {
-    overlay.classList.add('visible');
-    overlay.style.pointerEvents = 'all';
-  }
-  
-  console.log('[newRun] Returned to home screen for difficulty selection');
+  // Simple and reliable: just reload the page to completely reset the game
+  console.log('[newRun] Reloading page for complete game reset');
+  window.location.reload();
 }
 
 async function nextLevel(){
   console.log('[nextLevel] Starting transition to depth', game.depth + 1);
   // preserve player stats/items/coins; just move to a new dungeon
   game.depth += 1;
+  
+  // AUTO-SAVE on layer change
+  if (window.saveManager) {
+    const saved = window.saveManager.autoSave(
+      game.player, 
+      game.coins, 
+      game.depth, 
+      GAME.difficulty,
+      game.gameTime || 0
+    );
+    if (saved) {
+      game.promptTimed('💾 Game Auto-Saved', 1.5);
+      console.log('[nextLevel] Auto-save successful');
+    }
+  }
+  
   // clear dynamic state
   game.projectiles.length=0; game.enemyProjectiles.length=0; game.enemies.length=0; game.particles.length=0;
   game.shopOpen = null; game.levelUpChoices = null; game.paused = false; game.dead = false;

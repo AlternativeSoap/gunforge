@@ -8,6 +8,63 @@ export const GAME = {
   difficulty: 'medium', // easy, medium, hard, nightmare
 };
 
+// Game Settings (persisted to localStorage)
+export const SETTINGS = {
+  audio: {
+    musicVolume: 0.5,
+    sfxVolume: 0.8,
+    muteAll: false,
+  },
+  graphics: {
+    particles: true,
+    screenShake: true,
+    showFPS: false,
+    vignette: true,
+  },
+  ui: {
+    showEnemyHealthbars: true,
+    showPlayerHealthbar: true,
+    showDamageNumbers: true,
+    showMinimap: true,
+    showCrosshair: true,
+    alwaysShowHealthbars: false, // true = always visible, false = only when damaged
+  },
+  gameplay: {
+    pauseOnFocusLoss: true,
+  }
+};
+
+// Load settings from localStorage
+export function loadSettings() {
+  try {
+    const saved = localStorage.getItem('gunforge_settings');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Deep merge to preserve new settings if structure changed
+      if (parsed.audio) Object.assign(SETTINGS.audio, parsed.audio);
+      if (parsed.graphics) Object.assign(SETTINGS.graphics, parsed.graphics);
+      if (parsed.ui) Object.assign(SETTINGS.ui, parsed.ui);
+      if (parsed.gameplay) Object.assign(SETTINGS.gameplay, parsed.gameplay);
+      console.log('[Settings] Loaded from localStorage:', SETTINGS);
+    }
+  } catch (e) {
+    console.warn('[Settings] Failed to load:', e);
+  }
+}
+
+// Save settings to localStorage
+export function saveSettings() {
+  try {
+    localStorage.setItem('gunforge_settings', JSON.stringify(SETTINGS));
+    console.log('[Settings] Saved to localStorage');
+  } catch (e) {
+    console.warn('[Settings] Failed to save:', e);
+  }
+}
+
+// Initialize settings on load
+loadSettings();
+
 // Difficulty multipliers
 export const DIFFICULTY = {
   easy: {
@@ -23,7 +80,8 @@ export const DIFFICULTY = {
     trapChance: 0.7,
     treasureChance: 1.3,
     staminaMult: 1.2,
-    telegraphMult: 1.25
+    telegraphMult: 1.25,
+    xpMult: 1.3 // Easier = more XP
   },
   medium: {
     playerHp: 1.0,
@@ -38,7 +96,8 @@ export const DIFFICULTY = {
     trapChance: 1.0,
     treasureChance: 1.0,
     staminaMult: 1.0,
-    telegraphMult: 1.0
+    telegraphMult: 1.0,
+    xpMult: 1.0 // Normal XP
   },
   hard: {
     playerHp: 0.8,
@@ -53,7 +112,8 @@ export const DIFFICULTY = {
     trapChance: 1.3,
     treasureChance: 0.7,
     staminaMult: 0.85,
-    telegraphMult: 0.75
+    telegraphMult: 0.75,
+    xpMult: 0.75 // Harder = less XP (slower progression)
   },
   nightmare: {
     playerHp: 0.5,
@@ -68,7 +128,8 @@ export const DIFFICULTY = {
     trapChance: 1.7,
     treasureChance: 0.4,
     staminaMult: 0.65,
-    telegraphMult: 0.6
+    telegraphMult: 0.6,
+    xpMult: 0.5 // Nightmare = much less XP (very slow progression)
   },
 };
 
@@ -238,145 +299,145 @@ export const BOSS_TEMPLATE = {
 
 // Boss variants with varied difficulty and mechanics
 export const BOSS_VARIANTS = {
-  // EASY BOSSES (1200-1500 HP)
+  // EASY BOSSES (1800-2200 HP) - Significantly Buffed
   scrap_colossus: { 
     name: 'Scrap Colossus', difficulty: 'easy',
-    hp: 1200, speed: 80, dmg: 28, r: 45, color: '#8d6e63', phases: 3, armor: 0.12, 
-    attackType: 'volley', volleyCount: 8, volleySpread: 0.6, fireCd: 2.5,
+    hp: 1800, speed: 95, dmg: 38, r: 45, color: '#8d6e63', phases: 3, armor: 0.18, 
+    attackType: 'volley', volleyCount: 10, volleySpread: 0.5, fireCd: 2.2,
     description: 'A lumbering heap of scrap metal' 
   },
   
   crystal_guardian: { 
     name: 'Crystal Guardian', difficulty: 'easy',
-    hp: 1300, speed: 90, dmg: 26, r: 42, color: '#64b5f6', phases: 3, armor: 0.1, 
-    attackType: 'tracking', trackingSpeed: 600, fireCd: 1.8,
-    shieldPhase: 2, shieldDuration: 3.0, shieldCooldown: 8.0,
+    hp: 1950, speed: 105, dmg: 36, r: 42, color: '#64b5f6', phases: 3, armor: 0.16, 
+    attackType: 'tracking', trackingSpeed: 650, fireCd: 1.5,
+    shieldPhase: 2, shieldDuration: 4.0, shieldCooldown: 7.0,
     description: 'Crystalline protector with temporary shields' 
   },
   
   rust_warden: { 
     name: 'Rust Warden', difficulty: 'easy',
-    hp: 1400, speed: 85, dmg: 30, r: 43, color: '#a1887f', phases: 3, armor: 0.15, 
-    attackType: 'burst', burstCount: 5, burstDelay: 0.15, fireCd: 3.0,
-    summonCd: 15.0, minionType: 'melee', minionCount: 2,
+    hp: 2100, speed: 100, dmg: 40, r: 43, color: '#a1887f', phases: 3, armor: 0.20, 
+    attackType: 'burst', burstCount: 6, burstDelay: 0.12, fireCd: 2.5,
+    summonCd: 12.0, minionType: 'melee', minionCount: 3,
     description: 'Rusty construct that summons minions' 
   },
 
-  // MEDIUM BOSSES (1600-2000 HP)
+  // MEDIUM BOSSES (2500-3200 HP) - Much Harder
   void_reaper: { 
     name: 'Void Reaper', difficulty: 'medium',
-    hp: 1700, speed: 110, dmg: 35, r: 44, color: '#7b1fa2', phases: 4, armor: 0.14, 
-    attackType: 'spiral', spiralCount: 12, spiralRotation: 0.3, fireCd: 2.0,
-    teleportPhase: 3, teleportCd: 7.0, teleportRange: 300,
+    hp: 2600, speed: 125, dmg: 48, r: 44, color: '#7b1fa2', phases: 4, armor: 0.20, 
+    attackType: 'spiral', spiralCount: 16, spiralRotation: 0.25, fireCd: 1.7,
+    teleportPhase: 3, teleportCd: 6.0, teleportRange: 350,
     description: 'Shadowy entity that teleports and fires spiraling projectiles' 
   },
   
   inferno_titan: { 
     name: 'Inferno Titan', difficulty: 'medium',
-    hp: 1800, speed: 95, dmg: 38, r: 48, color: '#ff6f00', phases: 4, armor: 0.16, 
-    attackType: 'flame_wave', waveCount: 3, waveCd: 4.0,
-    fireTrail: true, trailDamage: 15, trailDuration: 2.5,
+    hp: 2800, speed: 110, dmg: 52, r: 48, color: '#ff6f00', phases: 4, armor: 0.22, 
+    attackType: 'flame_wave', waveCount: 4, waveCd: 3.5,
+    fireTrail: true, trailDamage: 22, trailDuration: 3.0,
     description: 'Burning colossus leaving trails of fire' 
   },
   
   toxic_behemoth: { 
     name: 'Toxic Behemoth', difficulty: 'medium',
-    hp: 1900, speed: 88, dmg: 36, r: 46, color: '#7cb342', phases: 4, armor: 0.18, 
-    attackType: 'poison_cloud', cloudCount: 5, cloudRadius: 100, cloudDuration: 4.0, cloudCd: 5.0,
-    summonCd: 12.0, minionType: 'fast', minionCount: 3,
+    hp: 3000, speed: 100, dmg: 50, r: 46, color: '#7cb342', phases: 4, armor: 0.24, 
+    attackType: 'poison_cloud', cloudCount: 6, cloudRadius: 120, cloudDuration: 5.0, cloudCd: 4.5,
+    summonCd: 10.0, minionType: 'fast', minionCount: 4,
     description: 'Toxic monster spreading poison clouds' 
   },
 
-  // HARD BOSSES (2100-2800 HP)
+  // HARD BOSSES (3500-4500 HP) - Extremely Challenging
   eldritch_horror: { 
     name: 'Eldritch Horror', difficulty: 'hard',
-    hp: 2200, speed: 105, dmg: 42, r: 50, color: '#2b002f', phases: 5, armor: 0.20, 
-    attackType: 'tentacle', tentacleCd: 4.5, tentacleCount: 8, tentacleSpread: Math.PI * 1.5,
-    tentacleRadius: 180, telegraphDuration: 1.0, telegraphColor: '#8b00ff',
-    summonCd: 10.0, minionType: 'ghost', minionCount: 2,
-    phaseAbility: 'rage', rageDamageMult: 1.5, rageSpeedMult: 1.3,
+    hp: 3600, speed: 120, dmg: 58, r: 50, color: '#2b002f', phases: 5, armor: 0.28, 
+    attackType: 'tentacle', tentacleCd: 3.8, tentacleCount: 10, tentacleSpread: Math.PI * 1.5,
+    tentacleRadius: 200, telegraphDuration: 0.8, telegraphColor: '#8b00ff',
+    summonCd: 8.0, minionType: 'ghost', minionCount: 3,
+    phaseAbility: 'rage', rageDamageMult: 1.7, rageSpeedMult: 1.4,
     description: 'Nightmare incarnate with devastating tentacle attacks' 
   },
   
   storm_sovereign: { 
     name: 'Storm Sovereign', difficulty: 'hard',
-    hp: 2400, speed: 115, dmg: 40, r: 47, color: '#01579b', phases: 5, armor: 0.17, 
-    attackType: 'lightning_burst', burstCount: 16, chainCount: 3, fireCd: 2.5,
-    dashPhase: 3, dashCd: 5.0, dashSpeed: 800, dashDuration: 0.4,
-    shockwave: true, shockwaveCd: 8.0, shockwaveRadius: 250, shockwaveDamage: 50,
+    hp: 4000, speed: 130, dmg: 56, r: 47, color: '#01579b', phases: 5, armor: 0.25, 
+    attackType: 'lightning_burst', burstCount: 20, chainCount: 4, fireCd: 2.2,
+    dashPhase: 3, dashCd: 4.5, dashSpeed: 850, dashDuration: 0.5,
+    shockwave: true, shockwaveCd: 7.0, shockwaveRadius: 280, shockwaveDamage: 65,
     description: 'Lightning-charged tyrant with devastating area attacks' 
   },
   
   apocalypse_engine: { 
     name: 'Apocalypse Engine', difficulty: 'hard',
-    hp: 2600, speed: 100, dmg: 45, r: 52, color: '#b71c1c', phases: 5, armor: 0.22, 
-    attackType: 'omni_barrage', barrageCount: 24, barrageWaves: 3, fireCd: 3.5,
-    turretPhase: 2, turretCount: 4, turretCd: 20.0, turretDuration: 12.0,
-    laserPhase: 4, laserCd: 7.0, laserWidth: 20, laserLength: 600, laserDuration: 2.0,
+    hp: 4400, speed: 115, dmg: 62, r: 52, color: '#b71c1c', phases: 5, armor: 0.30, 
+    attackType: 'omni_barrage', barrageCount: 30, barrageWaves: 4, fireCd: 3.0,
+    turretPhase: 2, turretCount: 5, turretCd: 18.0, turretDuration: 15.0,
+    laserPhase: 4, laserCd: 6.5, laserWidth: 25, laserLength: 650, laserDuration: 2.5,
     description: 'Ultimate war machine with multi-phase attack patterns' 
   },
 
-  // ADDITIONAL BOSSES - Expanding roster
+  // ADDITIONAL BOSSES - Expanding roster (Buffed)
   frost_tyrant: { 
     name: 'Frost Tyrant', difficulty: 'medium',
-    hp: 1650, speed: 92, dmg: 34, r: 45, color: '#00bcd4', phases: 4, armor: 0.15, 
-    attackType: 'ice_nova', novaCount: 20, novaCd: 3.5,
-    freezeEffect: true, freezeDuration: 2.0, freezeSlowMult: 0.3,
-    iceWall: true, wallCd: 10.0, wallDuration: 6.0,
+    hp: 2700, speed: 108, dmg: 47, r: 45, color: '#00bcd4', phases: 4, armor: 0.22, 
+    attackType: 'ice_nova', novaCount: 24, novaCd: 3.0,
+    freezeEffect: true, freezeDuration: 2.5, freezeSlowMult: 0.25,
+    iceWall: true, wallCd: 9.0, wallDuration: 7.0,
     description: 'Frozen monarch that slows and traps enemies with ice' 
   },
 
   plague_doctor: { 
     name: 'Plague Doctor', difficulty: 'easy',
-    hp: 1350, speed: 100, dmg: 27, r: 40, color: '#558b2f', phases: 3, armor: 0.11, 
-    attackType: 'poison_dart', dartCount: 4, dartCd: 1.5,
-    poisonAura: true, auraDamage: 8, auraRadius: 120,
-    healAbility: true, healAmount: 150, healCd: 15.0,
+    hp: 2000, speed: 115, dmg: 37, r: 40, color: '#558b2f', phases: 3, armor: 0.17, 
+    attackType: 'poison_dart', dartCount: 5, dartCd: 1.3,
+    poisonAura: true, auraDamage: 12, auraRadius: 130,
+    healAbility: true, healAmount: 200, healCd: 14.0,
     description: 'Corrupted healer spreading disease' 
   },
 
   arcane_sentinel: { 
     name: 'Arcane Sentinel', difficulty: 'medium',
-    hp: 1750, speed: 105, dmg: 37, r: 43, color: '#d500f9', phases: 4, armor: 0.13, 
-    attackType: 'magic_missile', missileCount: 8, missileSpeed: 700, fireCd: 2.2,
-    blink: true, blinkCd: 6.0, blinkRange: 250,
-    runeCircle: true, runeCd: 12.0, runeDamage: 60, runeRadius: 150,
+    hp: 2850, speed: 120, dmg: 51, r: 43, color: '#d500f9', phases: 4, armor: 0.19, 
+    attackType: 'magic_missile', missileCount: 10, missileSpeed: 750, fireCd: 1.9,
+    blink: true, blinkCd: 5.5, blinkRange: 280,
+    runeCircle: true, runeCd: 11.0, runeDamage: 75, runeRadius: 170,
     description: 'Mystical guardian with arcane magic' 
   },
 
   molten_core: { 
     name: 'Molten Core', difficulty: 'hard',
-    hp: 2300, speed: 85, dmg: 44, r: 50, color: '#ff5722', phases: 5, armor: 0.25, 
-    attackType: 'lava_burst', burstCount: 16, burstCd: 2.8,
-    lavaPool: true, poolCd: 8.0, poolCount: 3, poolDamage: 20, poolDuration: 8.0,
-    eruptionPhase: 4, eruptionCd: 15.0, eruptionRadius: 300,
+    hp: 3800, speed: 98, dmg: 60, r: 50, color: '#ff5722', phases: 5, armor: 0.32, 
+    attackType: 'lava_burst', burstCount: 20, burstCd: 2.5,
+    lavaPool: true, poolCd: 7.5, poolCount: 4, poolDamage: 28, poolDuration: 10.0,
+    eruptionPhase: 4, eruptionCd: 14.0, eruptionRadius: 320,
     description: 'Living magma with devastating area denial' 
   },
 
   shadow_stalker: { 
     name: 'Shadow Stalker', difficulty: 'easy',
-    hp: 1250, speed: 130, dmg: 25, r: 38, color: '#424242', phases: 3, armor: 0.08, 
-    attackType: 'shadow_strike', strikeCd: 1.2, strikeCount: 3,
-    phaseWalk: true, phaseChance: 0.15, phaseDuration: 0.5,
-    shadowClone: true, cloneCd: 18.0, cloneDuration: 8.0,
+    hp: 1900, speed: 145, dmg: 35, r: 38, color: '#424242', phases: 3, armor: 0.14, 
+    attackType: 'shadow_strike', strikeCd: 1.0, strikeCount: 4,
+    phaseWalk: true, phaseChance: 0.18, phaseDuration: 0.6,
+    shadowClone: true, cloneCd: 16.0, cloneDuration: 10.0,
     description: 'Swift assassin that phases in and out of reality' 
   },
 
   iron_colossus: { 
     name: 'Iron Colossus', difficulty: 'hard',
-    hp: 2800, speed: 75, dmg: 50, r: 55, color: '#607d8b', phases: 5, armor: 0.30, 
-    attackType: 'ground_pound', poundCd: 4.0, poundRadius: 200, poundWaves: 3,
-    chargeAttack: true, chargeCd: 10.0, chargeSpeed: 500, chargeDuration: 1.5,
-    shieldPhase: 2, shieldDuration: 4.0, shieldCooldown: 12.0,
+    hp: 4600, speed: 88, dmg: 68, r: 55, color: '#607d8b', phases: 5, armor: 0.35, 
+    attackType: 'ground_pound', poundCd: 3.7, poundRadius: 220, poundWaves: 4,
+    chargeAttack: true, chargeCd: 9.5, chargeSpeed: 550, chargeDuration: 1.8,
+    shieldPhase: 2, shieldDuration: 5.0, shieldCooldown: 11.0,
     description: 'Massive armored titan with devastating melee attacks' 
   },
 
-  // LEGACY BOSSES (kept for compatibility)
-  boss1: { name: 'Scrap Golem', difficulty: 'easy', hp: 1200, speed: 95, dmg: 30, r: 42, color: '#ffca28', phases: 3, armor: 0.1, attackType: 'volley' },
-  boss2: { name: 'Void Walker', difficulty: 'medium', hp: 1400, speed: 88, dmg: 34, r: 44, color: '#7b49ff', phases: 3, armor: 0.12, attackType: 'arc' },
-  boss3: { name: 'Tentacle Beast', difficulty: 'hard', hp: 2000, speed: 70, dmg: 42, r: 50, color: '#2b002f', phases: 4, armor: 0.18, attackType: 'tentacle',
-    tentacleCd: 5.0, tentacleCount: 6, tentacleSpread: Math.PI * 1.2, tentacleRadius: 160,
-    telegraphDuration: 1.1, telegraphColor: '#8b00ff', summonCd: 12.0, minionType: 'bomber' }
+  // LEGACY BOSSES (kept for compatibility - Also Buffed)
+  boss1: { name: 'Scrap Golem', difficulty: 'easy', hp: 1900, speed: 105, dmg: 38, r: 42, color: '#ffca28', phases: 3, armor: 0.16, attackType: 'volley' },
+  boss2: { name: 'Void Walker', difficulty: 'medium', hp: 2500, speed: 100, dmg: 46, r: 44, color: '#7b49ff', phases: 3, armor: 0.20, attackType: 'arc' },
+  boss3: { name: 'Tentacle Beast', difficulty: 'hard', hp: 3400, speed: 85, dmg: 56, r: 50, color: '#2b002f', phases: 4, armor: 0.26, attackType: 'tentacle',
+    tentacleCd: 4.2, tentacleCount: 8, tentacleSpread: Math.PI * 1.2, tentacleRadius: 180,
+    telegraphDuration: 0.9, telegraphColor: '#8b00ff', summonCd: 10.0, minionType: 'bomber' }
 };
 
 export const ROOM_TYPES = ['combat', 'chest', 'trader', 'trap', 'boss', 'dark', 'explosive', 'toxic', 'frozen'];

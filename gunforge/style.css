@@ -97,18 +97,17 @@ html, body {
   cursor: default !important;
 }
 
-/* Animated Background */
+/* Animated Background - HIGHLY OPTIMIZED */
 .animated-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #1a0a00 0%, #0a0a0a 25%, #1a1a1a 50%, #0a0a0a 75%, #1a0a00 100%);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+  background: linear-gradient(135deg, #1a0a00 0%, #0a0a0a 50%, #1a0a00 100%);
   opacity: 0.5;
   z-index: 0;
+  /* Removed animation for faster load - static gradient */
 }
 
-/* Panel */
+/* Panel - OPTIMIZED */
 .panel {
   background: linear-gradient(145deg, rgba(20, 20, 25, 0.95), rgba(10, 10, 15, 0.98));
   border: 2px solid;
@@ -123,31 +122,17 @@ html, body {
     inset 0 0 100px rgba(255, 122, 0, 0.03);
   position: relative;
   z-index: 10000;
-  animation: fadeInUp 0.6s ease;
+  /* Removed animation for instant load */
   overflow: hidden;
 }
 
-.panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 122, 0, 0.1), transparent);
-  animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
+/* Shimmer effect removed for performance */
 
 /* Title Section */
 .title-container {
   text-align: center;
   margin-bottom: 24px;
-  animation: fadeInUp 0.8s ease 0.2s backwards;
+  /* Removed animation for instant load */
 }
 
 .game-title {
@@ -156,16 +141,16 @@ html, body {
   font-weight: 900;
   letter-spacing: 4px;
   color: #ff7a00;
-  animation: titleBounce 3s ease-in-out infinite, glow 2s ease-in-out infinite;
   text-transform: uppercase;
   position: relative;
   display: inline-block;
+  text-shadow: 0 0 20px rgba(255, 122, 0, 0.5);
+  /* Removed continuous animations for faster load */
 }
 
 .title-word {
   display: inline-block;
-  animation: float 3s ease-in-out infinite;
-  animation-delay: var(--delay);
+  /* Animation removed for performance */
 }
 
 .game-subtitle {
@@ -339,12 +324,12 @@ html, body {
   border-color: #ff7a00;
   background: linear-gradient(145deg, rgba(255, 122, 0, 0.15), rgba(230, 105, 0, 0.1));
   box-shadow: 0 0 30px rgba(255, 122, 0, 0.4), inset 0 0 20px rgba(255, 122, 0, 0.1);
-  animation: pulse 2s ease-in-out infinite;
+  /* Removed infinite animation for better performance */
 }
 
 .diff-btn.selected .diff-icon {
   filter: grayscale(0);
-  animation: float 2s ease-in-out infinite;
+  /* Removed infinite animation for better performance */
 }
 
 .diff-btn.selected strong {
@@ -382,6 +367,14 @@ html, body {
 }
 .diff-nightmare.selected strong { color: #9c27b0; }
 
+/* Main Menu Buttons */
+.main-menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
 /* Start Button */
 .start-button {
   display: block;
@@ -401,7 +394,7 @@ html, body {
   position: relative;
   overflow: hidden;
   z-index: 10001;
-  animation: fadeInUp 0.8s ease 0.6s backwards, btnGlow 2s ease-in-out infinite;
+  animation: fadeInUp 0.8s ease 0.6s backwards;
   text-transform: uppercase;
   box-shadow: 0 8px 20px rgba(255, 122, 0, 0.4), inset 0 2px 10px rgba(255, 255, 255, 0.2);
 }
@@ -424,7 +417,6 @@ html, body {
 
 .start-button:hover {
   transform: translateY(-4px) scale(1.02);
-  animation: btnGlow 1s ease-in-out infinite;
   box-shadow: 0 12px 30px rgba(255, 122, 0, 0.6), inset 0 2px 15px rgba(255, 255, 255, 0.3);
 }
 
@@ -443,6 +435,247 @@ html, body {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   animation: shimmer 2s infinite;
   pointer-events: none;
+}
+
+/* Load Game Button */
+.load-game-button {
+  display: block;
+  width: 100%;
+  background: linear-gradient(135deg, #2196f3, #1976d2, #1565c0);
+  background-size: 200% 200%;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 18px 32px;
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 10001;
+  animation: fadeInUp 0.8s ease 0.7s backwards;
+  text-transform: uppercase;
+  box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4), inset 0 2px 10px rgba(255, 255, 255, 0.2);
+}
+
+.load-game-button::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, #2196f3, #1976d2, #1565c0);
+  border-radius: 12px;
+  z-index: -1;
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.load-game-button:hover::before {
+  opacity: 0.8;
+}
+
+.load-game-button:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(33, 150, 243, 0.6), inset 0 2px 15px rgba(255, 255, 255, 0.3);
+}
+
+.load-game-button:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+/* Save Menu Overlay */
+.save-menu-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(15px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 10000;
+}
+
+.save-menu-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.save-menu-panel {
+  background: linear-gradient(145deg, rgba(20, 20, 20, 0.98), rgba(10, 10, 10, 0.98));
+  border: 2px solid rgba(255, 122, 0, 0.4);
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 122, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.save-menu-title {
+  margin: 0 0 30px 0;
+  font-size: 36px;
+  color: #ff7a00;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 122, 0, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.save-slots-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.save-slots-container .save-slot {
+  background: linear-gradient(145deg, rgba(255, 122, 0, 0.08), rgba(255, 122, 0, 0.03));
+  border: 2px solid rgba(255, 122, 0, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.save-slots-container .save-slot:hover {
+  border-color: rgba(255, 122, 0, 0.6);
+  box-shadow: 0 0 20px rgba(255, 122, 0, 0.3);
+  transform: translateX(5px);
+}
+
+.slot-number {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ff7a00;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.save-slots-container .slot-info {
+  margin-bottom: 16px;
+  min-height: 100px;
+}
+
+.save-slots-container .slot-empty {
+  font-size: 18px;
+  color: rgba(230, 230, 230, 0.4);
+  text-align: center;
+  padding: 40px 0;
+  font-style: italic;
+}
+
+.save-slots-container .slot-data {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.save-slots-container .slot-data > div {
+  color: rgba(230, 230, 230, 0.9);
+  margin: 6px 0;
+}
+
+.save-slots-container .slot-data span {
+  color: #ff7a00;
+  font-weight: 700;
+}
+
+.slot-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.save-slots-container .save-btn,
+.save-slots-container .load-btn,
+.save-slots-container .delete-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #ff7a00, #e66900);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.save-slots-container .save-btn {
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+}
+
+.save-slots-container .save-btn:hover {
+  background: linear-gradient(135deg, #66bb6a, #4caf50);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.save-slots-container .load-btn:disabled,
+.save-slots-container .delete-btn:disabled {
+  background: rgba(100, 100, 100, 0.3);
+  color: rgba(230, 230, 230, 0.4);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.save-slots-container .load-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 122, 0, 0.5);
+  background: linear-gradient(135deg, #ff9500, #ff7a00);
+}
+
+.save-slots-container .delete-btn {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  flex: 0.6;
+}
+
+.save-slots-container .delete-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(244, 67, 54, 0.5);
+  background: linear-gradient(135deg, #ff5252, #f44336);
+}
+
+.close-save-menu-btn {
+  display: block;
+  width: 100%;
+  background: linear-gradient(135deg, rgba(100, 100, 100, 0.3), rgba(80, 80, 80, 0.3));
+  color: rgba(230, 230, 230, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.close-save-menu-btn:hover {
+  background: linear-gradient(135deg, rgba(120, 120, 120, 0.4), rgba(100, 100, 100, 0.4));
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 /* HUD */

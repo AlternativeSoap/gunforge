@@ -35,6 +35,18 @@ export class AudioManager {
     if (this.master) this.master.gain.value = v;
   }
 
+  setMusicVolume(v) {
+    if (this.musicGain) this.musicGain.gain.value = v;
+  }
+
+  setSFXVolume(v) {
+    if (this.sfxGain) this.sfxGain.gain.value = v;
+  }
+
+  setMuted(muted) {
+    if (this.master) this.master.gain.value = muted ? 0 : 0.9;
+  }
+
   // Basic noise generator
   _noise(duration = 0.15, type = 'white') {
     const bufferSize = Math.floor(this.ctx.sampleRate * duration);
@@ -70,20 +82,148 @@ export class AudioManager {
     o.stop(now + dur + 0.02);
   }
 
-  playShoot() { if (!this.ctx) return; this._bip(520 + Math.random()*40, 0.06, 'square'); }
-  playHit() { if (!this.ctx) return; this._bip(240, 0.04, 'sawtooth'); }
+  // Weapon-specific shooting sounds - IMPROVED
+  playPistolShoot() {
+    if (!this.ctx) return;
+    // Crisp gunshot: short burst + snap
+    const now = this.ctx.currentTime;
+    const n = this._noise(0.05, 'white');
+    const f = this.ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1800; f.Q.value = 2;
+    const g = this.ctx.createGain(); g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+    n.connect(f); f.connect(g); g.connect(this.sfxGain);
+    n.start(now); n.stop(now + 0.05);
+    // Add bass punch
+    const bass = this.ctx.createOscillator(); bass.type = 'sine'; bass.frequency.value = 120;
+    const bg = this.ctx.createGain(); bg.gain.setValueAtTime(0.3, now); bg.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+    bass.connect(bg); bg.connect(this.sfxGain); bass.start(now); bass.stop(now + 0.04);
+  }
+
+  playLaserShoot() {
+    if (!this.ctx) return;
+    // Sci-fi beam: clean sweep
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = 'sine';
+    const g = this.ctx.createGain();
+    o.connect(g); g.connect(this.sfxGain);
+    o.frequency.setValueAtTime(1200, now);
+    o.frequency.exponentialRampToValueAtTime(2200, now + 0.06);
+    g.gain.setValueAtTime(0.4, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+    o.start(now); o.stop(now + 0.07);
+  }
+
+  playShotgunShoot() {
+    if (!this.ctx) return;
+    // Heavy blast: big boom
+    const now = this.ctx.currentTime;
+    const n = this._noise(0.12, 'white');
+    const f = this.ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1400;
+    const g = this.ctx.createGain(); g.gain.setValueAtTime(0.7, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+    n.connect(f); f.connect(g); g.connect(this.sfxGain);
+    n.start(now); n.stop(now + 0.12);
+    // Deep boom
+    const bass = this.ctx.createOscillator(); bass.type = 'sine'; bass.frequency.value = 80;
+    const bg = this.ctx.createGain(); bg.gain.setValueAtTime(0.5, now); bg.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    bass.connect(bg); bg.connect(this.sfxGain); bass.start(now); bass.stop(now + 0.08);
+  }
+
+  playFlamethrowerShoot() {
+    if (!this.ctx) return;
+    // Fire whoosh: continuous roar
+    const now = this.ctx.currentTime;
+    const n = this._noise(0.1, 'pink');
+    const f = this.ctx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 800;
+    const g = this.ctx.createGain(); g.gain.setValueAtTime(0.3, now); g.gain.linearRampToValueAtTime(0, now + 0.1);
+    n.connect(f); f.connect(g); g.connect(this.sfxGain);
+    n.start(now); n.stop(now + 0.1);
+  }
+
+  playRocketShoot() {
+    if (!this.ctx) return;
+    // Rocket launch: whoosh with rumble
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = 'sawtooth';
+    const g = this.ctx.createGain();
+    o.connect(g); g.connect(this.sfxGain);
+    o.frequency.setValueAtTime(500, now);
+    o.frequency.exponentialRampToValueAtTime(180, now + 0.15);
+    g.gain.setValueAtTime(0.45, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+    o.start(now); o.stop(now + 0.16);
+  }
+
+  playEnergyShoot() {
+    if (!this.ctx) return;
+    // Energy blast: electric pulse
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = 'square';
+    const g = this.ctx.createGain();
+    o.connect(g); g.connect(this.sfxGain);
+    o.frequency.setValueAtTime(1400, now);
+    o.frequency.exponentialRampToValueAtTime(2800, now + 0.03);
+    o.frequency.exponentialRampToValueAtTime(900, now + 0.07);
+    g.gain.setValueAtTime(0.38, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+    o.start(now); o.stop(now + 0.08);
+  }
+
+  playShoot() { this.playPistolShoot(); } // default fallback
+  
+  playHit() {
+    if (!this.ctx) return;
+    // Flesh impact: dull thud with noise
+    const n = this._noise(0.06, 'brown');
+    const f = this.ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 400;
+    const g = this.ctx.createGain(); g.gain.value = 0.5;
+    n.connect(f); f.connect(g); g.connect(this.sfxGain);
+    n.start(); n.stop(this.ctx.currentTime + 0.06);
+    this._bip(220, 0.03, 'sine');
+  }
+  
   playExplosion() {
     if (!this.ctx) return;
-    const n = this._noise(0.25, 'white');
-    const f = this.ctx.createBiquadFilter();
-    f.type = 'lowpass'; f.frequency.value = 1200;
+    // Big boom: layered noise + rumble
+    const n = this._noise(0.35, 'white');
+    const f = this.ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1200;
     const g = this.ctx.createGain(); g.gain.value = 0.8;
     n.connect(f); f.connect(g); g.connect(this.sfxGain);
-    n.start(); n.stop(this.ctx.currentTime + 0.3);
+    n.start(); n.stop(this.ctx.currentTime + 0.35);
+    this._bip(80, 0.15, 'sine'); // deep rumble
   }
-  playChest() { if (!this.ctx) return; this._bip(760, 0.12, 'triangle'); }
-  playLevelUp() { if (!this.ctx) return; this._bip(880, 0.18, 'triangle'); this._bip(660, 0.14, 'square'); }
-  playUnlock() { if (!this.ctx) return; this._bip(520, 0.08, 'triangle'); this._bip(690, 0.10, 'triangle'); }
+  
+  playChest() {
+    if (!this.ctx) return;
+    // Pleasant chime: arpeggio
+    this._bip(760, 0.12, 'triangle');
+    setTimeout(() => this._bip(960, 0.12, 'triangle'), 60);
+  }
+  
+  playLevelUp() {
+    if (!this.ctx) return;
+    // Victory fanfare: ascending tones
+    this._bip(660, 0.14, 'triangle');
+    setTimeout(() => this._bip(880, 0.16, 'triangle'), 80);
+    setTimeout(() => this._bip(1100, 0.18, 'triangle'), 160);
+  }
+  
+  playUnlock() {
+    if (!this.ctx) return;
+    // Click-unlock: quick chirp
+    this._bip(520, 0.08, 'triangle');
+    setTimeout(() => this._bip(690, 0.10, 'triangle'), 50);
+  }
+
+  playPickup() {
+    if (!this.ctx) return;
+    // Item pickup: quick ascending tones
+    this._bip(700, 0.08, 'sine');
+    setTimeout(() => this._bip(900, 0.08, 'sine'), 50);
+  }
+
+  // Alias for compatibility
+  pickup() {
+    this.playPickup();
+  }
 
   // Prefer buffers if available
   _play(name, fallback){
@@ -93,7 +233,21 @@ export class AudioManager {
       const s = this.ctx.createBufferSource(); s.buffer = buf; s.connect(this.sfxGain); s.start();
     } else fallback();
   }
-  shoot(){ this._play('shoot', ()=>this.playShoot()); }
+  
+  // Weapon-specific shoot methods
+  shoot(weaponType = 'pistol') {
+    const typeMap = {
+      'pistol': () => this.playPistolShoot(),
+      'laser': () => this.playLaserShoot(),
+      'shotgun': () => this.playShotgunShoot(),
+      'flamethrower': () => this.playFlamethrowerShoot(),
+      'rocket': () => this.playRocketShoot(),
+      'energy': () => this.playEnergyShoot(),
+    };
+    const fallback = typeMap[weaponType.toLowerCase()] || (() => this.playPistolShoot());
+    this._play('shoot_' + weaponType, fallback);
+  }
+  
   hit(){ this._play('hit', ()=>this.playHit()); }
   explosion(){ this._play('explosion', ()=>this.playExplosion()); }
   chest(){ this._play('chest', ()=>this.playChest()); }

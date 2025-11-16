@@ -279,11 +279,22 @@ export class Player {
   heal(v) { this.hp = Math.min(this.maxHp, this.hp + v); }
 
   addXp(v) {
-    this.xp += v;
+    // Apply difficulty XP modifier
+    const diff = DIFFICULTY[GAME.difficulty] || DIFFICULTY.medium;
+    const xpMult = diff.xpMult || 1.0;
+    const adjustedXp = Math.floor(v * xpMult);
+    
+    this.xp += adjustedXp;
     if (this.xp >= this.xpToLevel) {
       this.level++;
       this.xp -= this.xpToLevel;
-      this.xpToLevel = Math.floor(this.xpToLevel * 1.2 + 30);
+      
+      // Exponential XP scaling - gets much harder at higher levels
+      // Formula: base * (1.15^level) + (level * 20)
+      // This creates steep growth curve for infinite leveling
+      const baseXp = 100;
+      this.xpToLevel = Math.floor(baseXp * Math.pow(1.15, this.level) + (this.level * 20));
+      
       return true; // level up
     }
     return false;
@@ -386,7 +397,10 @@ export class Player {
     // Apply damage reduction from items
     const dr = this.itemBonuses.damageReduction || 0;
     const actualDamage = Math.max(1, v * (1 - dr));
-    this.hp -= actualDamage; 
+    // God mode cheat protection
+    if (!this.godMode) {
+      this.hp -= actualDamage;
+    }
     this.iFrames = 0.3;
     // Trigger blood screen effect
     if (game) game.bloodScreen = Math.max(game.bloodScreen || 0, 0.6);
@@ -454,6 +468,9 @@ export class Player {
       const damagePerTick = (meleeDPS * diff.playerDamage * this.dmgMultBase * this.dmgMult) / 60; // 60 ticks per second
       
       game.enemies.forEach(e => {
+        // Safety check: ensure enemy has takeDamage method
+        if (!e || typeof e.takeDamage !== 'function') return;
+        
         const dx = e.x - this.x;
         const dy = e.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -500,7 +517,8 @@ export class Player {
       });
       game.projectiles.push(proj);
       
-      if (game.audio.shoot) game.audio.shoot(); else game.audio.playShoot();
+      // Beam weapons use laser sound
+      if (game.audio.shoot) game.audio.shoot('laser'); else game.audio.playLaserShoot();
       this.recoil = Math.min(1, this.recoil + 0.3);
       this.muzzleFlash = 0.15;
       this.shootCd = w.cooldown || 1.0;
@@ -579,7 +597,15 @@ export class Player {
       game.projectiles.push(proj);
     }
     
-    if (game.audio.shoot) game.audio.shoot(); else game.audio.playShoot();
+    // Map projectile types to weapon sounds
+    let soundType = 'pistol';
+    if (w.projectile === 'flame' || w.projectile === 'fire') soundType = 'flamethrower';
+    else if (w.projectile === 'pellet' || w.projectile === 'shell') soundType = 'shotgun';
+    else if (w.projectile === 'rocket' || w.projectile === 'grenade' || w.projectile === 'meteor') soundType = 'rocket';
+    else if (w.projectile === 'energy' || w.projectile === 'plasma' || w.projectile === 'lightning' || w.projectile === 'void' || w.projectile === 'antimatter') soundType = 'energy';
+    else if (w.projectile === 'beam') soundType = 'laser';
+    
+    if (game.audio.shoot) game.audio.shoot(soundType); else game.audio.playShoot();
     this.recoil = Math.min(1, this.recoil + 0.2);
     this.muzzleFlash = 0.08;
     this.isCharging = false;

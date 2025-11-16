@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gunforge: Wasteland Echoes</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -79,10 +80,17 @@
           </div>
         </div>
         
-        <button id="startBtn" class="start-button" onclick="window.requestGameStart && window.requestGameStart()">
-          <span class="btn-text">START GAME</span>
-          <span class="btn-glow"></span>
-        </button>
+        <div class="main-menu-buttons">
+          <button id="startBtn" class="start-button" onclick="window.requestGameStart && window.requestGameStart()">
+            <span class="btn-text">NEW GAME</span>
+            <span class="btn-glow"></span>
+          </button>
+          
+          <button id="loadGameBtn" class="load-game-button">
+            <span class="btn-text">💾 LOAD GAME</span>
+            <span class="btn-glow"></span>
+          </button>
+        </div>
       </div>
     </div>
     <script>
@@ -114,6 +122,269 @@
             console.log('Difficulty selected:', window.__GAME_DIFFICULTY__);
           });
         });
+        
+        // Save/Load System UI
+        function formatTime(timestamp) {
+          if (!timestamp) return '--';
+          const date = new Date(timestamp);
+          return date.toLocaleString();
+        }
+        
+        function updateSaveSlots() {
+          if (!window.saveManager) {
+            console.log('SaveManager not loaded yet, will retry...');
+            setTimeout(updateSaveSlots, 100);
+            return;
+          }
+          
+          const slotsInfo = window.saveManager.getAllSlotsInfo();
+          slotsInfo.forEach((slotInfo, index) => {
+            // Update all save slot displays (both in save menu and home screen if it exists)
+            const slotSelectors = [
+              `.save-menu-overlay .save-slot[data-slot="${slotInfo.slotNumber}"]`,
+              `#overlay .save-slot[data-slot="${slotInfo.slotNumber}"]`
+            ];
+            
+            slotSelectors.forEach(selector => {
+              const slotEl = document.querySelector(selector);
+              if (!slotEl) return;
+              
+              const emptyEl = slotEl.querySelector('.slot-empty');
+              const dataEl = slotEl.querySelector('.slot-data');
+              const loadBtn = slotEl.querySelector('.load-btn');
+              const deleteBtn = slotEl.querySelector('.delete-btn');
+              
+              if (slotInfo.isEmpty) {
+                emptyEl.style.display = 'block';
+                dataEl.style.display = 'none';
+                loadBtn.disabled = true;
+                deleteBtn.disabled = true;
+              } else {
+                emptyEl.style.display = 'none';
+                dataEl.style.display = 'block';
+                dataEl.querySelector('.level-val').textContent = slotInfo.level;
+                const coinsEl = dataEl.querySelector('.coins-val');
+                if (coinsEl) coinsEl.textContent = slotInfo.coins || 0;
+                dataEl.querySelector('.layer-val').textContent = slotInfo.layer;
+                dataEl.querySelector('.diff-val').textContent = slotInfo.difficulty;
+                dataEl.querySelector('.time-val').textContent = formatTime(slotInfo.timestamp);
+                loadBtn.disabled = false;
+                deleteBtn.disabled = false;
+              }
+            });
+          });
+        }
+        
+        // Update save menu mode based on game state
+        function updateSaveMenuMode() {
+          const isInGame = window.game && window.game.started && !window.game.dead;
+          const saveMenu = document.getElementById('saveMenu');
+          const title = saveMenu.querySelector('.save-menu-title');
+          const saveBtns = saveMenu.querySelectorAll('.save-btn');
+          
+          if (isInGame) {
+            // In-game: Show Save buttons
+            title.textContent = '💾 Save Game';
+            saveBtns.forEach(btn => {
+              btn.style.display = 'block';
+            });
+          } else {
+            // Home screen: Hide Save buttons
+            title.textContent = '💾 Load Game';
+            saveBtns.forEach(btn => {
+              btn.style.display = 'none';
+            });
+          }
+        }
+        
+        // Expose globally for use in main.js pause menu
+        window.updateSaveSlots = updateSaveSlots;
+        window.updateSaveMenuMode = updateSaveMenuMode;
+        
+        // Load/Save game from slot - use event delegation for dynamically updated buttons
+        document.addEventListener('click', (e) => {
+          // Check if click is on a load button
+          const loadBtn = e.target.closest('.load-btn');
+          if (!loadBtn || loadBtn.disabled) return;
+          
+          // Check if the button is inside the save menu
+          const saveMenu = document.getElementById('saveMenu');
+          if (!saveMenu.classList.contains('visible')) return;
+          if (!saveMenu.contains(loadBtn)) return;
+          
+          const slotEl = loadBtn.closest('.save-slot');
+          if (!slotEl) return;
+          
+          const slotNum = parseInt(slotEl.getAttribute('data-slot'));
+          const isInGame = window.game && window.game.started && !window.game.dead;
+          
+          console.log('[Save Menu] Button clicked - Slot:', slotNum, 'InGame:', isInGame);
+          
+          if (isInGame) {
+            // In-game: Save to this slot
+            if (window.saveManager && window.game && window.game.player) {
+              const saved = window.saveManager.saveToSlot(
+                slotNum,
+                window.game.player,
+                window.game.coins,
+                window.game.depth,
+                window.GAME ? window.GAME.difficulty : 'medium',
+                window.game.gameTime || 0
+              );
+              if (saved) {
+                window.game.promptTimed(`💾 Saved to Slot ${slotNum}!`, 1.5);
+                console.log('[Save Menu] Successfully saved to slot:', slotNum);
+                saveMenu.classList.remove('visible');
+                updateSaveSlots();
+              } else {
+                console.error('[Save Menu] Failed to save to slot:', slotNum);
+              }
+            } else {
+              console.error('[Save Menu] Missing required data for saving');
+            }
+          } else {
+            // Home screen: Load from this slot
+            console.log('[Save Menu] Loading from slot:', slotNum);
+            window.__LOAD_FROM_SLOT__ = slotNum;
+            window.__GAME_DIFFICULTY__ = null; // Will be loaded from save
+            saveMenu.classList.remove('visible');
+            window.requestGameStart && window.requestGameStart();
+          }
+        });
+        
+        // Save button click handler
+        document.addEventListener('click', (e) => {
+          const saveBtn = e.target.closest('.save-btn');
+          if (!saveBtn) return;
+          
+          const saveMenu = document.getElementById('saveMenu');
+          if (!saveMenu.classList.contains('visible')) return;
+          if (!saveMenu.contains(saveBtn)) return;
+          
+          const slotEl = saveBtn.closest('.save-slot');
+          if (!slotEl) return;
+          
+          const slotNum = parseInt(slotEl.getAttribute('data-slot'));
+          const isInGame = window.game && window.game.started && !window.game.dead;
+          
+          if (!isInGame) {
+            console.warn('[Save Menu] Cannot save - game not in progress');
+            return;
+          }
+          
+          console.log('[Save Menu] Save button clicked - Slot:', slotNum);
+          
+          // Save to this slot
+          if (window.saveManager && window.game && window.game.player && window.GAME) {
+            const saved = window.saveManager.saveToSlot(
+              slotNum,
+              window.game.player,
+              window.game.coins || 0,
+              window.game.depth || 1,
+              window.GAME ? window.GAME.difficulty : 'medium',
+              window.game.gameTime || 0
+            );
+            if (saved) {
+              window.game.promptTimed(`💾 Saved to Slot ${slotNum}!`, 1.5);
+              console.log('[Save Menu] Successfully saved to slot:', slotNum);
+              updateSaveSlots();
+            } else {
+              console.error('[Save Menu] Failed to save to slot:', slotNum);
+            }
+          } else {
+            console.error('[Save Menu] Missing required data for saving');
+          }
+        });
+        
+        // Save button click handler
+        document.addEventListener('click', (e) => {
+          const saveBtn = e.target.closest('.save-btn');
+          if (!saveBtn) return;
+          
+          const saveMenu = document.getElementById('saveMenu');
+          if (!saveMenu.classList.contains('visible')) return;
+          if (!saveMenu.contains(saveBtn)) return;
+          
+          const slotEl = saveBtn.closest('.save-slot');
+          if (!slotEl) return;
+          
+          const slotNum = parseInt(slotEl.getAttribute('data-slot'));
+          const isInGame = window.game && window.game.started && !window.game.dead;
+          
+          if (!isInGame) {
+            console.warn('[Save Menu] Cannot save - game not in progress');
+            return;
+          }
+          
+          console.log('[Save Menu] Save button clicked - Slot:', slotNum);
+          
+          // Save to this slot
+          if (window.saveManager && window.game && window.game.player && window.GAME) {
+            const saved = window.saveManager.saveToSlot(
+              slotNum,
+              window.game.player,
+              window.game.coins || 0,
+              window.game.depth || 1,
+              window.GAME ? window.GAME.difficulty : 'medium',
+              window.game.gameTime || 0
+            );
+            if (saved) {
+              window.game.promptTimed(`💾 Saved to Slot ${slotNum}!`, 1.5);
+              console.log('[Save Menu] Successfully saved to slot:', slotNum);
+              updateSaveSlots();
+            } else {
+              console.error('[Save Menu] Failed to save to slot:', slotNum);
+            }
+          } else {
+            console.error('[Save Menu] Missing required data for saving');
+          }
+        });
+        
+        // Delete save slot - use event delegation
+        document.addEventListener('click', (e) => {
+          const deleteBtn = e.target.closest('.delete-btn');
+          if (!deleteBtn || deleteBtn.disabled) return;
+          
+          const saveMenu = document.getElementById('saveMenu');
+          if (!saveMenu.classList.contains('visible')) return;
+          if (!saveMenu.contains(deleteBtn)) return;
+          
+          const slotEl = deleteBtn.closest('.save-slot');
+          if (!slotEl) return;
+          
+          const slotNum = parseInt(slotEl.getAttribute('data-slot'));
+          
+          if (confirm(`Delete save slot ${slotNum}?`)) {
+            window.saveManager && window.saveManager.deleteSlot(slotNum);
+            updateSaveSlots();
+            console.log('[Save Menu] Deleted slot:', slotNum);
+          }
+        });
+        
+        // Initial update
+        updateSaveSlots();
+        
+        // Load Game button - open save menu
+        const loadGameBtn = document.getElementById('loadGameBtn');
+        const saveMenu = document.getElementById('saveMenu');
+        const closeSaveMenu = document.getElementById('closeSaveMenu');
+        
+        loadGameBtn?.addEventListener('click', () => {
+          saveMenu.classList.add('visible');
+          updateSaveMenuMode();
+          updateSaveSlots(); // Refresh slot data when opening
+        });
+        
+        closeSaveMenu?.addEventListener('click', () => {
+          saveMenu.classList.remove('visible');
+        });
+        
+        // Close menu when clicking outside
+        saveMenu?.addEventListener('click', (e) => {
+          if (e.target === saveMenu) {
+            saveMenu.classList.remove('visible');
+          }
+        });
       });
       
       // Fallback: capture start intent before modules load
@@ -144,5 +415,70 @@
           document.querySelector('.panel')?.appendChild(p);
         });
     </script>
+    
+    <!-- Save/Load Menu Overlay -->
+    <div id="saveMenu" class="save-menu-overlay" data-mode="load">
+      <div class="save-menu-panel">
+        <h2 class="save-menu-title">💾 Save / Load Game</h2>
+        
+        <div class="save-slots-container">
+            <div class="save-slot" data-slot="1">
+              <div class="slot-number">SLOT 1</div>
+              <div class="slot-info">
+                <div class="slot-empty">Empty Slot</div>
+                <div class="slot-data" style="display:none;">
+                  <div class="slot-level">Level: <span class="level-val">--</span> | Coins: <span class="coins-val">--</span></div>
+                  <div class="slot-layer">Layer: <span class="layer-val">--</span></div>
+                  <div class="slot-diff">Difficulty: <span class="diff-val">--</span></div>
+                  <div class="slot-time">Saved: <span class="time-val">--</span></div>
+                </div>
+              </div>
+            <div class="slot-buttons">
+              <button class="save-btn">SAVE</button>
+              <button class="load-btn" disabled>LOAD</button>
+              <button class="delete-btn" disabled>DELETE</button>
+            </div>
+          </div>
+          
+            <div class="save-slot" data-slot="2">
+              <div class="slot-number">SLOT 2</div>
+              <div class="slot-info">
+                <div class="slot-empty">Empty Slot</div>
+                <div class="slot-data" style="display:none;">
+                  <div class="slot-level">Level: <span class="level-val">--</span> | Coins: <span class="coins-val">--</span></div>
+                  <div class="slot-layer">Layer: <span class="layer-val">--</span></div>
+                  <div class="slot-diff">Difficulty: <span class="diff-val">--</span></div>
+                  <div class="slot-time">Saved: <span class="time-val">--</span></div>
+                </div>
+              </div>
+            <div class="slot-buttons">
+              <button class="save-btn">SAVE</button>
+              <button class="load-btn" disabled>LOAD</button>
+              <button class="delete-btn" disabled>DELETE</button>
+            </div>
+          </div>
+          
+            <div class="save-slot" data-slot="3">
+              <div class="slot-number">SLOT 3</div>
+              <div class="slot-info">
+                <div class="slot-empty">Empty Slot</div>
+                <div class="slot-data" style="display:none;">
+                  <div class="slot-level">Level: <span class="level-val">--</span> | Coins: <span class="coins-val">--</span></div>
+                  <div class="slot-layer">Layer: <span class="layer-val">--</span></div>
+                  <div class="slot-diff">Difficulty: <span class="diff-val">--</span></div>
+                  <div class="slot-time">Saved: <span class="time-val">--</span></div>
+                </div>
+              </div>
+            <div class="slot-buttons">
+              <button class="save-btn">SAVE</button>
+              <button class="load-btn" disabled>LOAD</button>
+              <button class="delete-btn" disabled>DELETE</button>
+            </div>
+          </div>
+        </div>
+        
+        <button id="closeSaveMenu" class="close-save-menu-btn">← BACK</button>
+      </div>
+    </div>
   </body>
   </html>

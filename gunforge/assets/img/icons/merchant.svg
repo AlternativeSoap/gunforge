@@ -20,28 +20,59 @@
   <!-- Shadow face (mysterious) -->
   <ellipse cx="50" cy="30" rx="12" ry="14" fill="#1a1a1a"/>
   
-  <!-- Glowing eyes -->
-  <circle cx="45" cy="28" r="2.5" fill="#ffca28"/>
-  <circle cx="55" cy="28" r="2.5" fill="#ffca28"/>
-  <circle cx="45" cy="28" r="1.5" fill="#fff" opacity="0.8"/>
-  <circle cx="55" cy="28" r="1.5" fill="#fff" opacity="0.8"/>
+  <!-- Glowing eyes (pulsing animation) -->
+  <circle cx="45" cy="28" r="2.5" fill="#ffca28">
+    <animate attributeName="opacity" values="1;0.6;1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="55" cy="28" r="2.5" fill="#ffca28">
+    <animate attributeName="opacity" values="1;0.6;1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="45" cy="28" r="1.5" fill="#fff" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.4;0.8" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="55" cy="28" r="1.5" fill="#fff" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.4;0.8" dur="3s" repeatCount="indefinite"/>
+  </circle>
   
   <!-- Coin pouch on belt -->
   <ellipse cx="50" cy="60" rx="8" ry="10" fill="url(#goldGrad)" stroke="#aa7700" stroke-width="1.5"/>
   <path d="M50 54 Q 48 56, 50 58 Q 52 56, 50 54" fill="#aa7700"/>
   
-  <!-- Gold coins floating -->
-  <circle cx="30" cy="45" r="4" fill="url(#goldGrad)" stroke="#aa7700" stroke-width="1"/>
-  <text x="30" y="47" font-size="5" fill="#aa7700" text-anchor="middle" font-weight="bold">$</text>
+  <!-- Gold coins floating (animated) -->
+  <circle cx="30" cy="45" r="4" fill="url(#goldGrad)" stroke="#aa7700" stroke-width="1">
+    <animate attributeName="cy" values="45;42;45" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0.8;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <text x="30" y="47" font-size="5" fill="#aa7700" text-anchor="middle" font-weight="bold">
+    <animate attributeName="y" values="47;44;47" dur="2s" repeatCount="indefinite"/>
+    $
+  </text>
   
-  <circle cx="70" cy="50" r="4" fill="url(#goldGrad)" stroke="#aa7700" stroke-width="1"/>
-  <text x="70" y="52" font-size="5" fill="#aa7700" text-anchor="middle" font-weight="bold">$</text>
+  <circle cx="70" cy="50" r="4" fill="url(#goldGrad)" stroke="#aa7700" stroke-width="1">
+    <animate attributeName="cy" values="50;47;50" dur="2.3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0.8;1" dur="2.3s" repeatCount="indefinite"/>
+  </circle>
+  <text x="70" y="52" font-size="5" fill="#aa7700" text-anchor="middle" font-weight="bold">
+    <animate attributeName="y" values="52;49;52" dur="2.3s" repeatCount="indefinite"/>
+    $
+  </text>
   
-  <circle cx="35" cy="65" r="3.5" fill="url(#goldGrad)" stroke="#aa7700" stroke-width="1"/>
-  <text x="35" y="67" font-size="4" fill="#aa7700" text-anchor="middle" font-weight="bold">$</text>
+  <circle cx="35" cy="65" r="3.5" fill="url(#goldGrad)" stroke="#aa7700" stroke-width="1">
+    <animate attributeName="cy" values="65;62;65" dur="1.8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0.8;1" dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+  <text x="35" y="67" font-size="4" fill="#aa7700" text-anchor="middle" font-weight="bold">
+    <animate attributeName="y" values="67;64;67" dur="1.8s" repeatCount="indefinite"/>
+    $
+  </text>
   
-  <!-- Mystical staff/cane -->
+  <!-- Mystical staff/cane (glowing orb) -->
   <rect x="68" y="40" width="3" height="45" rx="1.5" fill="#5a4520" stroke="#3d2a15" stroke-width="1"/>
-  <circle cx="69.5" cy="38" r="4" fill="#8b4fff" stroke="#5a2fb3" stroke-width="1.5"/>
-  <circle cx="69.5" cy="38" r="2" fill="#fff" opacity="0.6"/>
+  <circle cx="69.5" cy="38" r="4" fill="#8b4fff" stroke="#5a2fb3" stroke-width="1.5">
+    <animate attributeName="r" values="4;4.5;4" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="69.5" cy="38" r="2" fill="#fff" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="2;2.5;2" dur="2s" repeatCount="indefinite"/>
+  </circle>
 </svg>

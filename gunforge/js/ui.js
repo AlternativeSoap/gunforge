@@ -733,3 +733,252 @@ export function drawShop(ctx, game){
   
   ctx.restore();
 }
+
+// Settings Menu
+export function drawSettings(ctx, game) {
+  const { width, height, SETTINGS, saveSettings } = game;
+  
+  if (!SETTINGS) {
+    console.warn('[Settings] SETTINGS object not found in game');
+    return;
+  }
+  
+  ctx.save();
+  ctx.resetTransform();
+  
+  // Dark overlay
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.92)';
+  ctx.fillRect(0, 0, width, height);
+  
+  // Settings panel
+  const panelW = Math.min(560, width - 80);
+  const panelH = Math.min(760, height - 60);
+  const panelX = (width - panelW) / 2;
+  const panelY = (height - panelH) / 2;
+  
+  // Panel shadow
+  ctx.shadowColor = 'rgba(255, 122, 0, 0.35)';
+  ctx.shadowBlur = 45;
+  
+  // Panel gradient background (match homescreen)
+  const panelGrad = ctx.createLinearGradient(panelX, panelY, panelX, panelY + panelH);
+  panelGrad.addColorStop(0, 'rgba(25, 20, 15, 0.98)');
+  panelGrad.addColorStop(1, 'rgba(15, 10, 5, 0.98)');
+  ctx.fillStyle = panelGrad;
+  ctx.fillRect(panelX, panelY, panelW, panelH);
+  
+  ctx.shadowBlur = 0;
+  
+  // Panel border with gradient
+  const borderGrad = ctx.createLinearGradient(panelX, panelY, panelX, panelY + panelH);
+  borderGrad.addColorStop(0, 'rgba(255, 202, 40, 0.7)');
+  borderGrad.addColorStop(0.5, 'rgba(255, 122, 0, 0.5)');
+  borderGrad.addColorStop(1, 'rgba(255, 202, 40, 0.7)');
+  ctx.strokeStyle = borderGrad;
+  ctx.lineWidth = 3;
+  ctx.strokeRect(panelX, panelY, panelW, panelH);
+  
+  // Title with animated glow
+  const pulse = 0.5 + Math.sin(performance.now() * 0.003) * 0.5;
+  ctx.shadowColor = '#ff7a00';
+  ctx.shadowBlur = 22 * pulse;
+  ctx.fillStyle = '#ff7a00';
+  ctx.font = 'bold 34px system-ui, Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText('⚙ SETTINGS', width / 2, panelY + 22);
+  ctx.shadowBlur = 0;
+  
+  // Subtitle
+  ctx.fillStyle = '#aaa';
+  ctx.font = '13px system-ui, Arial';
+  ctx.fillText('Customize your game experience', width/2, panelY + 62);
+  
+  // Single column centered layout for clarity
+  const centerCol = panelX + panelW / 2;
+  const settingsWidth = 420;
+  const settingsX = centerCol - settingsWidth / 2;
+  const startY = panelY + 90;
+  const lineHeight = 44;
+  
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  
+  let y = startY;
+  
+  // === AUDIO SECTION ===
+  ctx.fillStyle = '#ffca28';
+  ctx.font = 'bold 20px system-ui, Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('🔊 AUDIO', centerCol, y);
+  y += 36;
+  
+  ctx.font = '15px system-ui, Arial';
+  ctx.textAlign = 'left';
+  
+  // Mute All
+  drawToggle(ctx, settingsX, y, SETTINGS.audio.muteAll, 'Mute All Sounds', game, ['audio', 'muteAll']);
+  y += lineHeight;
+  
+  // Music Volume
+  drawSlider(ctx, settingsX, y, SETTINGS.audio.musicVolume, 'Music Volume', game, ['audio', 'musicVolume']);
+  y += lineHeight;
+  
+  // SFX Volume
+  drawSlider(ctx, settingsX, y, SETTINGS.audio.sfxVolume, 'SFX Volume', game, ['audio', 'sfxVolume']);
+  y += lineHeight + 12;
+  
+  // === GRAPHICS SECTION ===
+  ctx.fillStyle = '#ffca28';
+  ctx.font = 'bold 20px system-ui, Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('🎨 GRAPHICS', centerCol, y);
+  y += 36;
+  
+  ctx.font = '15px system-ui, Arial';
+  ctx.textAlign = 'left';
+  
+  // Particles Toggle
+  drawToggle(ctx, settingsX, y, SETTINGS.graphics.particles, 'Particles', game, ['graphics', 'particles']);
+  y += lineHeight;
+  
+  // Screen Shake
+  drawToggle(ctx, settingsX, y, SETTINGS.graphics.screenShake, 'Screen Shake', game, ['graphics', 'screenShake']);
+  y += lineHeight;
+  
+  // Vignette
+  drawToggle(ctx, settingsX, y, SETTINGS.graphics.vignette, 'Vignette Effect', game, ['graphics', 'vignette']);
+  y += lineHeight;
+  
+  // Show FPS
+  drawToggle(ctx, settingsX, y, SETTINGS.graphics.showFPS, 'Show FPS', game, ['graphics', 'showFPS']);
+  y += lineHeight + 12;
+  
+  // === UI SECTION ===
+  ctx.fillStyle = '#ffca28';
+  ctx.font = 'bold 20px system-ui, Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('🎮 UI DISPLAY', centerCol, y);
+  y += 36;
+  
+  ctx.font = '15px system-ui, Arial';
+  ctx.textAlign = 'left';
+  
+  // Enemy Healthbars
+  drawToggle(ctx, settingsX, y, SETTINGS.ui.showEnemyHealthbars, 'Enemy Healthbars', game, ['ui', 'showEnemyHealthbars']);
+  y += lineHeight;
+  
+  // Damage Numbers
+  drawToggle(ctx, settingsX, y, SETTINGS.ui.showDamageNumbers, 'Damage Numbers', game, ['ui', 'showDamageNumbers']);
+  y += lineHeight;
+  
+  // Minimap
+  drawToggle(ctx, settingsX, y, SETTINGS.ui.showMinimap, 'Minimap', game, ['ui', 'showMinimap']);
+  y += lineHeight;
+  
+  // Crosshair
+  drawToggle(ctx, settingsX, y, SETTINGS.ui.showCrosshair, 'Crosshair', game, ['ui', 'showCrosshair']);
+  y += lineHeight;
+  
+  // Close button with homescreen style
+  const closeW = 240;
+  const closeH = 52;
+  const closeX = (width - closeW) / 2;
+  const closeY = panelY + panelH - closeH - 24;
+  
+  // Check hover state
+  const closeHovered = game.mouse.x >= closeX && game.mouse.x <= closeX + closeW && 
+                       game.mouse.y >= closeY && game.mouse.y <= closeY + closeH;
+  
+  // Button glow on hover
+  if (closeHovered) {
+    ctx.shadowColor = '#ffca28';
+    ctx.shadowBlur = 28;
+  }
+  
+  // Button gradient
+  const btnGrad = ctx.createLinearGradient(closeX, closeY, closeX, closeY + closeH);
+  if (closeHovered) {
+    btnGrad.addColorStop(0, '#ffd54f');
+    btnGrad.addColorStop(1, '#ffa000');
+  } else {
+    btnGrad.addColorStop(0, '#ffca28');
+    btnGrad.addColorStop(1, '#ff8f00');
+  }
+  ctx.fillStyle = btnGrad;
+  ctx.fillRect(closeX, closeY, closeW, closeH);
+  
+  ctx.shadowBlur = 0;
+  
+  // Button border
+  ctx.strokeStyle = closeHovered ? '#ffe082' : 'rgba(255, 255, 255, 0.3)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(closeX, closeY, closeW, closeH);
+  
+  // Button text
+  ctx.fillStyle = '#000';
+  ctx.font = 'bold 20px system-ui, Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('✓ CLOSE', closeX + closeW / 2, closeY + closeH / 2 - 4);
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+  ctx.font = '11px system-ui, Arial';
+  ctx.fillText('Press ESC', closeX + closeW / 2, closeY + closeH / 2 + 13);
+  
+  ctx.restore();
+}
+
+// Helper: Draw toggle switch
+function drawToggle(ctx, x, y, state, label, game, setting) {
+  ctx.fillStyle = '#ccc';
+  ctx.fillText(label, x, y);
+  
+  // Toggle switch
+  const toggleX = x + 250;
+  const toggleW = 50;
+  const toggleH = 30;
+  
+  ctx.fillStyle = state ? '#4ade80' : '#666';
+  ctx.fillRect(toggleX, y - 15, toggleW, toggleH);
+  
+  ctx.fillStyle = '#fff';
+  const knobX = state ? toggleX + toggleW - 24 : toggleX + 4;
+  ctx.fillRect(knobX, y - 11, 20, 22);
+  
+  ctx.fillStyle = '#000';
+  ctx.font = 'bold 12px system-ui, Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(state ? 'ON' : 'OFF', toggleX + toggleW / 2, y + 2);
+}
+
+// Helper: Draw slider
+function drawSlider(ctx, x, y, value, label, game, setting) {
+  ctx.fillStyle = '#ccc';
+  ctx.font = '16px system-ui, Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(label, x, y);
+  
+  // Slider track
+  const sliderX = x + 250;
+  const sliderW = 180;
+  const sliderH = 20;
+  
+  ctx.fillStyle = '#444';
+  ctx.fillRect(sliderX, y - 10, sliderW, sliderH);
+  
+  // Slider fill
+  ctx.fillStyle = '#ffca28';
+  ctx.fillRect(sliderX, y - 10, sliderW * value, sliderH);
+  
+  // Slider knob
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(sliderX + sliderW * value, y, 12, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Value text
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 14px system-ui, Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(`${Math.round(value * 100)}%`, sliderX + sliderW + 30, y);
+}
